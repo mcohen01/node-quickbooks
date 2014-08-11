@@ -109,7 +109,7 @@ QuickBooks.prototype.pluralize = function(s) {
 
 QuickBooks.prototype.unwrap = function(callback, entityName) {
   var that = this
-  //if (! callback) return function(err, data) {}
+  if (! callback) return function(err, data) {}
   return function(err, data) {
     if (err) {
       if (callback) callback(err)
