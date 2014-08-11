@@ -1,0 +1,17 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ipp="">
+<head><meta http-equiv="Content-Type"
+            content="text/html; charset=ISO-8859-1">
+  <title>QBO Connect</title>
+  <script type="text/javascript" src="https://appcenter.intuit.com/Content/IA/intuit.ipp.anywhere.js">
+  </script>
+  <script>
+    intuit.ipp.anywhere.setup({
+      menuProxy: '',
+      grantUrl: 'http://localhost:' + <%= port %> + '/requestToken'
+    });
+  </script>
+</head>
+<body>
+<ipp:connectToIntuit></ipp:connectToIntuit>
+</body>
+</html>

@@ -1,0 +1,85 @@
+var http       = require('http'),
+    port       = process.env.PORT || 3000,
+    request    = require('request'),
+    qs         = require('querystring'),
+    util       = require('util'),
+    express    = require('express'),
+    app        = express(),
+    Quickbooks = require('node-quickbooks')
+
+
+// Generic Express config
+app.set('port', port)
+app.set('views', 'views')
+app.use(express.bodyParser())
+app.use(express.cookieParser('brad'))
+app.use(express.session({secret: 'smith'}));
+app.use(app.router)
+
+http.createServer(app).listen(app.get('port'), function() {
+  console.log('Express server listening on port ' + app.get('port'))
+})
+
+
+
+// INSERT YOUR CONSUMER_KEY AND CONSUMER_SECRET HERE
+
+var consumerKey    = '',
+    consumerSecret = ''
+
+app.get('/start', function(req, res) {
+  res.render('intuit.ejs', {locals: {port:port}})
+})
+
+app.get('/requestToken', function(req, res) {
+  var postBody = {
+    url: Quickbooks.REQUEST_TOKEN_URL,
+    oauth: {
+      callback:        'http://localhost:' + port + '/callback/',
+      consumer_key:    consumerKey,
+      consumer_secret: consumerSecret
+    }
+  }
+  request.post(postBody, function (e, r, data) {
+    var requestToken = qs.parse(data)
+    req.session.oauth_token_secret = requestToken.oauth_token_secret
+    console.log(requestToken)
+    res.redirect(Quickbooks.APP_CENTER_URL + requestToken.oauth_token)
+  })
+})
+
+app.get('/callback', function(req, res) {
+  var postBody = {
+    url: Quickbooks.ACCESS_TOKEN_URL,
+    oauth: {
+      consumer_key:    consumerKey,
+      consumer_secret: consumerSecret,
+      token:           req.query.oauth_token,
+      token_secret:    req.session.oauth_token_secret,
+      verifier:        req.query.oauth_verifier,
+      realmId:         req.query.realmId
+    }
+  }
+  request.post(postBody, function (e, r, data) {
+    var accessToken = qs.parse(data)
+    console.log(accessToken)
+    console.log(postBody.oauth.realmId)
+
+    // save the access token somewhere on behalf of the logged in user
+    qbo = new Quickbooks(consumerKey,
+                         consumerSecret,
+                         accessToken.oauth_token,
+                         accessToken.oauth_token_secret,
+                         postBody.oauth.realmId,
+                         true); // turn debugging on
+
+    // test out account access
+    qbo.findAccounts(function(_, accounts) {
+      accounts.QueryResponse.Account.forEach(function(account) {
+        console.log(account.Name)
+      })
+    })
+  })
+  res.send('<html><body><script>window.close()</script>')
+})
+

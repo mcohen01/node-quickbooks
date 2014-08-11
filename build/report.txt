@@ -1,0 +1,23 @@
+BalanceSheet
+ProfitAndLoss
+ProfitAndLossDetail
+TrialBalance
+CashFlow
+InventoryValuationSummary
+CustomerSales
+ItemSales
+CustomerIncome
+CustomerBalance
+CustomerBalanceDetail
+AgedReceivables
+AgedReceivableDetail
+VendorBalance
+VendorBalanceDetail
+AgedPayables
+AgedPayableDetail
+VendorExpenses
+
+# these are broken on QBO right now
+GeneralLedgerDetail
+DepartmentSales
+ClassSales

@@ -1,0 +1,14 @@
+attachable
+bill
+billPayment
+creditMemo
+estimate
+invoice
+journalEntry
+payment
+purchase
+purchaseOrder
+refundReceipt
+salesReceipt
+timeActivity
+vendorCredit
