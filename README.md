@@ -1,6 +1,6 @@
 # node-quickbooks
 
-Node.js client for [Quickbooks V3 API] [1].
+Node.js client for [QuickBooks V3 API] [1].
 
 ## Installation
 
@@ -11,9 +11,9 @@ Node.js client for [Quickbooks V3 API] [1].
 
 ```javascript
 
-var Quickbooks = require('node-quickbooks')
+var QuickBooks = require('node-quickbooks')
 
-var qbo = new Quickbooks(consumerKey,
+var qbo = new QuickBooks(consumerKey,
                          consumerSecret,
                          oauthToken,
                          oauthTokenSecret,
@@ -68,7 +68,7 @@ First you'll need to fill in the missing values in config.js. The consumerKey an
 
 ## Public Api
 
-Quickbooks(consumerKey, consumerSecret, oauth_token, oauth_token_secret, realmId, debug)
+QuickBooks(consumerKey, consumerSecret, oauth_token, oauth_token_secret, realmId, debug)
 
 __Arguments__
 
@@ -249,275 +249,275 @@ __Arguments__
 <a name="createAccount" />
 #### createAccount(object, callback)
   
-Creates the Account in Quickbooks 
+Creates the Account in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved account, to be persisted in Quickbooks
+* `object` - The unsaved account, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Account
 
 
 <a name="createAttachable" />
 #### createAttachable(object, callback)
   
-Creates the Attachable in Quickbooks 
+Creates the Attachable in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved attachable, to be persisted in Quickbooks
+* `object` - The unsaved attachable, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Attachable
 
 
 <a name="createBill" />
 #### createBill(object, callback)
   
-Creates the Bill in Quickbooks 
+Creates the Bill in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved bill, to be persisted in Quickbooks
+* `object` - The unsaved bill, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Bill
 
 
 <a name="createBillPayment" />
 #### createBillPayment(object, callback)
   
-Creates the BillPayment in Quickbooks 
+Creates the BillPayment in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved billPayment, to be persisted in Quickbooks
+* `object` - The unsaved billPayment, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent BillPayment
 
 
 <a name="createClass" />
 #### createClass(object, callback)
   
-Creates the Class in Quickbooks 
+Creates the Class in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved class, to be persisted in Quickbooks
+* `object` - The unsaved class, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Class
 
 
 <a name="createCreditMemo" />
 #### createCreditMemo(object, callback)
   
-Creates the CreditMemo in Quickbooks 
+Creates the CreditMemo in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved creditMemo, to be persisted in Quickbooks
+* `object` - The unsaved creditMemo, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent CreditMemo
 
 
 <a name="createCustomer" />
 #### createCustomer(object, callback)
   
-Creates the Customer in Quickbooks 
+Creates the Customer in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved customer, to be persisted in Quickbooks
+* `object` - The unsaved customer, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Customer
 
 
 <a name="createDepartment" />
 #### createDepartment(object, callback)
   
-Creates the Department in Quickbooks 
+Creates the Department in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved department, to be persisted in Quickbooks
+* `object` - The unsaved department, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Department
 
 
 <a name="createEmployee" />
 #### createEmployee(object, callback)
   
-Creates the Employee in Quickbooks 
+Creates the Employee in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved employee, to be persisted in Quickbooks
+* `object` - The unsaved employee, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Employee
 
 
 <a name="createEstimate" />
 #### createEstimate(object, callback)
   
-Creates the Estimate in Quickbooks 
+Creates the Estimate in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved estimate, to be persisted in Quickbooks
+* `object` - The unsaved estimate, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Estimate
 
 
 <a name="createInvoice" />
 #### createInvoice(object, callback)
   
-Creates the Invoice in Quickbooks 
+Creates the Invoice in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved invoice, to be persisted in Quickbooks
+* `object` - The unsaved invoice, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Invoice
 
 
 <a name="createItem" />
 #### createItem(object, callback)
   
-Creates the Item in Quickbooks 
+Creates the Item in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved item, to be persisted in Quickbooks
+* `object` - The unsaved item, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Item
 
 
 <a name="createJournalEntry" />
 #### createJournalEntry(object, callback)
   
-Creates the JournalEntry in Quickbooks 
+Creates the JournalEntry in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved journalEntry, to be persisted in Quickbooks
+* `object` - The unsaved journalEntry, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent JournalEntry
 
 
 <a name="createPayment" />
 #### createPayment(object, callback)
   
-Creates the Payment in Quickbooks 
+Creates the Payment in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved payment, to be persisted in Quickbooks
+* `object` - The unsaved payment, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Payment
 
 
 <a name="createPaymentMethod" />
 #### createPaymentMethod(object, callback)
   
-Creates the PaymentMethod in Quickbooks 
+Creates the PaymentMethod in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved paymentMethod, to be persisted in Quickbooks
+* `object` - The unsaved paymentMethod, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent PaymentMethod
 
 
 <a name="createPurchase" />
 #### createPurchase(object, callback)
   
-Creates the Purchase in Quickbooks 
+Creates the Purchase in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved purchase, to be persisted in Quickbooks
+* `object` - The unsaved purchase, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Purchase
 
 
 <a name="createPurchaseOrder" />
 #### createPurchaseOrder(object, callback)
   
-Creates the PurchaseOrder in Quickbooks 
+Creates the PurchaseOrder in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved purchaseOrder, to be persisted in Quickbooks
+* `object` - The unsaved purchaseOrder, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent PurchaseOrder
 
 
 <a name="createRefundReceipt" />
 #### createRefundReceipt(object, callback)
   
-Creates the RefundReceipt in Quickbooks 
+Creates the RefundReceipt in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved refundReceipt, to be persisted in Quickbooks
+* `object` - The unsaved refundReceipt, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent RefundReceipt
 
 
 <a name="createSalesReceipt" />
 #### createSalesReceipt(object, callback)
   
-Creates the SalesReceipt in Quickbooks 
+Creates the SalesReceipt in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved salesReceipt, to be persisted in Quickbooks
+* `object` - The unsaved salesReceipt, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent SalesReceipt
 
 
 <a name="createTaxAgency" />
 #### createTaxAgency(object, callback)
   
-Creates the TaxAgency in Quickbooks 
+Creates the TaxAgency in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved taxAgency, to be persisted in Quickbooks
+* `object` - The unsaved taxAgency, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent TaxAgency
 
 
 <a name="createTaxService" />
 #### createTaxService(object, callback)
   
-Creates the TaxService in Quickbooks 
+Creates the TaxService in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved taxService, to be persisted in Quickbooks
+* `object` - The unsaved taxService, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent TaxService
 
 
 <a name="createTerm" />
 #### createTerm(object, callback)
   
-Creates the Term in Quickbooks 
+Creates the Term in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved term, to be persisted in Quickbooks
+* `object` - The unsaved term, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Term
 
 
 <a name="createTimeActivity" />
 #### createTimeActivity(object, callback)
   
-Creates the TimeActivity in Quickbooks 
+Creates the TimeActivity in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved timeActivity, to be persisted in Quickbooks
+* `object` - The unsaved timeActivity, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent TimeActivity
 
 
 <a name="createVendor" />
 #### createVendor(object, callback)
   
-Creates the Vendor in Quickbooks 
+Creates the Vendor in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved vendor, to be persisted in Quickbooks
+* `object` - The unsaved vendor, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Vendor
 
 
 <a name="createVendorCredit" />
 #### createVendorCredit(object, callback)
   
-Creates the VendorCredit in Quickbooks 
+Creates the VendorCredit in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved vendorCredit, to be persisted in Quickbooks
+* `object` - The unsaved vendorCredit, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent VendorCredit
 
 
@@ -526,7 +526,7 @@ __Arguments__
 <a name="getAccount" />
 #### getAccount(id, callback)
   
-Retrieves the Account from Quickbooks
+Retrieves the Account from QuickBooks
  
 __Arguments__
 
@@ -537,7 +537,7 @@ __Arguments__
 <a name="getAttachable" />
 #### getAttachable(id, callback)
   
-Retrieves the Attachable from Quickbooks
+Retrieves the Attachable from QuickBooks
  
 __Arguments__
 
@@ -548,7 +548,7 @@ __Arguments__
 <a name="getBill" />
 #### getBill(id, callback)
   
-Retrieves the Bill from Quickbooks
+Retrieves the Bill from QuickBooks
  
 __Arguments__
 
@@ -559,7 +559,7 @@ __Arguments__
 <a name="getBillPayment" />
 #### getBillPayment(id, callback)
   
-Retrieves the BillPayment from Quickbooks
+Retrieves the BillPayment from QuickBooks
  
 __Arguments__
 
@@ -570,7 +570,7 @@ __Arguments__
 <a name="getClass" />
 #### getClass(id, callback)
   
-Retrieves the Class from Quickbooks
+Retrieves the Class from QuickBooks
  
 __Arguments__
 
@@ -581,7 +581,7 @@ __Arguments__
 <a name="getCompanyInfo" />
 #### getCompanyInfo(id, callback)
   
-Retrieves the CompanyInfo from Quickbooks
+Retrieves the CompanyInfo from QuickBooks
  
 __Arguments__
 
@@ -592,7 +592,7 @@ __Arguments__
 <a name="getCreditMemo" />
 #### getCreditMemo(id, callback)
   
-Retrieves the CreditMemo from Quickbooks
+Retrieves the CreditMemo from QuickBooks
  
 __Arguments__
 
@@ -603,7 +603,7 @@ __Arguments__
 <a name="getCustomer" />
 #### getCustomer(id, callback)
   
-Retrieves the Customer from Quickbooks
+Retrieves the Customer from QuickBooks
  
 __Arguments__
 
@@ -614,7 +614,7 @@ __Arguments__
 <a name="getDepartment" />
 #### getDepartment(id, callback)
   
-Retrieves the Department from Quickbooks
+Retrieves the Department from QuickBooks
  
 __Arguments__
 
@@ -625,7 +625,7 @@ __Arguments__
 <a name="getEmployee" />
 #### getEmployee(id, callback)
   
-Retrieves the Employee from Quickbooks
+Retrieves the Employee from QuickBooks
  
 __Arguments__
 
@@ -636,7 +636,7 @@ __Arguments__
 <a name="getEstimate" />
 #### getEstimate(id, callback)
   
-Retrieves the Estimate from Quickbooks
+Retrieves the Estimate from QuickBooks
  
 __Arguments__
 
@@ -647,7 +647,7 @@ __Arguments__
 <a name="getInvoice" />
 #### getInvoice(id, callback)
   
-Retrieves the Invoice from Quickbooks
+Retrieves the Invoice from QuickBooks
  
 __Arguments__
 
@@ -658,7 +658,7 @@ __Arguments__
 <a name="getItem" />
 #### getItem(id, callback)
   
-Retrieves the Item from Quickbooks
+Retrieves the Item from QuickBooks
  
 __Arguments__
 
@@ -669,7 +669,7 @@ __Arguments__
 <a name="getJournalEntry" />
 #### getJournalEntry(id, callback)
   
-Retrieves the JournalEntry from Quickbooks
+Retrieves the JournalEntry from QuickBooks
  
 __Arguments__
 
@@ -680,7 +680,7 @@ __Arguments__
 <a name="getPayment" />
 #### getPayment(id, callback)
   
-Retrieves the Payment from Quickbooks
+Retrieves the Payment from QuickBooks
  
 __Arguments__
 
@@ -691,7 +691,7 @@ __Arguments__
 <a name="getPaymentMethod" />
 #### getPaymentMethod(id, callback)
   
-Retrieves the PaymentMethod from Quickbooks
+Retrieves the PaymentMethod from QuickBooks
  
 __Arguments__
 
@@ -702,7 +702,7 @@ __Arguments__
 <a name="getPreferences" />
 #### getPreferences(id, callback)
   
-Retrieves the Preferences from Quickbooks
+Retrieves the Preferences from QuickBooks
  
 __Arguments__
 
@@ -713,7 +713,7 @@ __Arguments__
 <a name="getPurchase" />
 #### getPurchase(id, callback)
   
-Retrieves the Purchase from Quickbooks
+Retrieves the Purchase from QuickBooks
  
 __Arguments__
 
@@ -724,7 +724,7 @@ __Arguments__
 <a name="getPurchaseOrder" />
 #### getPurchaseOrder(id, callback)
   
-Retrieves the PurchaseOrder from Quickbooks
+Retrieves the PurchaseOrder from QuickBooks
  
 __Arguments__
 
@@ -735,7 +735,7 @@ __Arguments__
 <a name="getRefundReceipt" />
 #### getRefundReceipt(id, callback)
   
-Retrieves the RefundReceipt from Quickbooks
+Retrieves the RefundReceipt from QuickBooks
  
 __Arguments__
 
@@ -746,7 +746,7 @@ __Arguments__
 <a name="getReports" />
 #### getReports(id, callback)
   
-Retrieves the Reports from Quickbooks
+Retrieves the Reports from QuickBooks
  
 __Arguments__
 
@@ -757,7 +757,7 @@ __Arguments__
 <a name="getSalesReceipt" />
 #### getSalesReceipt(id, callback)
   
-Retrieves the SalesReceipt from Quickbooks
+Retrieves the SalesReceipt from QuickBooks
  
 __Arguments__
 
@@ -768,7 +768,7 @@ __Arguments__
 <a name="getTaxAgency" />
 #### getTaxAgency(id, callback)
   
-Retrieves the TaxAgency from Quickbooks
+Retrieves the TaxAgency from QuickBooks
  
 __Arguments__
 
@@ -779,7 +779,7 @@ __Arguments__
 <a name="getTaxCode" />
 #### getTaxCode(id, callback)
   
-Retrieves the TaxCode from Quickbooks
+Retrieves the TaxCode from QuickBooks
  
 __Arguments__
 
@@ -790,7 +790,7 @@ __Arguments__
 <a name="getTaxRate" />
 #### getTaxRate(id, callback)
   
-Retrieves the TaxRate from Quickbooks
+Retrieves the TaxRate from QuickBooks
  
 __Arguments__
 
@@ -801,7 +801,7 @@ __Arguments__
 <a name="getTerm" />
 #### getTerm(id, callback)
   
-Retrieves the Term from Quickbooks
+Retrieves the Term from QuickBooks
  
 __Arguments__
 
@@ -812,7 +812,7 @@ __Arguments__
 <a name="getTimeActivity" />
 #### getTimeActivity(id, callback)
   
-Retrieves the TimeActivity from Quickbooks
+Retrieves the TimeActivity from QuickBooks
  
 __Arguments__
 
@@ -823,7 +823,7 @@ __Arguments__
 <a name="getVendor" />
 #### getVendor(id, callback)
   
-Retrieves the Vendor from Quickbooks
+Retrieves the Vendor from QuickBooks
  
 __Arguments__
 
@@ -834,7 +834,7 @@ __Arguments__
 <a name="getVendorCredit" />
 #### getVendorCredit(id, callback)
   
-Retrieves the VendorCredit from Quickbooks
+Retrieves the VendorCredit from QuickBooks
  
 __Arguments__
 
@@ -847,7 +847,7 @@ __Arguments__
 <a name="updateAccount" />
 #### updateAccount(object, callback)
   
-Updates Quickbooks version of Account
+Updates QuickBooks version of Account
  
 __Arguments__
 
@@ -858,7 +858,7 @@ __Arguments__
 <a name="updateAttachable" />
 #### updateAttachable(object, callback)
   
-Updates Quickbooks version of Attachable
+Updates QuickBooks version of Attachable
  
 __Arguments__
 
@@ -869,7 +869,7 @@ __Arguments__
 <a name="updateBill" />
 #### updateBill(object, callback)
   
-Updates Quickbooks version of Bill
+Updates QuickBooks version of Bill
  
 __Arguments__
 
@@ -880,7 +880,7 @@ __Arguments__
 <a name="updateBillPayment" />
 #### updateBillPayment(object, callback)
   
-Updates Quickbooks version of BillPayment
+Updates QuickBooks version of BillPayment
  
 __Arguments__
 
@@ -891,7 +891,7 @@ __Arguments__
 <a name="updateClass" />
 #### updateClass(object, callback)
   
-Updates Quickbooks version of Class
+Updates QuickBooks version of Class
  
 __Arguments__
 
@@ -902,7 +902,7 @@ __Arguments__
 <a name="updateCompanyInfo" />
 #### updateCompanyInfo(object, callback)
   
-Updates Quickbooks version of CompanyInfo
+Updates QuickBooks version of CompanyInfo
  
 __Arguments__
 
@@ -913,7 +913,7 @@ __Arguments__
 <a name="updateCreditMemo" />
 #### updateCreditMemo(object, callback)
   
-Updates Quickbooks version of CreditMemo
+Updates QuickBooks version of CreditMemo
  
 __Arguments__
 
@@ -924,7 +924,7 @@ __Arguments__
 <a name="updateCustomer" />
 #### updateCustomer(object, callback)
   
-Updates Quickbooks version of Customer
+Updates QuickBooks version of Customer
  
 __Arguments__
 
@@ -935,7 +935,7 @@ __Arguments__
 <a name="updateDepartment" />
 #### updateDepartment(object, callback)
   
-Updates Quickbooks version of Department
+Updates QuickBooks version of Department
  
 __Arguments__
 
@@ -946,7 +946,7 @@ __Arguments__
 <a name="updateEmployee" />
 #### updateEmployee(object, callback)
   
-Updates Quickbooks version of Employee
+Updates QuickBooks version of Employee
  
 __Arguments__
 
@@ -957,7 +957,7 @@ __Arguments__
 <a name="updateEstimate" />
 #### updateEstimate(object, callback)
   
-Updates Quickbooks version of Estimate
+Updates QuickBooks version of Estimate
  
 __Arguments__
 
@@ -968,7 +968,7 @@ __Arguments__
 <a name="updateInvoice" />
 #### updateInvoice(object, callback)
   
-Updates Quickbooks version of Invoice
+Updates QuickBooks version of Invoice
  
 __Arguments__
 
@@ -979,7 +979,7 @@ __Arguments__
 <a name="updateItem" />
 #### updateItem(object, callback)
   
-Updates Quickbooks version of Item
+Updates QuickBooks version of Item
  
 __Arguments__
 
@@ -990,7 +990,7 @@ __Arguments__
 <a name="updateJournalEntry" />
 #### updateJournalEntry(object, callback)
   
-Updates Quickbooks version of JournalEntry
+Updates QuickBooks version of JournalEntry
  
 __Arguments__
 
@@ -1001,7 +1001,7 @@ __Arguments__
 <a name="updatePayment" />
 #### updatePayment(object, callback)
   
-Updates Quickbooks version of Payment
+Updates QuickBooks version of Payment
  
 __Arguments__
 
@@ -1012,7 +1012,7 @@ __Arguments__
 <a name="updatePaymentMethod" />
 #### updatePaymentMethod(object, callback)
   
-Updates Quickbooks version of PaymentMethod
+Updates QuickBooks version of PaymentMethod
  
 __Arguments__
 
@@ -1023,7 +1023,7 @@ __Arguments__
 <a name="updatePreferences" />
 #### updatePreferences(object, callback)
   
-Updates Quickbooks version of Preferences
+Updates QuickBooks version of Preferences
  
 __Arguments__
 
@@ -1034,7 +1034,7 @@ __Arguments__
 <a name="updatePurchase" />
 #### updatePurchase(object, callback)
   
-Updates Quickbooks version of Purchase
+Updates QuickBooks version of Purchase
  
 __Arguments__
 
@@ -1045,7 +1045,7 @@ __Arguments__
 <a name="updatePurchaseOrder" />
 #### updatePurchaseOrder(object, callback)
   
-Updates Quickbooks version of PurchaseOrder
+Updates QuickBooks version of PurchaseOrder
  
 __Arguments__
 
@@ -1056,7 +1056,7 @@ __Arguments__
 <a name="updateRefundReceipt" />
 #### updateRefundReceipt(object, callback)
   
-Updates Quickbooks version of RefundReceipt
+Updates QuickBooks version of RefundReceipt
  
 __Arguments__
 
@@ -1067,7 +1067,7 @@ __Arguments__
 <a name="updateSalesReceipt" />
 #### updateSalesReceipt(object, callback)
   
-Updates Quickbooks version of SalesReceipt
+Updates QuickBooks version of SalesReceipt
  
 __Arguments__
 
@@ -1078,7 +1078,7 @@ __Arguments__
 <a name="updateTaxAgency" />
 #### updateTaxAgency(object, callback)
   
-Updates Quickbooks version of TaxAgency
+Updates QuickBooks version of TaxAgency
  
 __Arguments__
 
@@ -1089,7 +1089,7 @@ __Arguments__
 <a name="updateTaxCode" />
 #### updateTaxCode(object, callback)
   
-Updates Quickbooks version of TaxCode
+Updates QuickBooks version of TaxCode
  
 __Arguments__
 
@@ -1100,7 +1100,7 @@ __Arguments__
 <a name="updateTaxRate" />
 #### updateTaxRate(object, callback)
   
-Updates Quickbooks version of TaxRate
+Updates QuickBooks version of TaxRate
  
 __Arguments__
 
@@ -1111,7 +1111,7 @@ __Arguments__
 <a name="updateTaxService" />
 #### updateTaxService(object, callback)
   
-Updates Quickbooks version of TaxService
+Updates QuickBooks version of TaxService
  
 __Arguments__
 
@@ -1122,7 +1122,7 @@ __Arguments__
 <a name="updateTerm" />
 #### updateTerm(object, callback)
   
-Updates Quickbooks version of Term
+Updates QuickBooks version of Term
  
 __Arguments__
 
@@ -1133,7 +1133,7 @@ __Arguments__
 <a name="updateTimeActivity" />
 #### updateTimeActivity(object, callback)
   
-Updates Quickbooks version of TimeActivity
+Updates QuickBooks version of TimeActivity
  
 __Arguments__
 
@@ -1144,7 +1144,7 @@ __Arguments__
 <a name="updateVendor" />
 #### updateVendor(object, callback)
   
-Updates Quickbooks version of Vendor
+Updates QuickBooks version of Vendor
  
 __Arguments__
 
@@ -1155,7 +1155,7 @@ __Arguments__
 <a name="updateVendorCredit" />
 #### updateVendorCredit(object, callback)
   
-Updates Quickbooks version of VendorCredit
+Updates QuickBooks version of VendorCredit
  
 __Arguments__
 
@@ -1168,7 +1168,7 @@ __Arguments__
 <a name="deleteAttachable" />
 #### deleteAttachable(idOrEntity, callback)
   
-Deletes the Attachable from Quickbooks
+Deletes the Attachable from QuickBooks
  
 __Arguments__
 
@@ -1179,7 +1179,7 @@ __Arguments__
 <a name="deleteBill" />
 #### deleteBill(idOrEntity, callback)
   
-Deletes the Bill from Quickbooks
+Deletes the Bill from QuickBooks
  
 __Arguments__
 
@@ -1190,7 +1190,7 @@ __Arguments__
 <a name="deleteBillPayment" />
 #### deleteBillPayment(idOrEntity, callback)
   
-Deletes the BillPayment from Quickbooks
+Deletes the BillPayment from QuickBooks
  
 __Arguments__
 
@@ -1201,7 +1201,7 @@ __Arguments__
 <a name="deleteCreditMemo" />
 #### deleteCreditMemo(idOrEntity, callback)
   
-Deletes the CreditMemo from Quickbooks
+Deletes the CreditMemo from QuickBooks
  
 __Arguments__
 
@@ -1212,7 +1212,7 @@ __Arguments__
 <a name="deleteEstimate" />
 #### deleteEstimate(idOrEntity, callback)
   
-Deletes the Estimate from Quickbooks
+Deletes the Estimate from QuickBooks
  
 __Arguments__
 
@@ -1223,7 +1223,7 @@ __Arguments__
 <a name="deleteInvoice" />
 #### deleteInvoice(idOrEntity, callback)
   
-Deletes the Invoice from Quickbooks
+Deletes the Invoice from QuickBooks
  
 __Arguments__
 
@@ -1234,7 +1234,7 @@ __Arguments__
 <a name="deleteJournalEntry" />
 #### deleteJournalEntry(idOrEntity, callback)
   
-Deletes the JournalEntry from Quickbooks
+Deletes the JournalEntry from QuickBooks
  
 __Arguments__
 
@@ -1245,7 +1245,7 @@ __Arguments__
 <a name="deletePayment" />
 #### deletePayment(idOrEntity, callback)
   
-Deletes the Payment from Quickbooks
+Deletes the Payment from QuickBooks
  
 __Arguments__
 
@@ -1256,7 +1256,7 @@ __Arguments__
 <a name="deletePurchase" />
 #### deletePurchase(idOrEntity, callback)
   
-Deletes the Purchase from Quickbooks
+Deletes the Purchase from QuickBooks
  
 __Arguments__
 
@@ -1267,7 +1267,7 @@ __Arguments__
 <a name="deletePurchaseOrder" />
 #### deletePurchaseOrder(idOrEntity, callback)
   
-Deletes the PurchaseOrder from Quickbooks
+Deletes the PurchaseOrder from QuickBooks
  
 __Arguments__
 
@@ -1278,7 +1278,7 @@ __Arguments__
 <a name="deleteRefundReceipt" />
 #### deleteRefundReceipt(idOrEntity, callback)
   
-Deletes the RefundReceipt from Quickbooks
+Deletes the RefundReceipt from QuickBooks
  
 __Arguments__
 
@@ -1289,7 +1289,7 @@ __Arguments__
 <a name="deleteSalesReceipt" />
 #### deleteSalesReceipt(idOrEntity, callback)
   
-Deletes the SalesReceipt from Quickbooks
+Deletes the SalesReceipt from QuickBooks
  
 __Arguments__
 
@@ -1300,7 +1300,7 @@ __Arguments__
 <a name="deleteTimeActivity" />
 #### deleteTimeActivity(idOrEntity, callback)
   
-Deletes the TimeActivity from Quickbooks
+Deletes the TimeActivity from QuickBooks
  
 __Arguments__
 
@@ -1311,7 +1311,7 @@ __Arguments__
 <a name="deleteVendorCredit" />
 #### deleteVendorCredit(idOrEntity, callback)
   
-Deletes the VendorCredit from Quickbooks
+Deletes the VendorCredit from QuickBooks
  
 __Arguments__
 
@@ -1324,7 +1324,7 @@ __Arguments__
 <a name="findAccounts" />
 #### findAccounts(criteria, callback)
   
-Finds all Accounts in Quickbooks, optionally matching the specified criteria
+Finds all Accounts in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1335,7 +1335,7 @@ __Arguments__
 <a name="findAttachables" />
 #### findAttachables(criteria, callback)
   
-Finds all Attachables in Quickbooks, optionally matching the specified criteria
+Finds all Attachables in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1346,7 +1346,7 @@ __Arguments__
 <a name="findBills" />
 #### findBills(criteria, callback)
   
-Finds all Bills in Quickbooks, optionally matching the specified criteria
+Finds all Bills in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1357,7 +1357,7 @@ __Arguments__
 <a name="findBillPayments" />
 #### findBillPayments(criteria, callback)
   
-Finds all BillPayments in Quickbooks, optionally matching the specified criteria
+Finds all BillPayments in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1368,7 +1368,7 @@ __Arguments__
 <a name="findBudgets" />
 #### findBudgets(criteria, callback)
   
-Finds all Budgets in Quickbooks, optionally matching the specified criteria
+Finds all Budgets in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1379,7 +1379,7 @@ __Arguments__
 <a name="findClasses" />
 #### findClasses(criteria, callback)
   
-Finds all Classs in Quickbooks, optionally matching the specified criteria
+Finds all Classs in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1390,7 +1390,7 @@ __Arguments__
 <a name="findCompanyInfos" />
 #### findCompanyInfos(criteria, callback)
   
-Finds all CompanyInfos in Quickbooks, optionally matching the specified criteria
+Finds all CompanyInfos in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1401,7 +1401,7 @@ __Arguments__
 <a name="findCreditMemos" />
 #### findCreditMemos(criteria, callback)
   
-Finds all CreditMemos in Quickbooks, optionally matching the specified criteria
+Finds all CreditMemos in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1412,7 +1412,7 @@ __Arguments__
 <a name="findCustomers" />
 #### findCustomers(criteria, callback)
   
-Finds all Customers in Quickbooks, optionally matching the specified criteria
+Finds all Customers in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1423,7 +1423,7 @@ __Arguments__
 <a name="findDepartments" />
 #### findDepartments(criteria, callback)
   
-Finds all Departments in Quickbooks, optionally matching the specified criteria
+Finds all Departments in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1434,7 +1434,7 @@ __Arguments__
 <a name="findEmployees" />
 #### findEmployees(criteria, callback)
   
-Finds all Employees in Quickbooks, optionally matching the specified criteria
+Finds all Employees in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1445,7 +1445,7 @@ __Arguments__
 <a name="findEstimates" />
 #### findEstimates(criteria, callback)
   
-Finds all Estimates in Quickbooks, optionally matching the specified criteria
+Finds all Estimates in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1456,7 +1456,7 @@ __Arguments__
 <a name="findInvoices" />
 #### findInvoices(criteria, callback)
   
-Finds all Invoices in Quickbooks, optionally matching the specified criteria
+Finds all Invoices in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1467,7 +1467,7 @@ __Arguments__
 <a name="findItems" />
 #### findItems(criteria, callback)
   
-Finds all Items in Quickbooks, optionally matching the specified criteria
+Finds all Items in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1478,7 +1478,7 @@ __Arguments__
 <a name="findJournalEntries" />
 #### findJournalEntries(criteria, callback)
   
-Finds all JournalEntrys in Quickbooks, optionally matching the specified criteria
+Finds all JournalEntrys in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1489,7 +1489,7 @@ __Arguments__
 <a name="findPayments" />
 #### findPayments(criteria, callback)
   
-Finds all Payments in Quickbooks, optionally matching the specified criteria
+Finds all Payments in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1500,7 +1500,7 @@ __Arguments__
 <a name="findPaymentMethods" />
 #### findPaymentMethods(criteria, callback)
   
-Finds all PaymentMethods in Quickbooks, optionally matching the specified criteria
+Finds all PaymentMethods in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1511,7 +1511,7 @@ __Arguments__
 <a name="findPreferenceses" />
 #### findPreferenceses(criteria, callback)
   
-Finds all Preferencess in Quickbooks, optionally matching the specified criteria
+Finds all Preferencess in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1522,7 +1522,7 @@ __Arguments__
 <a name="findPurchases" />
 #### findPurchases(criteria, callback)
   
-Finds all Purchases in Quickbooks, optionally matching the specified criteria
+Finds all Purchases in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1533,7 +1533,7 @@ __Arguments__
 <a name="findPurchaseOrders" />
 #### findPurchaseOrders(criteria, callback)
   
-Finds all PurchaseOrders in Quickbooks, optionally matching the specified criteria
+Finds all PurchaseOrders in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1544,7 +1544,7 @@ __Arguments__
 <a name="findRefundReceipts" />
 #### findRefundReceipts(criteria, callback)
   
-Finds all RefundReceipts in Quickbooks, optionally matching the specified criteria
+Finds all RefundReceipts in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1555,7 +1555,7 @@ __Arguments__
 <a name="findSalesReceipts" />
 #### findSalesReceipts(criteria, callback)
   
-Finds all SalesReceipts in Quickbooks, optionally matching the specified criteria
+Finds all SalesReceipts in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1566,7 +1566,7 @@ __Arguments__
 <a name="findTaxAgencies" />
 #### findTaxAgencies(criteria, callback)
   
-Finds all TaxAgencys in Quickbooks, optionally matching the specified criteria
+Finds all TaxAgencys in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1577,7 +1577,7 @@ __Arguments__
 <a name="findTaxCodes" />
 #### findTaxCodes(criteria, callback)
   
-Finds all TaxCodes in Quickbooks, optionally matching the specified criteria
+Finds all TaxCodes in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1588,7 +1588,7 @@ __Arguments__
 <a name="findTaxRates" />
 #### findTaxRates(criteria, callback)
   
-Finds all TaxRates in Quickbooks, optionally matching the specified criteria
+Finds all TaxRates in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1599,7 +1599,7 @@ __Arguments__
 <a name="findTerms" />
 #### findTerms(criteria, callback)
   
-Finds all Terms in Quickbooks, optionally matching the specified criteria
+Finds all Terms in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1610,7 +1610,7 @@ __Arguments__
 <a name="findTimeActivities" />
 #### findTimeActivities(criteria, callback)
   
-Finds all TimeActivitys in Quickbooks, optionally matching the specified criteria
+Finds all TimeActivitys in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1621,7 +1621,7 @@ __Arguments__
 <a name="findVendors" />
 #### findVendors(criteria, callback)
   
-Finds all Vendors in Quickbooks, optionally matching the specified criteria
+Finds all Vendors in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1632,7 +1632,7 @@ __Arguments__
 <a name="findVendorCredits" />
 #### findVendorCredits(criteria, callback)
   
-Finds all VendorCredits in Quickbooks, optionally matching the specified criteria
+Finds all VendorCredits in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -1645,7 +1645,7 @@ __Arguments__
 <a name="reportBalanceSheet" />
 #### reportBalanceSheet(options, callback)
   
-Retrieves the BalanceSheet Report from Quickbooks
+Retrieves the BalanceSheet Report from QuickBooks
  
 __Arguments__
 
@@ -1656,7 +1656,7 @@ __Arguments__
 <a name="reportProfitAndLoss" />
 #### reportProfitAndLoss(options, callback)
   
-Retrieves the ProfitAndLoss Report from Quickbooks
+Retrieves the ProfitAndLoss Report from QuickBooks
  
 __Arguments__
 
@@ -1667,7 +1667,7 @@ __Arguments__
 <a name="reportProfitAndLossDetail" />
 #### reportProfitAndLossDetail(options, callback)
   
-Retrieves the ProfitAndLossDetail Report from Quickbooks
+Retrieves the ProfitAndLossDetail Report from QuickBooks
  
 __Arguments__
 
@@ -1678,7 +1678,7 @@ __Arguments__
 <a name="reportTrialBalance" />
 #### reportTrialBalance(options, callback)
   
-Retrieves the TrialBalance Report from Quickbooks
+Retrieves the TrialBalance Report from QuickBooks
  
 __Arguments__
 
@@ -1689,7 +1689,7 @@ __Arguments__
 <a name="reportCashFlow" />
 #### reportCashFlow(options, callback)
   
-Retrieves the CashFlow Report from Quickbooks
+Retrieves the CashFlow Report from QuickBooks
  
 __Arguments__
 
@@ -1700,7 +1700,7 @@ __Arguments__
 <a name="reportInventoryValuationSummary" />
 #### reportInventoryValuationSummary(options, callback)
   
-Retrieves the InventoryValuationSummary Report from Quickbooks
+Retrieves the InventoryValuationSummary Report from QuickBooks
  
 __Arguments__
 
@@ -1711,7 +1711,7 @@ __Arguments__
 <a name="reportCustomerSales" />
 #### reportCustomerSales(options, callback)
   
-Retrieves the CustomerSales Report from Quickbooks
+Retrieves the CustomerSales Report from QuickBooks
  
 __Arguments__
 
@@ -1722,7 +1722,7 @@ __Arguments__
 <a name="reportItemSales" />
 #### reportItemSales(options, callback)
   
-Retrieves the ItemSales Report from Quickbooks
+Retrieves the ItemSales Report from QuickBooks
  
 __Arguments__
 
@@ -1733,7 +1733,7 @@ __Arguments__
 <a name="reportCustomerIncome" />
 #### reportCustomerIncome(options, callback)
   
-Retrieves the CustomerIncome Report from Quickbooks
+Retrieves the CustomerIncome Report from QuickBooks
  
 __Arguments__
 
@@ -1744,7 +1744,7 @@ __Arguments__
 <a name="reportCustomerBalance" />
 #### reportCustomerBalance(options, callback)
   
-Retrieves the CustomerBalance Report from Quickbooks
+Retrieves the CustomerBalance Report from QuickBooks
  
 __Arguments__
 
@@ -1755,7 +1755,7 @@ __Arguments__
 <a name="reportCustomerBalanceDetail" />
 #### reportCustomerBalanceDetail(options, callback)
   
-Retrieves the CustomerBalanceDetail Report from Quickbooks
+Retrieves the CustomerBalanceDetail Report from QuickBooks
  
 __Arguments__
 
@@ -1766,7 +1766,7 @@ __Arguments__
 <a name="reportAgedReceivables" />
 #### reportAgedReceivables(options, callback)
   
-Retrieves the AgedReceivables Report from Quickbooks
+Retrieves the AgedReceivables Report from QuickBooks
  
 __Arguments__
 
@@ -1777,7 +1777,7 @@ __Arguments__
 <a name="reportAgedReceivableDetail" />
 #### reportAgedReceivableDetail(options, callback)
   
-Retrieves the AgedReceivableDetail Report from Quickbooks
+Retrieves the AgedReceivableDetail Report from QuickBooks
  
 __Arguments__
 
@@ -1788,7 +1788,7 @@ __Arguments__
 <a name="reportVendorBalance" />
 #### reportVendorBalance(options, callback)
   
-Retrieves the VendorBalance Report from Quickbooks
+Retrieves the VendorBalance Report from QuickBooks
  
 __Arguments__
 
@@ -1799,7 +1799,7 @@ __Arguments__
 <a name="reportVendorBalanceDetail" />
 #### reportVendorBalanceDetail(options, callback)
   
-Retrieves the VendorBalanceDetail Report from Quickbooks
+Retrieves the VendorBalanceDetail Report from QuickBooks
  
 __Arguments__
 
@@ -1810,7 +1810,7 @@ __Arguments__
 <a name="reportAgedPayables" />
 #### reportAgedPayables(options, callback)
   
-Retrieves the AgedPayables Report from Quickbooks
+Retrieves the AgedPayables Report from QuickBooks
  
 __Arguments__
 
@@ -1821,7 +1821,7 @@ __Arguments__
 <a name="reportAgedPayableDetail" />
 #### reportAgedPayableDetail(options, callback)
   
-Retrieves the AgedPayableDetail Report from Quickbooks
+Retrieves the AgedPayableDetail Report from QuickBooks
  
 __Arguments__
 
@@ -1832,7 +1832,7 @@ __Arguments__
 <a name="reportVendorExpenses" />
 #### reportVendorExpenses(options, callback)
   
-Retrieves the VendorExpenses Report from Quickbooks
+Retrieves the VendorExpenses Report from QuickBooks
  
 __Arguments__
 
@@ -1843,7 +1843,7 @@ __Arguments__
 <a name="reportGeneralLedgerDetail" />
 #### reportGeneralLedgerDetail(options, callback)
   
-Retrieves the GeneralLedgerDetail Report from Quickbooks
+Retrieves the GeneralLedgerDetail Report from QuickBooks
  
 __Arguments__
 
@@ -1854,7 +1854,7 @@ __Arguments__
 <a name="reportDepartmentSales" />
 #### reportDepartmentSales(options, callback)
   
-Retrieves the DepartmentSales Report from Quickbooks
+Retrieves the DepartmentSales Report from QuickBooks
  
 __Arguments__
 
@@ -1865,7 +1865,7 @@ __Arguments__
 <a name="reportClassSales" />
 #### reportClassSales(options, callback)
   
-Retrieves the ClassSales Report from Quickbooks
+Retrieves the ClassSales Report from QuickBooks
  
 __Arguments__
 

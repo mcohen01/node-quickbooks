@@ -5,7 +5,7 @@ var http       = require('http'),
     util       = require('util'),
     express    = require('express'),
     app        = express(),
-    Quickbooks = require('node-quickbooks')
+    QuickBooks = require('node-quickbooks')
 
 
 // Generic Express config
@@ -33,7 +33,7 @@ app.get('/start', function(req, res) {
 
 app.get('/requestToken', function(req, res) {
   var postBody = {
-    url: Quickbooks.REQUEST_TOKEN_URL,
+    url: QuickBooks.REQUEST_TOKEN_URL,
     oauth: {
       callback:        'http://localhost:' + port + '/callback/',
       consumer_key:    consumerKey,
@@ -44,13 +44,13 @@ app.get('/requestToken', function(req, res) {
     var requestToken = qs.parse(data)
     req.session.oauth_token_secret = requestToken.oauth_token_secret
     console.log(requestToken)
-    res.redirect(Quickbooks.APP_CENTER_URL + requestToken.oauth_token)
+    res.redirect(QuickBooks.APP_CENTER_URL + requestToken.oauth_token)
   })
 })
 
 app.get('/callback', function(req, res) {
   var postBody = {
-    url: Quickbooks.ACCESS_TOKEN_URL,
+    url: QuickBooks.ACCESS_TOKEN_URL,
     oauth: {
       consumer_key:    consumerKey,
       consumer_secret: consumerSecret,
@@ -66,7 +66,7 @@ app.get('/callback', function(req, res) {
     console.log(postBody.oauth.realmId)
 
     // save the access token somewhere on behalf of the logged in user
-    qbo = new Quickbooks(consumerKey,
+    qbo = new QuickBooks(consumerKey,
                          consumerSecret,
                          accessToken.oauth_token,
                          accessToken.oauth_token_secret,

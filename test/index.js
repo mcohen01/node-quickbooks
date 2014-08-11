@@ -4,8 +4,8 @@ var fs         = require('fs'),
     async      = require('async'),
     _          = require('underscore'),
     config     = require('../config'),
-    Quickbooks = require('../index'),
-    qbo        = new Quickbooks(config);
+    QuickBooks = require('../index'),
+    qbo        = new QuickBooks(config);
 
 
 

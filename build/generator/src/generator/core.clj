@@ -13,62 +13,62 @@
 
 (defn create [e]
   (str "/**
- * Creates the " (upper e) " in Quickbooks 
+ * Creates the " (upper e) " in QuickBooks
  *
- * @param  {object} " e " - The unsaved " e ", to be persisted in Quickbooks
+ * @param  {object} " e " - The unsaved " e ", to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent " (upper e) "
  */\n"
- "Quickbooks.prototype.create" (upper e) " = function(" (.trim e) ", callback) {
+ "QuickBooks.prototype.create" (upper e) " = function(" (.trim e) ", callback) {
   this.create('" (.trim e) "', " (.trim e) ", callback)\n}\n\n"))
 
 (defn retrieve [e]
   (str "/**
- * Retrieves the " (upper e) " from Quickbooks
+ * Retrieves the " (upper e) " from QuickBooks
  *
  * @param  {string} Id - The Id of persistent " (upper e) "
  * @param  {function} callback - Callback function which is called with any error and the persistent " (upper e) "
  */\n"
- "Quickbooks.prototype.get" (upper e) " = function(id, callback) {
+ "QuickBooks.prototype.get" (upper e) " = function(id, callback) {
   this.read('" (.trim e) "', id, callback)\n}\n\n"))
 
 (defn update [e]
   (str "/**
- * Updates Quickbooks version of " (upper e) "
+ * Updates QuickBooks version of " (upper e) "
  *
  * @param  {object} " e " - The persistent " (upper e) ", including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent " (upper e) "
  */\n"
- "Quickbooks.prototype.update" (upper e) " = function(" (.trim e) ", callback) {
+ "QuickBooks.prototype.update" (upper e) " = function(" (.trim e) ", callback) {
   this.update('" (.trim e) "', " (.trim e) ", callback)\n}\n\n"))
 
 (defn delete [e]
   (str "/**
- * Deletes the " (upper e) " from Quickbooks
+ * Deletes the " (upper e) " from QuickBooks
  *
  * @param  {object} idOrEntity - The persistent " (upper e) " to be deleted, or the Id of the " (upper e) ", in which case an extra GET request will be issued to first retrieve the " (upper e) " 
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent " (upper e) "
  */\n"
- "Quickbooks.prototype.delete" (upper e) " = function(idOrEntity, callback) {
+ "QuickBooks.prototype.delete" (upper e) " = function(idOrEntity, callback) {
   this.delete('" (.trim e) "', idOrEntity, callback)\n}\n\n"))
 
 (defn query [e]
   (str "/**
- * Finds all " (upper e) "s in Quickbooks, optionally matching the specified criteria
+ * Finds all " (upper e) "s in QuickBooks, optionally matching the specified criteria
  *
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form \"where key = 'value'\"
  * @param  {function} callback - Callback function which is called with any error and the list of " (upper e) "
  */\n"
- "Quickbooks.prototype.find" (pluralize (upper e)) " = function(criteria, callback) {
+ "QuickBooks.prototype.find" (pluralize (upper e)) " = function(criteria, callback) {
   this.query('" (.trim e) "', criteria, callback)\n}\n\n"))
 
 (defn report [e]
   (str "/**
- * Retrieves the " (upper e) " Report from Quickbooks
+ * Retrieves the " (upper e) " Report from QuickBooks
  *
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the " (upper e) " Report
  */\n"
- "Quickbooks.prototype.report" (upper e) " = function(options, callback) {
+ "QuickBooks.prototype.report" (upper e) " = function(options, callback) {
   this.report('" (.trim e) "', options, callback)\n}\n\n"))
 
 
@@ -77,11 +77,11 @@
   (str "<a name=\"create" (upper e) "\" />
 #### create" (upper e) "(object, callback)
   
-Creates the " (upper e) " in Quickbooks 
+Creates the " (upper e) " in QuickBooks
  
 __Arguments__
 
-* `object` - The unsaved " e ", to be persisted in Quickbooks
+* `object` - The unsaved " e ", to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent " (upper e) "\n\n\n"))
 
 
@@ -90,7 +90,7 @@ __Arguments__
   (str "<a name=\"get" (upper e) "\" />
 #### get" (upper e) "(id, callback)
   
-Retrieves the " (upper e) " from Quickbooks
+Retrieves the " (upper e) " from QuickBooks
  
 __Arguments__
 
@@ -103,7 +103,7 @@ __Arguments__
   (str "<a name=\"update" (upper e) "\" />
 #### update" (upper e) "(object, callback)
   
-Updates Quickbooks version of " (upper e) "
+Updates QuickBooks version of " (upper e) "
  
 __Arguments__
 
@@ -116,7 +116,7 @@ __Arguments__
   (str "<a name=\"delete" (upper e) "\" />
 #### delete" (upper e) "(idOrEntity, callback)
   
-Deletes the " (upper e) " from Quickbooks
+Deletes the " (upper e) " from QuickBooks
  
 __Arguments__
 
@@ -129,7 +129,7 @@ __Arguments__
   (str "<a name=\"find" (pluralize (upper e)) "\" />
 #### find" (pluralize (upper e)) "(criteria, callback)
   
-Finds all " (upper e) "s in Quickbooks, optionally matching the specified criteria
+Finds all " (upper e) "s in QuickBooks, optionally matching the specified criteria
  
 __Arguments__
 
@@ -142,7 +142,7 @@ __Arguments__
   (str "<a name=\"report" (upper e) "\" />
 #### report" (upper e) "(options, callback)
   
-Retrieves the " (upper e) " Report from Quickbooks
+Retrieves the " (upper e) " Report from QuickBooks
  
 __Arguments__
 
