@@ -30,24 +30,14 @@ QuickBooks.V3_ENDPOINT_BASE_URL = 'https://quickbooks.api.intuit.com/v3/company/
  * @constructor
  */
 function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, debug) {
-  if (_.isObject(consumerKey)) {
-    var config = consumerKey
-    this.consumerKey    = config.consumerKey
-    this.consumerSecret = config.consumerSecret
-    this.token          = config.token
-    this.tokenSecret    = config.tokenSecret
-    this.realmId        = config.realmId
-    this.debug          = config.debug
-  } else {
-    this.consumerKey    = consumerKey
-    this.consumerSecret = consumerSecret
-    this.token          = token
-    this.tokenSecret    = tokenSecret
-    this.realmId        = realmId
-    this.debug          = debug
-  }
+  var prefix          = _.isObject(consumerKey) ? 'consumerKey.' : ''
+  this.consumerKey    = eval(prefix + 'consumerKey')
+  this.consumerSecret = eval(prefix + 'consumerSecret')
+  this.token          = eval(prefix + 'token')
+  this.tokenSecret    = eval(prefix + 'tokenSecret')
+  this.realmId        = eval(prefix + 'realmId')
+  this.debug          = eval(prefix + 'debug')
 }
-
 
 QuickBooks.prototype.oauth = function() {
   return {
@@ -115,7 +105,7 @@ QuickBooks.prototype.unwrap = function(callback, entityName) {
       if (callback) callback(err)
     } else {
       var name = that.capitalize(entityName)
-      if (callback) callback(err, data[name] ? data[name] : data)
+      if (callback) callback(err, data[name] || data)
     }
   }
 }

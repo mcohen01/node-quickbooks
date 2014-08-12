@@ -8,7 +8,6 @@ var fs         = require('fs'),
     qbo        = new QuickBooks(config);
 
 
-
 describe('Attachable CRUDQ', function() {
 
   this.timeout(15000);
@@ -24,13 +23,6 @@ describe('Attachable CRUDQ', function() {
         cb()
       })
     }, function(cb) {
-      qbo.updateCustomer({
-        Id: 42,
-        SyncToken: 1,
-        sparse: true,
-        PrimaryEmailAddr: {Address: 'customer@example.com'}
-      })
-
       qbo.getAttachable(_attach.Id, function(err, attachable) {
         expect(err).toBe(null)
         expect(attachable.Fault).toBe(undefined)
