@@ -8,14 +8,18 @@
 
 var request = require('request'),
     util    = require('util'),
+    moment  = require('moment'),
     _       = require('underscore')
 
 module.exports = QuickBooks
 
-QuickBooks.REQUEST_TOKEN_URL    = 'https://oauth.intuit.com/oauth/v1/get_request_token'
-QuickBooks.ACCESS_TOKEN_URL     = 'https://oauth.intuit.com/oauth/v1/get_access_token'
-QuickBooks.APP_CENTER_URL       = 'https://appcenter.intuit.com/Connect/Begin?oauth_token='
-QuickBooks.V3_ENDPOINT_BASE_URL = 'https://quickbooks.api.intuit.com/v3/company/'
+QuickBooks.REQUEST_TOKEN_URL        = 'https://oauth.intuit.com/oauth/v1/get_request_token'
+QuickBooks.ACCESS_TOKEN_URL         = 'https://oauth.intuit.com/oauth/v1/get_access_token'
+QuickBooks.APP_CENTER_URL           = 'https://appcenter.intuit.com/Connect/Begin?oauth_token='
+QuickBooks.V3_ENDPOINT_BASE_URL     = 'https://quickbooks.api.intuit.com/v3/company/'
+QuickBooks.PAYMENTS_API_V2_BASE_URL = 'https://devinternal.intuit.com:443/apip/proxy/https/transaction-api-qal.payments.intuit.net/v2/'
+
+//QuickBooks.V3_ENDPOINT_BASE_URL = 'https://qbo.intuit.com/qbo1/resource/sales-receipt-document/v2/'
 
 /**
  * Node.js client encapsulating access to the QuickBooks V3 Rest API. An instance
@@ -55,22 +59,20 @@ QuickBooks.prototype.isNumeric = function(n) {
 QuickBooks.prototype.criteriaToString = function(criteria) {
   if (_.isString(criteria)) {
     return criteria
-  } else if (_.isObject(criteria)) {
-    if (_.isObject(criteria)) {
-      var s = ' where '
-      for (var p in criteria) {
-        if (s != ' where ') {
-          throw new Error('Only one condition allowed in where clause')
-        }
-        s += p + ' = '
-        if (this.isNumeric(criteria[p])) {
-          s += criteria[p]
-        } else {
-          s += "'" + criteria[p] + "'"
-        }
+  } else {
+    var s = ' where '
+    for (var p in criteria) {
+      if (s != ' where ') {
+        throw new Error('Only one condition allowed in where clause')
       }
-      return s
+      s += p + ' = '
+      if (this.isNumeric(criteria[p])) {
+        s += criteria[p]
+      } else {
+        s += "'" + criteria[p] + "'"
+      }
     }
+    return s
   }
 }
 
@@ -111,18 +113,22 @@ QuickBooks.prototype.unwrap = function(callback, entityName) {
 }
 
 
-QuickBooks.prototype.request = function(verb, url, entity, callback) {
+QuickBooks.prototype.request = function(verb, options, entity, callback) {
   var that = this,
-      url = QuickBooks.V3_ENDPOINT_BASE_URL + this.realmId + url,
-      options = {
-        url:   url,
-        oauth: that.oauth(),
-        json:  true
+      url = options.url.indexOf('/charge') === 0 ?
+              QuickBooks.PAYMENTS_API_V2_BASE_URL :
+              QuickBooks.V3_ENDPOINT_BASE_URL + this.realmId + options.url,
+      opts = {
+        url:     url,
+        qs:      options.qs || {},
+        headers: options.headers || {},
+        json:    true,
+        oauth:   this.oauth()
       }
   if (entity !== null) {
-    options.body = entity
+    opts.body = entity
   }
-  request[verb].call(this, options, function (err, res, body) {
+  request[verb].call(this, opts, function (err, res, body) {
     if ('production' != process.env.NODE_ENV && that.debug) {
       var msg = 'invoking endpoint: ' + url
       if (entity !== null) {
@@ -143,14 +149,45 @@ QuickBooks.prototype.request = function(verb, url, entity, callback) {
   })
 }
 
+/**
+ * Batch operation to enable an application to perform multiple operations in a single request.
+ * The following batch items are supported:
+     create
+     update
+     delete
+     query
+ * The maximum number of batch items in a single request is 25.
+ *
+ * @param  {object} items - JavaScript array of batch items
+ * @param  {function} callback - Callback function which is called with any error and list of BatchItemResponses
+ */
+QuickBooks.prototype.batch = function(items, callback) {
+  this.request('post', {url: '/batch'}, {BatchItemRequest: items}, callback)
+}
+
+/**
+ * The change data capture (CDC) operation returns a list of entities that have changed since a specified time.
+ *
+ * @param  {object} entities - Comma separated list or JavaScript array of entities to search for changes
+ * @param  {object} since - JavaScript Date or string representation of the form '2012-07-20T22:25:51-07:00' to look back for changes until
+ * @param  {function} callback - Callback function which is called with any error and list of changes
+ */
+QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
+  var url = '/cdc?entities='
+  url += typeof entities === 'string' ? entities : entities.join(',')
+  url += '&changedSince='
+  url += typeof since === 'string' ? since : moment(since).format()
+  this.request('get', {url: url}, null, callback)
+}
+
 QuickBooks.prototype.create = function(entityName, entity, callback) {
   var url = '/' + entityName.toLowerCase()
-  this.request('post', url, entity, this.unwrap(callback, entityName))
+  this.request('post', {url: url}, entity, this.unwrap(callback, entityName))
 }
 
 QuickBooks.prototype.read = function(entityName, id, callback) {
   var url = '/' + entityName.toLowerCase() + '/' + id, that = this
-  this.request('get', url, null, this.unwrap(callback, entityName))
+  this.request('get', {url: url}, null, this.unwrap(callback, entityName))
 }
 
 QuickBooks.prototype.update = function(entityName, entity, callback) {
@@ -159,20 +196,20 @@ QuickBooks.prototype.update = function(entityName, entity, callback) {
                     util.inspect(entity, {showHidden: false, depth: null}))
   }
   var url = '/' + entityName.toLowerCase() + '?operation=update'
-  this.request('post', url, entity, this.unwrap(callback, entityName))
+  this.request('post', {url: url}, entity, this.unwrap(callback, entityName))
 }
 
 QuickBooks.prototype.delete = function(entityName, idOrEntity, callback) {
   var url = '/' + entityName.toLowerCase() + '?operation=delete', that = this
   callback = callback || function(e, r) {}
   if (_.isObject(idOrEntity)) {
-    this.request('post', url, idOrEntity, callback)
+    this.request('post', {url: url}, idOrEntity, callback)
   } else {
     this.read(entityName, idOrEntity, function(err, entity) {
       if (err) {
         callback(err)
       } else {
-        that.request('post', url, entity, callback)
+        that.request('post', {url: url}, entity, callback)
       }
     })
   }
@@ -185,7 +222,7 @@ QuickBooks.prototype.query = function(entity, criteria, callback) {
     url = url.replace(/'/g, '%27').replace(/=/, '%3D')
   }
   url = url.replace('@@', '=')
-  this.request('get', url, null, typeof criteria === 'function' ? criteria : callback)
+  this.request('get', {url: url}, null, typeof criteria === 'function' ? criteria : callback)
 }
 
 QuickBooks.prototype.report = function(reportType, criteria, callback) {
@@ -193,7 +230,7 @@ QuickBooks.prototype.report = function(reportType, criteria, callback) {
   if (criteria && typeof criteria !== 'function') {
     url += this.reportCriteria(criteria) || ''
   }
-  this.request('get', url, null, typeof criteria === 'function' ? criteria : callback)
+  this.request('get', {url: url}, null, typeof criteria === 'function' ? criteria : callback)
 }
 
 

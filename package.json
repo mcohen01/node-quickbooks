@@ -14,9 +14,10 @@
   "author": "Michael Cohen",
   "license": "ISC",
   "dependencies": {
+    "moment": "^2.8.2",
+    "querystring": "0.2.0",
     "request": "2.39.0",
     "underscore": "1.6.0",
-    "querystring": "0.2.0",
     "util": "0.10.3"
   },
   "devDependencies": {
