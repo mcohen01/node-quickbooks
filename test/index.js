@@ -135,7 +135,7 @@ describe('Reports', function() {
 
 describe('SalesReceipt', function() {
 
-  this.timeout(5000);
+  this.timeout(30000);
 
   it('should create a new SalesReceipt', function (done) {
     qbo.createSalesReceipt({
@@ -179,6 +179,8 @@ describe('SalesReceipt', function() {
             qbo.deleteSalesReceipt(e.Id, cb)
           })
         })
+      } else {
+        done()
       }
       async.series(deletes, function(e, r) { done() })
     })
