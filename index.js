@@ -7,6 +7,7 @@
  */
 
 var request = require('request'),
+    uuid    = require('node-uuid'),
     debug   = require('request-debug'),
     util    = require('util'),
     moment  = require('moment'),
@@ -18,9 +19,7 @@ QuickBooks.REQUEST_TOKEN_URL        = 'https://oauth.intuit.com/oauth/v1/get_req
 QuickBooks.ACCESS_TOKEN_URL         = 'https://oauth.intuit.com/oauth/v1/get_access_token'
 QuickBooks.APP_CENTER_URL           = 'https://appcenter.intuit.com/Connect/Begin?oauth_token='
 QuickBooks.V3_ENDPOINT_BASE_URL     = 'https://quickbooks.api.intuit.com/v3/company/'
-QuickBooks.PAYMENTS_API_V2_BASE_URL = 'https://devinternal.intuit.com:443/apip/proxy/https/transaction-api-qal.payments.intuit.net/v2'
-
-//QuickBooks.V3_ENDPOINT_BASE_URL = 'https://qbo.intuit.com/qbo1/resource/sales-receipt-document/v2/'
+QuickBooks.PAYMENTS_API_V2_BASE_URL = 'https://transaction-qa.payments.intuit.net/v2'
 
 /**
  * Node.js client encapsulating access to the QuickBooks V3 Rest API. An instance
@@ -102,7 +101,7 @@ QuickBooks.prototype.charge = function(charge, callback) {
  */
 QuickBooks.prototype.getCharge = function(chargeId, callback) {
   module.request(this, 'get', {
-    url: '/charges/' + id,
+    url: '/charges/' + chargeId,
     headers: {
       company_id: this.realmId
     }
@@ -156,6 +155,22 @@ QuickBooks.prototype.refund = function(chargeId, refund, callback) {
       company_id: this.realmId
     }
   }, refund, callback)
+}
+
+/**
+ * Retrieves the Refund for the given refund id
+ *
+ * @param {string} chargeId - id of previously created charge
+ * @param {string} refundId - id of previously created Refund
+ * @param callback - Callback function which is called with any error or the Refund
+ */
+QuickBooks.prototype.getRefund = function(chargeId, refundId, callback) {
+  module.request(this, 'get', {
+    url: '/charges/' + chargeId + '/refunds/' + refundId,
+    headers: {
+      company_id: this.realmId
+    }
+  }, null, callback)
 }
 
 /**
@@ -1650,6 +1665,11 @@ module.request = function(context, verb, options, entity, callback) {
         oauth:   module.oauth(context),
         json:    true
       }
+  if (options.url.indexOf('/charge') === 0) {
+    opts.headers.Authorization = require('./config').chargeAuth
+    opts.headers.request_id = uuid.v1()
+    delete opts.oauth
+  }
   if (entity !== null) {
     opts.body = entity
   }
