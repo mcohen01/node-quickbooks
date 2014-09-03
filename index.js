@@ -7,6 +7,7 @@
  */
 
 var request = require('request'),
+    debug   = require('request-debug'),
     util    = require('util'),
     moment  = require('moment'),
     _       = require('underscore')
@@ -17,7 +18,7 @@ QuickBooks.REQUEST_TOKEN_URL        = 'https://oauth.intuit.com/oauth/v1/get_req
 QuickBooks.ACCESS_TOKEN_URL         = 'https://oauth.intuit.com/oauth/v1/get_access_token'
 QuickBooks.APP_CENTER_URL           = 'https://appcenter.intuit.com/Connect/Begin?oauth_token='
 QuickBooks.V3_ENDPOINT_BASE_URL     = 'https://quickbooks.api.intuit.com/v3/company/'
-QuickBooks.PAYMENTS_API_V2_BASE_URL = 'https://devinternal.intuit.com:443/apip/proxy/https/transaction-api-qal.payments.intuit.net/v2/'
+QuickBooks.PAYMENTS_API_V2_BASE_URL = 'https://devinternal.intuit.com:443/apip/proxy/https/transaction-api-qal.payments.intuit.net/v2'
 
 //QuickBooks.V3_ENDPOINT_BASE_URL = 'https://qbo.intuit.com/qbo1/resource/sales-receipt-document/v2/'
 
@@ -116,29 +117,25 @@ QuickBooks.prototype.unwrap = function(callback, entityName) {
 QuickBooks.prototype.request = function(verb, options, entity, callback) {
   var that = this,
       url = options.url.indexOf('/charge') === 0 ?
-              QuickBooks.PAYMENTS_API_V2_BASE_URL :
+              QuickBooks.PAYMENTS_API_V2_BASE_URL + options.url:
               QuickBooks.V3_ENDPOINT_BASE_URL + this.realmId + options.url,
       opts = {
         url:     url,
         qs:      options.qs || {},
         headers: options.headers || {},
-        json:    true,
-        oauth:   this.oauth()
+        oauth:   this.oauth(),
+        json:    true
       }
   if (entity !== null) {
     opts.body = entity
   }
+  if ('production' != process.env.NODE_ENV && that.debug) {
+    debug(request)
+  }
   request[verb].call(this, opts, function (err, res, body) {
     if ('production' != process.env.NODE_ENV && that.debug) {
-      var msg = 'invoking endpoint: ' + url
-      if (entity !== null) {
-        msg = msg + ' with: '
-        console.log(msg)
-        console.log(entity)
-      } else {
-        console.log(msg)
-      }
-      console.log(res.headers)
+      console.log('invoking endpoint: ' + url)
+      console.log(entity || '')
       console.log(util.inspect(body, {showHidden: false, depth: null}));
     }
     if (callback) {
@@ -180,6 +177,93 @@ QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
   this.request('get', {url: url}, null, callback)
 }
 
+
+// **********************  Charge Api **********************
+
+/**
+ * Process a credit card charge using card details or token.
+ * Can capture funds or just authorize.
+ *
+ * @param {object} charge - details, amount, currency etc. of charge to be processed
+ * @param callback - Callback function which is called with any error or the saved Charge
+ */
+QuickBooks.prototype.charge = function(charge, callback) {
+  this.request('post', {
+    url: '/charges',
+    headers: {
+      company_id: this.realmId
+    }
+  }, charge, callback)
+}
+
+/**
+ * Get details of charge.
+ *
+ * @param {string} chargeId - of previously created charge
+ * @param callback - Callback function which is called with any error or the Charge
+ */
+QuickBooks.prototype.getCharge = function(chargeId, callback) {
+  this.request('get', {
+    url: '/charges/' + id,
+    headers: {
+      company_id: this.realmId
+    }
+  }, null, callback)
+}
+
+/**
+ * Get all charges for a particular company.
+ *
+ * @param {number} limit - maximum number of charges to get
+ * @param {number} offset - offset of first charge returned
+ * @param callback - Callback function which is called with any error or the list of Charges
+ */
+QuickBooks.prototype.getCharges = function(limit, offset, callback) {
+  var headers = {company_id: this.realmId}
+  if (limit && typeof limit !== 'function') headers.limit = limit
+  if (offset) headers.offset = offset
+  this.request('get', {
+    url: '/charges',
+    headers: headers
+  }, null, typeof limit === 'function' ? limit : callback)
+}
+
+/**
+ * Allows you to capture funds for an existing charge that was intended to be captured at a later time.
+ *
+ * @param {string} chargeId - of previously created charge
+ * @param {object} charge - details, amount, currency to capture
+ * @param callback - Callback function which is called with any error or the capture description
+ */
+QuickBooks.prototype.capture = function(chargeId, capture, callback) {
+  this.request('post', {
+    url: '/charges/' + chargeId + '/capture',
+    headers: {
+      company_id: this.realmId
+    }
+  }, capture, callback)
+}
+
+/**
+ * Allows you to refund an existing charge. Full and partial refund are supported.
+ *
+ * @param {string} chargeId - of previously created charge
+ * @param {object} refund - details, amount, currency to refund
+ * @param callback - Callback function which is called with any error or the refund description
+ */
+QuickBooks.prototype.refund = function(chargeId, refund, callback) {
+  this.request('post', {
+    url: '/charges/' + chargeId + '/refunds',
+    headers: {
+      company_id: this.realmId
+    }
+  }, refund, callback)
+}
+
+
+
+// **********************  CRUD Api **********************
+
 QuickBooks.prototype.create = function(entityName, entity, callback) {
   var url = '/' + entityName.toLowerCase()
   this.request('post', {url: url}, entity, this.unwrap(callback, entityName))
@@ -215,6 +299,9 @@ QuickBooks.prototype.delete = function(entityName, idOrEntity, callback) {
   }
 }
 
+
+// **********************  Query Api **********************
+
 QuickBooks.prototype.query = function(entity, criteria, callback) {
   var url = '/query?query@@select * from ' + entity
   if (criteria && typeof criteria !== 'function') {
@@ -224,6 +311,9 @@ QuickBooks.prototype.query = function(entity, criteria, callback) {
   url = url.replace('@@', '=')
   this.request('get', {url: url}, null, typeof criteria === 'function' ? criteria : callback)
 }
+
+
+// **********************  Report Api **********************
 
 QuickBooks.prototype.report = function(reportType, criteria, callback) {
   var url = '/reports/' + reportType

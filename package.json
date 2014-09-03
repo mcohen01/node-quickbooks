@@ -17,6 +17,7 @@
     "moment": "^2.8.2",
     "querystring": "0.2.0",
     "request": "2.39.0",
+    "request-debug": "0.0.1",
     "underscore": "1.6.0",
     "util": "0.10.3"
   },
