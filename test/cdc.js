@@ -1,7 +1,8 @@
 var expect     = require('expect'),
     async      = require('async'),
-    config     = require('../../config'),
-    QuickBooks = require('../../index'),
+    moment     = require('moment'),
+    config     = require('../config'),
+    QuickBooks = require('../index'),
     qbo        = new QuickBooks(config);
 
 
