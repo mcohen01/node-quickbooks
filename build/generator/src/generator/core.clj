@@ -19,7 +19,7 @@
  * @param  {function} callback - Callback function which is called with any error and the persistent " (upper e) "
  */\n"
  "QuickBooks.prototype.create" (upper e) " = function(" (.trim e) ", callback) {
-  this.create('" (.trim e) "', " (.trim e) ", callback)\n}\n\n"))
+  module.create(this, '" (.trim e) "', " (.trim e) ", callback)\n}\n\n"))
 
 (defn retrieve [e]
   (str "/**
@@ -29,7 +29,7 @@
  * @param  {function} callback - Callback function which is called with any error and the persistent " (upper e) "
  */\n"
  "QuickBooks.prototype.get" (upper e) " = function(id, callback) {
-  this.read('" (.trim e) "', id, callback)\n}\n\n"))
+  module.read(this, '" (.trim e) "', id, callback)\n}\n\n"))
 
 (defn update [e]
   (str "/**
@@ -39,7 +39,7 @@
  * @param  {function} callback - Callback function which is called with any error and the persistent " (upper e) "
  */\n"
  "QuickBooks.prototype.update" (upper e) " = function(" (.trim e) ", callback) {
-  this.update('" (.trim e) "', " (.trim e) ", callback)\n}\n\n"))
+  module.update(this, '" (.trim e) "', " (.trim e) ", callback)\n}\n\n"))
 
 (defn delete [e]
   (str "/**
@@ -49,7 +49,7 @@
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent " (upper e) "
  */\n"
  "QuickBooks.prototype.delete" (upper e) " = function(idOrEntity, callback) {
-  this.delete('" (.trim e) "', idOrEntity, callback)\n}\n\n"))
+  module.delete(this, '" (.trim e) "', idOrEntity, callback)\n}\n\n"))
 
 (defn query [e]
   (str "/**
@@ -59,7 +59,7 @@
  * @param  {function} callback - Callback function which is called with any error and the list of " (upper e) "
  */\n"
  "QuickBooks.prototype.find" (pluralize (upper e)) " = function(criteria, callback) {
-  this.query('" (.trim e) "', criteria, callback)\n}\n\n"))
+  module.query(this, '" (.trim e) "', criteria, callback)\n}\n\n"))
 
 (defn report [e]
   (str "/**
@@ -69,7 +69,7 @@
  * @param  {function} callback - Callback function which is called with any error and the " (upper e) " Report
  */\n"
  "QuickBooks.prototype.report" (upper e) " = function(options, callback) {
-  this.report('" (.trim e) "', options, callback)\n}\n\n"))
+  module.report(this, '" (.trim e) "', options, callback)\n}\n\n"))
 
 
 (defn gh-link-create [e] (str "* [`create" (upper e) "`](#create" (upper e) ")\n" ))
@@ -154,7 +154,7 @@ __Arguments__
   (->> (reduce
          (fn [m e]
            (let [nmsp (-> "generator.core" symbol find-ns)
-                 func (->> type name (str "gh-") symbol (ns-resolve nmsp))
+                 func (->> type name (str "") symbol (ns-resolve nmsp))
                  funk (->> type name (str "gh-link-") symbol (ns-resolve nmsp))]
              (if-not (or (empty? e) (.startsWith e "#"))
                (do (.append (first m) (func e))
