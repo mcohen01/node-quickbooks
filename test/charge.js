@@ -12,6 +12,8 @@ describe('Charge Api', function() {
   it('should create a Charge, get a charge, capture, and refund', function(done) {
 
     var charge = {
+      capture: false,
+      currency: 'USD',
       amount: '42.21',
       card: {
         exp_year: '2016',
@@ -26,14 +28,14 @@ describe('Charge Api', function() {
         name: 'Brad Smith',
         cvc: '123',
         number: '4111111111111111'
-      },
-      currency: 'USD'
+      }
     }
 
-    var chargeId
+    var chargeId, refundId
     async.series([function(cb) {
       qbo.charge(charge, function(err, charged) {
         expect(err).toBe(null)
+        expect(charged.errors).toBe(undefined)
         expect(charged.amount).toBe(42.21)
         expect(charged.card.number).toBe('xxxxxxxxxxxx1111')
         expect(charged.card.name).toBe('Brad Smith')
@@ -44,7 +46,8 @@ describe('Charge Api', function() {
     }, function(cb) {
       qbo.getCharge(chargeId, function(err, charge) {
         expect(err).toBe(null)
-        expect(charge.status).toBe('captured')
+        expect(charge.errors).toBe(undefined)
+        expect(charge.status).toBe('authorized')
         expect(charge.amount).toBe(42.21)
         expect(charge.card.number).toBe('xxxxxxxxxxxx1111')
         expect(charge.card.name).toBe('Brad Smith')
@@ -52,44 +55,41 @@ describe('Charge Api', function() {
         cb()
       })
     }, function(cb) {
-      qbo.getCharges(function(err, charges) {
+      qbo.capture(chargeId, {
+        amount: 42.21
+      }, function(err, capture) {
         expect(err).toBe(null)
-        expect(charges.length).toBeGreaterThan(0)
-        charges.forEach(function(charge) {
-          expect(charge.created).toNotBe(undefined)
-          expect(charge.status).toBe('captured')
-          expect(charge.amount).toBeGreaterThan(0)
-          expect(charge.currency).toBe('USD')
-          expect(charge.card).toBeA(Object)
-          expect(charge.card.address).toBeA(Object)
-          expect(charge.card.number).toBe('xxxxxxxxxxxx1111')
-          expect(charge.card.name).toMatch(/[a-z\s]*/i)
-          expect(charge.authcode).toMatch(/[\d]*/)
-        })
+        expect(capture.errors).toBe(undefined)
+        expect(capture.amount).toBe(42.21)
         cb()
       })
     }, function(cb) {
-      qbo.capture(chargeId, {
-        amount: 42.21,
-        description: "capturing",
-        context: {
-          batch_id: "1234",
-          tax: 0,
-          recurring: false,
-          sender_account_id: "",
-          device_info: {
-            id: "98765",
-            type: "",
-            longitude: "",
-            latitude: "",
-            phone_number: "",
-            mac_address: "",
-            ip_address: ""
-          }
-        }
-      }, function(err, capture) {
+      charge.capture = true
+      qbo.charge(charge, function(err, charged) {
         expect(err).toBe(null)
-        util.inspect(capture, {showHidden: false, depth: null})
+        expect(charged.errors).toBe(undefined)
+        expect(charged.amount).toBe(42.21)
+        expect(charged.card.number).toBe('xxxxxxxxxxxx1111')
+        expect(charged.card.name).toBe('Brad Smith')
+        expect(charged.card.address.street_address).toBe('131 Fairy Lane')
+        chargeId = charged.id
+        cb()
+      })
+    },function(cb) {
+      qbo.refund(chargeId, {amount: 42.21}, function(err, refund) {
+        expect(err).toBe(null)
+        expect(refund.errors).toBe(undefined)
+        expect(refund.amount).toBe(42.21)
+        refundId = refund.id
+        cb()
+      })
+    },function(cb) {
+      qbo.getRefund(chargeId, refundId, function(err, refund) {
+        expect(err).toBe(null)
+        expect(refund.errors).toBe(undefined)
+        expect(refund.id).toBe(refundId)
+        expect(refund.amount).toBe(42.21)
+        expect(refund.context).toBeA(Object)
         cb()
       })
     }], function(e, r) {

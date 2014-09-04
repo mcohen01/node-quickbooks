@@ -109,23 +109,6 @@ QuickBooks.prototype.getCharge = function(chargeId, callback) {
 }
 
 /**
- * Get all charges for a particular company.
- *
- * @param {number} limit - maximum number of charges to get
- * @param {number} offset - offset of first charge returned
- * @param callback - Callback function which is called with any error or the list of Charges
- */
-QuickBooks.prototype.getCharges = function(limit, offset, callback) {
-  var headers = {company_id: this.realmId}
-  if (limit && typeof limit !== 'function') headers.limit = limit
-  if (offset) headers.offset = offset
-  module.request(this, 'get', {
-    url: '/charges',
-    headers: headers
-  }, null, typeof limit === 'function' ? limit : callback)
-}
-
-/**
  * Allows you to capture funds for an existing charge that was intended to be captured at a later time.
  *
  * @param {string} chargeId - of previously created charge
