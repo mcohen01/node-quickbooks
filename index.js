@@ -1712,6 +1712,13 @@ module.delete = function(context, entityName, idOrEntity, callback) {
 // **********************  Query Api **********************
 module.query = function(context, entity, criteria, callback) {
   var url = '/query?query@@select * from ' + entity
+  for (var p in criteria) {
+    if (p.toLowerCase() === 'count' && criteria[p]) {
+      url = url.replace('select \* from', 'select count(*) from')
+      delete criteria[p]
+      continue
+    }
+  }
   if (criteria && typeof criteria !== 'function') {
     url += module.criteriaToString(criteria) || ''
     url = url.replace(/'/g, '%27').replace(/=/, '%3D')
@@ -1744,24 +1751,41 @@ module.isNumeric = function(n) {
   return ! isNaN(parseFloat(n)) && isFinite(n);
 }
 
-module.criteriaToString = function(criteria) {
-  if (_.isString(criteria)) {
-    return criteria
-  } else {
-    var s = ' where '
-    for (var p in criteria) {
-      if (s != ' where ') {
-        throw new Error('Only one condition allowed in where clause')
-      }
-      s += p + ' = '
-      if (module.isNumeric(criteria[p])) {
-        s += criteria[p]
-      } else {
-        s += "'" + criteria[p] + "'"
-      }
-    }
-    return s
+module.checkProperty = function(map, prop, name) {
+  if (prop.toLowerCase() === name) {
+    var x = map[prop]
+    delete map[prop]
+    return x
   }
+}
+
+module.criteriaToString = function(criteria) {
+  if (_.isString(criteria)) return criteria
+  if (! Object.keys(criteria).length) return ''
+  var sql = '', limit, offset, desc, asc
+  for (var p in criteria) {
+    limit = module.checkProperty(criteria, p, 'limit')
+    if (limit) continue
+    offset = module.checkProperty(criteria, p, 'offset')
+    if (offset) continue
+    desc = module.checkProperty(criteria, p, 'desc')
+    if (desc) continue
+    asc = module.checkProperty(criteria, p, 'asc')
+    if (asc) continue
+    if (sql != '') {
+      sql += ' and '
+    }
+    sql += p + ' = '
+    sql += "'" + criteria[p] + "'"
+  }
+  if (sql != '') {
+    sql = ' where ' + sql
+  }
+  if (asc)  sql += ' orderby ' + asc + ' asc'
+  if (desc)  sql += ' orderby ' + desc + ' desc'
+  if (offset) sql += ' startposition ' + offset
+  if (limit)  sql += ' maxresults ' + limit
+  return sql
 }
 
 module.reportCriteria = function(criteria) {
