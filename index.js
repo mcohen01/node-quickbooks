@@ -1649,9 +1649,7 @@ module.request = function(context, verb, options, entity, callback) {
         json:    true
       }
   if (options.url.indexOf('/charge') === 0) {
-    opts.headers.Authorization = require('./config').chargeAuth
-    opts.headers.request_id = uuid.v1()
-    delete opts.oauth
+    opts.headers['Request-Id'] = uuid.v1()
   }
   if (entity !== null) {
     opts.body = entity
