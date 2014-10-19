@@ -5,7 +5,7 @@ var http       = require('http'),
     util       = require('util'),
     express    = require('express'),
     app        = express(),
-    QuickBooks = require('node-quickbooks')
+    QuickBooks = require('../index')
 
 
 // Generic Express config
@@ -28,7 +28,7 @@ var consumerKey    = '',
     consumerSecret = ''
 
 app.get('/start', function(req, res) {
-  res.render('intuit.ejs', {locals: {port:port}})
+  res.render('intuit.ejs', {locals: {port:port, appCenter: QuickBooks.APP_CENTER_BASE}})
 })
 
 app.get('/requestToken', function(req, res) {
