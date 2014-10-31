@@ -17,7 +17,7 @@ module.exports = QuickBooks
 
 QuickBooks.REQUEST_TOKEN_URL        = 'https://oauth.intuit.com/oauth/v1/get_request_token'
 QuickBooks.ACCESS_TOKEN_URL         = 'https://oauth.intuit.com/oauth/v1/get_access_token'
-QuickBooks.APP_CENTER_URL           = 'https://appcenter.intuit.com'
+QuickBooks.APP_CENTER_BASE          = 'https://appcenter.intuit.com'
 QuickBooks.APP_CENTER_URL           = QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token='
 QuickBooks.V3_ENDPOINT_BASE_URL     = 'https://quickbooks.api.intuit.com/v3/company/'
 QuickBooks.PAYMENTS_API_V2_BASE_URL = 'https://transaction-qa.payments.intuit.net/v2'
