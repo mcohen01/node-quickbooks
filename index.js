@@ -32,16 +32,18 @@ QuickBooks.PAYMENTS_API_V2_BASE_URL = 'https://transaction-qa.payments.intuit.ne
  * @param tokenSecret - the OAuth generated user-specific password
  * @param realmId - QuickBooks companyId, returned as a request parameter when the user is redirected to the provided callback URL following authentication
  * @param debug - boolean flag to turn on logging of HTTP requests, including headers and body
+ * @param endpointBaseUrl - string - See https://developer.intuit.com/v2/blog/2014/10/24/intuit-developer-now-offers-quickbooks-sandboxes
  * @constructor
  */
-function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, debug) {
-  var prefix          = _.isObject(consumerKey) ? 'consumerKey.' : ''
-  this.consumerKey    = eval(prefix + 'consumerKey')
-  this.consumerSecret = eval(prefix + 'consumerSecret')
-  this.token          = eval(prefix + 'token')
-  this.tokenSecret    = eval(prefix + 'tokenSecret')
-  this.realmId        = eval(prefix + 'realmId')
-  this.debug          = eval(prefix + 'debug')
+function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, debug, endpointBaseUrl) {
+  var prefix           = _.isObject(consumerKey) ? 'consumerKey.' : ''
+  this.consumerKey     = eval(prefix + 'consumerKey')
+  this.consumerSecret  = eval(prefix + 'consumerSecret')
+  this.token           = eval(prefix + 'token')
+  this.tokenSecret     = eval(prefix + 'tokenSecret')
+  this.realmId         = eval(prefix + 'realmId')
+  this.debug           = eval(prefix + 'debug')
+  this.endpointBaseUrl = eval(prefix + 'endpointBaseUrl') || QuickBooks.V3_ENDPOINT_BASE_URL
 }
 
 /**
@@ -1641,7 +1643,7 @@ QuickBooks.prototype.reportClassSales = function(options, callback) {
 module.request = function(context, verb, options, entity, callback) {
   var url = options.url.indexOf('/charge') === 0 ?
           QuickBooks.PAYMENTS_API_V2_BASE_URL + options.url:
-          QuickBooks.V3_ENDPOINT_BASE_URL + context.realmId + options.url,
+          context.endpointBaseUrl + context.realmId + options.url,
       opts = {
         url:     url,
         qs:      options.qs || {},
