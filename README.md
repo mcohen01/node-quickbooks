@@ -263,6 +263,17 @@ qbo.findAttachables({
 })
 ```
 
+Alternatively, the object can be an array of objects, each specifying a `field`, `value` and `operator` (optional) keys. This allows you to build a more complex query using operators such as `=`, `IN`, `<`, `>`, `<=`, `>=`, or `LIKE`.
+```javascript
+qbo.findTimeActivities([
+  {field: 'TxnDate', value: '2014-12-01', operator: '>'},
+  {field: 'TxnDate', value: '2014-12-03', operator: '<'},
+  {field: 'limit', value: 5}
+], function (e, timeActivities) {
+  console.log(timeActivities)
+})
+```
+
 ###### Sorting
 Basic ordering is achieved via the optional first argument object as well. Include `asc` or `desc` keys in the object whose values are the columns you wish to sort on. For example:
 ```javascript

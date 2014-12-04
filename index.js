@@ -21,6 +21,7 @@ QuickBooks.APP_CENTER_BASE          = 'https://appcenter.intuit.com'
 QuickBooks.APP_CENTER_URL           = QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token='
 QuickBooks.V3_ENDPOINT_BASE_URL     = 'https://quickbooks.api.intuit.com/v3/company/'
 QuickBooks.PAYMENTS_API_V2_BASE_URL = 'https://transaction-qa.payments.intuit.net/v2'
+QuickBooks.QUERY_OPERATORS          = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
 
 /**
  * Node.js client encapsulating access to the QuickBooks V3 Rest API. An instance
@@ -1722,7 +1723,7 @@ module.query = function(context, entity, criteria, callback) {
   }
   if (criteria && typeof criteria !== 'function') {
     url += module.criteriaToString(criteria) || ''
-    url = url.replace(/'/g, '%27').replace(/=/, '%3D')
+    url = url.replace(/'/g, '%27').replace(/=/, '%3D').replace(/</, '%3C').replace(/>/, '%3E')
   }
   url = url.replace('@@', '=')
   module.request(context, 'get', {url: url}, null, typeof criteria === 'function' ? criteria : callback)
@@ -1752,32 +1753,63 @@ module.isNumeric = function(n) {
   return ! isNaN(parseFloat(n)) && isFinite(n);
 }
 
-module.checkProperty = function(map, prop, name) {
-  if (prop.toLowerCase() === name) {
-    var x = map[prop]
-    delete map[prop]
-    return x
-  }
+module.checkProperty = function(field, name) {
+  return (field.toLowerCase() === name)
 }
 
 module.criteriaToString = function(criteria) {
   if (_.isString(criteria)) return criteria
-  if (! Object.keys(criteria).length) return ''
+  var flattened = [];
+  if (_.isArray(criteria)) {
+    if (criteria.length === 0) return ''
+    for (var i=0, l=criteria.length; i<l; i++) {
+      var c = criteria[i];
+      if (_.isUndefined(c.field) || _.isUndefined(c.value)) continue
+      var criterion = {
+        field:    c.field,
+        value:    c.value,
+        operator: '='
+      }
+      if (! _.isUndefined(c.operator) && _.contains(QuickBooks.QUERY_OPERATORS, c.operator.toUpperCase())) {
+        criterion.operator = c.operator
+      }
+      flattened[flattened.length] = criterion
+    }
+  } else if (_.isObject(criteria)) {
+    if (! Object.keys(criteria).length) return ''
+    for (var p in criteria) {
+      var criterion = {
+        field:    p,
+        value:    criteria[p],
+        operator: '='
+      }
+      flattened[flattened.length] = criterion
+    }
+  }
   var sql = '', limit, offset, desc, asc
-  for (var p in criteria) {
-    limit = module.checkProperty(criteria, p, 'limit')
-    if (limit) continue
-    offset = module.checkProperty(criteria, p, 'offset')
-    if (offset) continue
-    desc = module.checkProperty(criteria, p, 'desc')
-    if (desc) continue
-    asc = module.checkProperty(criteria, p, 'asc')
-    if (asc) continue
+  for (var i=0, l=flattened.length; i<l; i++) {
+    var criterion = flattened[i];
+    if (module.checkProperty(criterion.field, 'limit')) {
+      limit = criterion.value
+      continue
+    }
+    if (module.checkProperty(criterion.field, 'offset')) {
+      offset = criterion.value
+      continue
+    }
+    if (module.checkProperty(criterion.field, 'desc')) {
+      desc = criterion.value
+      continue
+    }
+    if (module.checkProperty(criterion.field, 'asc')) {
+      asc = criterion.value
+      continue
+    }
     if (sql != '') {
       sql += ' and '
     }
-    sql += p + ' = '
-    sql += "'" + criteria[p] + "'"
+    sql += criterion.field + ' ' + criterion.operator + ' '
+    sql += "'" + criterion.value + "'"
   }
   if (sql != '') {
     sql = ' where ' + sql
