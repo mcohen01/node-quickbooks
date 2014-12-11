@@ -113,18 +113,34 @@ qbo.getRefund(chargeId, refundId, function(err, refund) {
 
 ## Example App
 
-The `example` directory contains a bare bones Express application that demonstrates the OAuth workflow. 
+The `example` directory contains a barebones Express application that demonstrates the OAuth workflow.
 
-Running `node app.js` in the example directory will start an http server running on port 3000. Browsing to http://localhost:3000/start will display a page containing only the IPP Javascript-rendered button, kicking off the OAuth exchange. Note that the IPP Javascript code contained in `intuit.ejs` is configured with the `grantUrl` option set to "http://localhost:3000/requestToken". You will want to change this to an appropriate URL for your application, but you will need to write similar functionality to that contained in the  '/requestToken' route configured in `app.js`, also taking care to configure your `consumerKey` and `consumerSecret` on lines 27-28 in app.js.
+### Setup
+
+Install the required dependencies from NPM
+
+    npm install
+
+### Running
+
+Start the app
+
+    node app.js
+
+Browse to http://localhost:3000/start and you will see a page containing only the IPP Javascript-rendered button.  Clicking on this kicks off the OAuth exchange.
 
 The IPP Javascript code calls back into the node application, which needs to invoke the OAuth Request Token URL at https://oauth.intuit.com/oauth/v1/get_request_token via a server-side http POST method. Note how the response from the http POST is parsed and the browser is redirected to the App Center URL at https://appcenter.intuit.com/Connect/Begin?oauth_token= with the `oauth_token` passed as a URL parameter. Note also how the `oauth_token_secret` needs to somehow be maintained across http requests, as it needs to be passed in the second server-side http POST to the Access Token URL at https://oauth.intuit.com/oauth/v1/get_access_token. This final step is invoked once the user has authenticated on Intuit's site and authorized the application, and then the user is redirected back to the node application at the callback URL specified as a parameter in the Request Token remote call, in the example app's case, http://localhost:3000/callback.
+
+### Configuration
+
+The IPP Javascript code contained in `intuit.ejs` is configured with the `grantUrl` option set to "http://localhost:3000/requestToken". You will want to change this to an appropriate URL for your application, but you will need to write similar functionality to that contained in the  '/requestToken' route configured in `app.js`, also taking care to configure your `consumerKey` and `consumerSecret` on lines 27-28 in app.js.
 
 
 ## Running the tests
 
 First you'll need to fill in the missing values in config.js. The consumerKey and consumerSecret you can get from the IPP portal, the token, tokenSecret, and realmId are easiest to obtain by running the example app, completing the OAuth workflow, and copying the values that are logged to the console. Once you've filled in the missing credentials in config.js you can simply run:
 
-`npm test` 
+`npm test`
 
 
 ## Public Api
@@ -371,9 +387,9 @@ qbo.findAttachables({
 
 <a name="createAccount" />
 #### createAccount(object, callback)
-  
+
 Creates the Account in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved account, to be persisted in QuickBooks
@@ -382,9 +398,9 @@ __Arguments__
 
 <a name="createAttachable" />
 #### createAttachable(object, callback)
-  
+
 Creates the Attachable in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved attachable, to be persisted in QuickBooks
@@ -393,9 +409,9 @@ __Arguments__
 
 <a name="createBill" />
 #### createBill(object, callback)
-  
+
 Creates the Bill in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved bill, to be persisted in QuickBooks
@@ -404,9 +420,9 @@ __Arguments__
 
 <a name="createBillPayment" />
 #### createBillPayment(object, callback)
-  
+
 Creates the BillPayment in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved billPayment, to be persisted in QuickBooks
@@ -415,9 +431,9 @@ __Arguments__
 
 <a name="createClass" />
 #### createClass(object, callback)
-  
+
 Creates the Class in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved class, to be persisted in QuickBooks
@@ -426,9 +442,9 @@ __Arguments__
 
 <a name="createCreditMemo" />
 #### createCreditMemo(object, callback)
-  
+
 Creates the CreditMemo in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved creditMemo, to be persisted in QuickBooks
@@ -437,9 +453,9 @@ __Arguments__
 
 <a name="createCustomer" />
 #### createCustomer(object, callback)
-  
+
 Creates the Customer in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved customer, to be persisted in QuickBooks
@@ -448,9 +464,9 @@ __Arguments__
 
 <a name="createDepartment" />
 #### createDepartment(object, callback)
-  
+
 Creates the Department in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved department, to be persisted in QuickBooks
@@ -459,9 +475,9 @@ __Arguments__
 
 <a name="createEmployee" />
 #### createEmployee(object, callback)
-  
+
 Creates the Employee in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved employee, to be persisted in QuickBooks
@@ -470,9 +486,9 @@ __Arguments__
 
 <a name="createEstimate" />
 #### createEstimate(object, callback)
-  
+
 Creates the Estimate in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved estimate, to be persisted in QuickBooks
@@ -481,9 +497,9 @@ __Arguments__
 
 <a name="createInvoice" />
 #### createInvoice(object, callback)
-  
+
 Creates the Invoice in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved invoice, to be persisted in QuickBooks
@@ -492,9 +508,9 @@ __Arguments__
 
 <a name="createItem" />
 #### createItem(object, callback)
-  
+
 Creates the Item in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved item, to be persisted in QuickBooks
@@ -503,9 +519,9 @@ __Arguments__
 
 <a name="createJournalEntry" />
 #### createJournalEntry(object, callback)
-  
+
 Creates the JournalEntry in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved journalEntry, to be persisted in QuickBooks
@@ -514,9 +530,9 @@ __Arguments__
 
 <a name="createPayment" />
 #### createPayment(object, callback)
-  
+
 Creates the Payment in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved payment, to be persisted in QuickBooks
@@ -525,9 +541,9 @@ __Arguments__
 
 <a name="createPaymentMethod" />
 #### createPaymentMethod(object, callback)
-  
+
 Creates the PaymentMethod in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved paymentMethod, to be persisted in QuickBooks
@@ -536,9 +552,9 @@ __Arguments__
 
 <a name="createPurchase" />
 #### createPurchase(object, callback)
-  
+
 Creates the Purchase in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved purchase, to be persisted in QuickBooks
@@ -547,9 +563,9 @@ __Arguments__
 
 <a name="createPurchaseOrder" />
 #### createPurchaseOrder(object, callback)
-  
+
 Creates the PurchaseOrder in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved purchaseOrder, to be persisted in QuickBooks
@@ -558,9 +574,9 @@ __Arguments__
 
 <a name="createRefundReceipt" />
 #### createRefundReceipt(object, callback)
-  
+
 Creates the RefundReceipt in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved refundReceipt, to be persisted in QuickBooks
@@ -569,9 +585,9 @@ __Arguments__
 
 <a name="createSalesReceipt" />
 #### createSalesReceipt(object, callback)
-  
+
 Creates the SalesReceipt in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved salesReceipt, to be persisted in QuickBooks
@@ -580,9 +596,9 @@ __Arguments__
 
 <a name="createTaxAgency" />
 #### createTaxAgency(object, callback)
-  
+
 Creates the TaxAgency in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved taxAgency, to be persisted in QuickBooks
@@ -591,9 +607,9 @@ __Arguments__
 
 <a name="createTaxService" />
 #### createTaxService(object, callback)
-  
+
 Creates the TaxService in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved taxService, to be persisted in QuickBooks
@@ -602,9 +618,9 @@ __Arguments__
 
 <a name="createTerm" />
 #### createTerm(object, callback)
-  
+
 Creates the Term in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved term, to be persisted in QuickBooks
@@ -613,9 +629,9 @@ __Arguments__
 
 <a name="createTimeActivity" />
 #### createTimeActivity(object, callback)
-  
+
 Creates the TimeActivity in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved timeActivity, to be persisted in QuickBooks
@@ -624,9 +640,9 @@ __Arguments__
 
 <a name="createVendor" />
 #### createVendor(object, callback)
-  
+
 Creates the Vendor in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved vendor, to be persisted in QuickBooks
@@ -635,9 +651,9 @@ __Arguments__
 
 <a name="createVendorCredit" />
 #### createVendorCredit(object, callback)
-  
+
 Creates the VendorCredit in QuickBooks
- 
+
 __Arguments__
 
 * `object` - The unsaved vendorCredit, to be persisted in QuickBooks
@@ -648,9 +664,9 @@ __Arguments__
 
 <a name="getAccount" />
 #### getAccount(id, callback)
-  
+
 Retrieves the Account from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Account
@@ -659,9 +675,9 @@ __Arguments__
 
 <a name="getAttachable" />
 #### getAttachable(id, callback)
-  
+
 Retrieves the Attachable from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Attachable
@@ -670,9 +686,9 @@ __Arguments__
 
 <a name="getBill" />
 #### getBill(id, callback)
-  
+
 Retrieves the Bill from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Bill
@@ -681,9 +697,9 @@ __Arguments__
 
 <a name="getBillPayment" />
 #### getBillPayment(id, callback)
-  
+
 Retrieves the BillPayment from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent BillPayment
@@ -692,9 +708,9 @@ __Arguments__
 
 <a name="getClass" />
 #### getClass(id, callback)
-  
+
 Retrieves the Class from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Class
@@ -703,9 +719,9 @@ __Arguments__
 
 <a name="getCompanyInfo" />
 #### getCompanyInfo(id, callback)
-  
+
 Retrieves the CompanyInfo from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent CompanyInfo
@@ -714,9 +730,9 @@ __Arguments__
 
 <a name="getCreditMemo" />
 #### getCreditMemo(id, callback)
-  
+
 Retrieves the CreditMemo from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent CreditMemo
@@ -725,9 +741,9 @@ __Arguments__
 
 <a name="getCustomer" />
 #### getCustomer(id, callback)
-  
+
 Retrieves the Customer from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Customer
@@ -736,9 +752,9 @@ __Arguments__
 
 <a name="getDepartment" />
 #### getDepartment(id, callback)
-  
+
 Retrieves the Department from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Department
@@ -747,9 +763,9 @@ __Arguments__
 
 <a name="getEmployee" />
 #### getEmployee(id, callback)
-  
+
 Retrieves the Employee from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Employee
@@ -758,9 +774,9 @@ __Arguments__
 
 <a name="getEstimate" />
 #### getEstimate(id, callback)
-  
+
 Retrieves the Estimate from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Estimate
@@ -769,9 +785,9 @@ __Arguments__
 
 <a name="getInvoice" />
 #### getInvoice(id, callback)
-  
+
 Retrieves the Invoice from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Invoice
@@ -780,9 +796,9 @@ __Arguments__
 
 <a name="getItem" />
 #### getItem(id, callback)
-  
+
 Retrieves the Item from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Item
@@ -791,9 +807,9 @@ __Arguments__
 
 <a name="getJournalEntry" />
 #### getJournalEntry(id, callback)
-  
+
 Retrieves the JournalEntry from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent JournalEntry
@@ -802,9 +818,9 @@ __Arguments__
 
 <a name="getPayment" />
 #### getPayment(id, callback)
-  
+
 Retrieves the Payment from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Payment
@@ -813,9 +829,9 @@ __Arguments__
 
 <a name="getPaymentMethod" />
 #### getPaymentMethod(id, callback)
-  
+
 Retrieves the PaymentMethod from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent PaymentMethod
@@ -824,9 +840,9 @@ __Arguments__
 
 <a name="getPreferences" />
 #### getPreferences(id, callback)
-  
+
 Retrieves the Preferences from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Preferences
@@ -835,9 +851,9 @@ __Arguments__
 
 <a name="getPurchase" />
 #### getPurchase(id, callback)
-  
+
 Retrieves the Purchase from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Purchase
@@ -846,9 +862,9 @@ __Arguments__
 
 <a name="getPurchaseOrder" />
 #### getPurchaseOrder(id, callback)
-  
+
 Retrieves the PurchaseOrder from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent PurchaseOrder
@@ -857,9 +873,9 @@ __Arguments__
 
 <a name="getRefundReceipt" />
 #### getRefundReceipt(id, callback)
-  
+
 Retrieves the RefundReceipt from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent RefundReceipt
@@ -868,9 +884,9 @@ __Arguments__
 
 <a name="getReports" />
 #### getReports(id, callback)
-  
+
 Retrieves the Reports from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Reports
@@ -879,9 +895,9 @@ __Arguments__
 
 <a name="getSalesReceipt" />
 #### getSalesReceipt(id, callback)
-  
+
 Retrieves the SalesReceipt from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent SalesReceipt
@@ -890,9 +906,9 @@ __Arguments__
 
 <a name="getTaxAgency" />
 #### getTaxAgency(id, callback)
-  
+
 Retrieves the TaxAgency from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent TaxAgency
@@ -901,9 +917,9 @@ __Arguments__
 
 <a name="getTaxCode" />
 #### getTaxCode(id, callback)
-  
+
 Retrieves the TaxCode from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent TaxCode
@@ -912,9 +928,9 @@ __Arguments__
 
 <a name="getTaxRate" />
 #### getTaxRate(id, callback)
-  
+
 Retrieves the TaxRate from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent TaxRate
@@ -923,9 +939,9 @@ __Arguments__
 
 <a name="getTerm" />
 #### getTerm(id, callback)
-  
+
 Retrieves the Term from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Term
@@ -934,9 +950,9 @@ __Arguments__
 
 <a name="getTimeActivity" />
 #### getTimeActivity(id, callback)
-  
+
 Retrieves the TimeActivity from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent TimeActivity
@@ -945,9 +961,9 @@ __Arguments__
 
 <a name="getVendor" />
 #### getVendor(id, callback)
-  
+
 Retrieves the Vendor from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent Vendor
@@ -956,9 +972,9 @@ __Arguments__
 
 <a name="getVendorCredit" />
 #### getVendorCredit(id, callback)
-  
+
 Retrieves the VendorCredit from QuickBooks
- 
+
 __Arguments__
 
 * `id` - The Id of persistent VendorCredit
@@ -969,9 +985,9 @@ __Arguments__
 
 <a name="updateAccount" />
 #### updateAccount(object, callback)
-  
+
 Updates QuickBooks version of Account
- 
+
 __Arguments__
 
 * `object` - The persistent Account, including Id and SyncToken fields
@@ -980,9 +996,9 @@ __Arguments__
 
 <a name="updateAttachable" />
 #### updateAttachable(object, callback)
-  
+
 Updates QuickBooks version of Attachable
- 
+
 __Arguments__
 
 * `object` - The persistent Attachable, including Id and SyncToken fields
@@ -991,9 +1007,9 @@ __Arguments__
 
 <a name="updateBill" />
 #### updateBill(object, callback)
-  
+
 Updates QuickBooks version of Bill
- 
+
 __Arguments__
 
 * `object` - The persistent Bill, including Id and SyncToken fields
@@ -1002,9 +1018,9 @@ __Arguments__
 
 <a name="updateBillPayment" />
 #### updateBillPayment(object, callback)
-  
+
 Updates QuickBooks version of BillPayment
- 
+
 __Arguments__
 
 * `object` - The persistent BillPayment, including Id and SyncToken fields
@@ -1013,9 +1029,9 @@ __Arguments__
 
 <a name="updateClass" />
 #### updateClass(object, callback)
-  
+
 Updates QuickBooks version of Class
- 
+
 __Arguments__
 
 * `object` - The persistent Class, including Id and SyncToken fields
@@ -1024,9 +1040,9 @@ __Arguments__
 
 <a name="updateCompanyInfo" />
 #### updateCompanyInfo(object, callback)
-  
+
 Updates QuickBooks version of CompanyInfo
- 
+
 __Arguments__
 
 * `object` - The persistent CompanyInfo, including Id and SyncToken fields
@@ -1035,9 +1051,9 @@ __Arguments__
 
 <a name="updateCreditMemo" />
 #### updateCreditMemo(object, callback)
-  
+
 Updates QuickBooks version of CreditMemo
- 
+
 __Arguments__
 
 * `object` - The persistent CreditMemo, including Id and SyncToken fields
@@ -1046,9 +1062,9 @@ __Arguments__
 
 <a name="updateCustomer" />
 #### updateCustomer(object, callback)
-  
+
 Updates QuickBooks version of Customer
- 
+
 __Arguments__
 
 * `object` - The persistent Customer, including Id and SyncToken fields
@@ -1057,9 +1073,9 @@ __Arguments__
 
 <a name="updateDepartment" />
 #### updateDepartment(object, callback)
-  
+
 Updates QuickBooks version of Department
- 
+
 __Arguments__
 
 * `object` - The persistent Department, including Id and SyncToken fields
@@ -1068,9 +1084,9 @@ __Arguments__
 
 <a name="updateEmployee" />
 #### updateEmployee(object, callback)
-  
+
 Updates QuickBooks version of Employee
- 
+
 __Arguments__
 
 * `object` - The persistent Employee, including Id and SyncToken fields
@@ -1079,9 +1095,9 @@ __Arguments__
 
 <a name="updateEstimate" />
 #### updateEstimate(object, callback)
-  
+
 Updates QuickBooks version of Estimate
- 
+
 __Arguments__
 
 * `object` - The persistent Estimate, including Id and SyncToken fields
@@ -1090,9 +1106,9 @@ __Arguments__
 
 <a name="updateInvoice" />
 #### updateInvoice(object, callback)
-  
+
 Updates QuickBooks version of Invoice
- 
+
 __Arguments__
 
 * `object` - The persistent Invoice, including Id and SyncToken fields
@@ -1101,9 +1117,9 @@ __Arguments__
 
 <a name="updateItem" />
 #### updateItem(object, callback)
-  
+
 Updates QuickBooks version of Item
- 
+
 __Arguments__
 
 * `object` - The persistent Item, including Id and SyncToken fields
@@ -1112,9 +1128,9 @@ __Arguments__
 
 <a name="updateJournalEntry" />
 #### updateJournalEntry(object, callback)
-  
+
 Updates QuickBooks version of JournalEntry
- 
+
 __Arguments__
 
 * `object` - The persistent JournalEntry, including Id and SyncToken fields
@@ -1123,9 +1139,9 @@ __Arguments__
 
 <a name="updatePayment" />
 #### updatePayment(object, callback)
-  
+
 Updates QuickBooks version of Payment
- 
+
 __Arguments__
 
 * `object` - The persistent Payment, including Id and SyncToken fields
@@ -1134,9 +1150,9 @@ __Arguments__
 
 <a name="updatePaymentMethod" />
 #### updatePaymentMethod(object, callback)
-  
+
 Updates QuickBooks version of PaymentMethod
- 
+
 __Arguments__
 
 * `object` - The persistent PaymentMethod, including Id and SyncToken fields
@@ -1145,9 +1161,9 @@ __Arguments__
 
 <a name="updatePreferences" />
 #### updatePreferences(object, callback)
-  
+
 Updates QuickBooks version of Preferences
- 
+
 __Arguments__
 
 * `object` - The persistent Preferences, including Id and SyncToken fields
@@ -1156,9 +1172,9 @@ __Arguments__
 
 <a name="updatePurchase" />
 #### updatePurchase(object, callback)
-  
+
 Updates QuickBooks version of Purchase
- 
+
 __Arguments__
 
 * `object` - The persistent Purchase, including Id and SyncToken fields
@@ -1167,9 +1183,9 @@ __Arguments__
 
 <a name="updatePurchaseOrder" />
 #### updatePurchaseOrder(object, callback)
-  
+
 Updates QuickBooks version of PurchaseOrder
- 
+
 __Arguments__
 
 * `object` - The persistent PurchaseOrder, including Id and SyncToken fields
@@ -1178,9 +1194,9 @@ __Arguments__
 
 <a name="updateRefundReceipt" />
 #### updateRefundReceipt(object, callback)
-  
+
 Updates QuickBooks version of RefundReceipt
- 
+
 __Arguments__
 
 * `object` - The persistent RefundReceipt, including Id and SyncToken fields
@@ -1189,9 +1205,9 @@ __Arguments__
 
 <a name="updateSalesReceipt" />
 #### updateSalesReceipt(object, callback)
-  
+
 Updates QuickBooks version of SalesReceipt
- 
+
 __Arguments__
 
 * `object` - The persistent SalesReceipt, including Id and SyncToken fields
@@ -1200,9 +1216,9 @@ __Arguments__
 
 <a name="updateTaxAgency" />
 #### updateTaxAgency(object, callback)
-  
+
 Updates QuickBooks version of TaxAgency
- 
+
 __Arguments__
 
 * `object` - The persistent TaxAgency, including Id and SyncToken fields
@@ -1211,9 +1227,9 @@ __Arguments__
 
 <a name="updateTaxCode" />
 #### updateTaxCode(object, callback)
-  
+
 Updates QuickBooks version of TaxCode
- 
+
 __Arguments__
 
 * `object` - The persistent TaxCode, including Id and SyncToken fields
@@ -1222,9 +1238,9 @@ __Arguments__
 
 <a name="updateTaxRate" />
 #### updateTaxRate(object, callback)
-  
+
 Updates QuickBooks version of TaxRate
- 
+
 __Arguments__
 
 * `object` - The persistent TaxRate, including Id and SyncToken fields
@@ -1233,9 +1249,9 @@ __Arguments__
 
 <a name="updateTaxService" />
 #### updateTaxService(object, callback)
-  
+
 Updates QuickBooks version of TaxService
- 
+
 __Arguments__
 
 * `object` - The persistent TaxService, including Id and SyncToken fields
@@ -1244,9 +1260,9 @@ __Arguments__
 
 <a name="updateTerm" />
 #### updateTerm(object, callback)
-  
+
 Updates QuickBooks version of Term
- 
+
 __Arguments__
 
 * `object` - The persistent Term, including Id and SyncToken fields
@@ -1255,9 +1271,9 @@ __Arguments__
 
 <a name="updateTimeActivity" />
 #### updateTimeActivity(object, callback)
-  
+
 Updates QuickBooks version of TimeActivity
- 
+
 __Arguments__
 
 * `object` - The persistent TimeActivity, including Id and SyncToken fields
@@ -1266,9 +1282,9 @@ __Arguments__
 
 <a name="updateVendor" />
 #### updateVendor(object, callback)
-  
+
 Updates QuickBooks version of Vendor
- 
+
 __Arguments__
 
 * `object` - The persistent Vendor, including Id and SyncToken fields
@@ -1277,9 +1293,9 @@ __Arguments__
 
 <a name="updateVendorCredit" />
 #### updateVendorCredit(object, callback)
-  
+
 Updates QuickBooks version of VendorCredit
- 
+
 __Arguments__
 
 * `object` - The persistent VendorCredit, including Id and SyncToken fields
@@ -1290,155 +1306,155 @@ __Arguments__
 
 <a name="deleteAttachable" />
 #### deleteAttachable(idOrEntity, callback)
-  
+
 Deletes the Attachable from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent Attachable to be deleted, or the Id of the Attachable, in which case an extra GET request will be issued to first retrieve the Attachable 
+* `idOrEntity` - The persistent Attachable to be deleted, or the Id of the Attachable, in which case an extra GET request will be issued to first retrieve the Attachable
 * `callback` - Callback function which is called with any error and the status of the persistent Attachable
 
 
 <a name="deleteBill" />
 #### deleteBill(idOrEntity, callback)
-  
+
 Deletes the Bill from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent Bill to be deleted, or the Id of the Bill, in which case an extra GET request will be issued to first retrieve the Bill 
+* `idOrEntity` - The persistent Bill to be deleted, or the Id of the Bill, in which case an extra GET request will be issued to first retrieve the Bill
 * `callback` - Callback function which is called with any error and the status of the persistent Bill
 
 
 <a name="deleteBillPayment" />
 #### deleteBillPayment(idOrEntity, callback)
-  
+
 Deletes the BillPayment from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent BillPayment to be deleted, or the Id of the BillPayment, in which case an extra GET request will be issued to first retrieve the BillPayment 
+* `idOrEntity` - The persistent BillPayment to be deleted, or the Id of the BillPayment, in which case an extra GET request will be issued to first retrieve the BillPayment
 * `callback` - Callback function which is called with any error and the status of the persistent BillPayment
 
 
 <a name="deleteCreditMemo" />
 #### deleteCreditMemo(idOrEntity, callback)
-  
+
 Deletes the CreditMemo from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent CreditMemo to be deleted, or the Id of the CreditMemo, in which case an extra GET request will be issued to first retrieve the CreditMemo 
+* `idOrEntity` - The persistent CreditMemo to be deleted, or the Id of the CreditMemo, in which case an extra GET request will be issued to first retrieve the CreditMemo
 * `callback` - Callback function which is called with any error and the status of the persistent CreditMemo
 
 
 <a name="deleteEstimate" />
 #### deleteEstimate(idOrEntity, callback)
-  
+
 Deletes the Estimate from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent Estimate to be deleted, or the Id of the Estimate, in which case an extra GET request will be issued to first retrieve the Estimate 
+* `idOrEntity` - The persistent Estimate to be deleted, or the Id of the Estimate, in which case an extra GET request will be issued to first retrieve the Estimate
 * `callback` - Callback function which is called with any error and the status of the persistent Estimate
 
 
 <a name="deleteInvoice" />
 #### deleteInvoice(idOrEntity, callback)
-  
+
 Deletes the Invoice from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent Invoice to be deleted, or the Id of the Invoice, in which case an extra GET request will be issued to first retrieve the Invoice 
+* `idOrEntity` - The persistent Invoice to be deleted, or the Id of the Invoice, in which case an extra GET request will be issued to first retrieve the Invoice
 * `callback` - Callback function which is called with any error and the status of the persistent Invoice
 
 
 <a name="deleteJournalEntry" />
 #### deleteJournalEntry(idOrEntity, callback)
-  
+
 Deletes the JournalEntry from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent JournalEntry to be deleted, or the Id of the JournalEntry, in which case an extra GET request will be issued to first retrieve the JournalEntry 
+* `idOrEntity` - The persistent JournalEntry to be deleted, or the Id of the JournalEntry, in which case an extra GET request will be issued to first retrieve the JournalEntry
 * `callback` - Callback function which is called with any error and the status of the persistent JournalEntry
 
 
 <a name="deletePayment" />
 #### deletePayment(idOrEntity, callback)
-  
+
 Deletes the Payment from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent Payment to be deleted, or the Id of the Payment, in which case an extra GET request will be issued to first retrieve the Payment 
+* `idOrEntity` - The persistent Payment to be deleted, or the Id of the Payment, in which case an extra GET request will be issued to first retrieve the Payment
 * `callback` - Callback function which is called with any error and the status of the persistent Payment
 
 
 <a name="deletePurchase" />
 #### deletePurchase(idOrEntity, callback)
-  
+
 Deletes the Purchase from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent Purchase to be deleted, or the Id of the Purchase, in which case an extra GET request will be issued to first retrieve the Purchase 
+* `idOrEntity` - The persistent Purchase to be deleted, or the Id of the Purchase, in which case an extra GET request will be issued to first retrieve the Purchase
 * `callback` - Callback function which is called with any error and the status of the persistent Purchase
 
 
 <a name="deletePurchaseOrder" />
 #### deletePurchaseOrder(idOrEntity, callback)
-  
+
 Deletes the PurchaseOrder from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent PurchaseOrder to be deleted, or the Id of the PurchaseOrder, in which case an extra GET request will be issued to first retrieve the PurchaseOrder 
+* `idOrEntity` - The persistent PurchaseOrder to be deleted, or the Id of the PurchaseOrder, in which case an extra GET request will be issued to first retrieve the PurchaseOrder
 * `callback` - Callback function which is called with any error and the status of the persistent PurchaseOrder
 
 
 <a name="deleteRefundReceipt" />
 #### deleteRefundReceipt(idOrEntity, callback)
-  
+
 Deletes the RefundReceipt from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent RefundReceipt to be deleted, or the Id of the RefundReceipt, in which case an extra GET request will be issued to first retrieve the RefundReceipt 
+* `idOrEntity` - The persistent RefundReceipt to be deleted, or the Id of the RefundReceipt, in which case an extra GET request will be issued to first retrieve the RefundReceipt
 * `callback` - Callback function which is called with any error and the status of the persistent RefundReceipt
 
 
 <a name="deleteSalesReceipt" />
 #### deleteSalesReceipt(idOrEntity, callback)
-  
+
 Deletes the SalesReceipt from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent SalesReceipt to be deleted, or the Id of the SalesReceipt, in which case an extra GET request will be issued to first retrieve the SalesReceipt 
+* `idOrEntity` - The persistent SalesReceipt to be deleted, or the Id of the SalesReceipt, in which case an extra GET request will be issued to first retrieve the SalesReceipt
 * `callback` - Callback function which is called with any error and the status of the persistent SalesReceipt
 
 
 <a name="deleteTimeActivity" />
 #### deleteTimeActivity(idOrEntity, callback)
-  
+
 Deletes the TimeActivity from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent TimeActivity to be deleted, or the Id of the TimeActivity, in which case an extra GET request will be issued to first retrieve the TimeActivity 
+* `idOrEntity` - The persistent TimeActivity to be deleted, or the Id of the TimeActivity, in which case an extra GET request will be issued to first retrieve the TimeActivity
 * `callback` - Callback function which is called with any error and the status of the persistent TimeActivity
 
 
 <a name="deleteVendorCredit" />
 #### deleteVendorCredit(idOrEntity, callback)
-  
+
 Deletes the VendorCredit from QuickBooks
- 
+
 __Arguments__
 
-* `idOrEntity` - The persistent VendorCredit to be deleted, or the Id of the VendorCredit, in which case an extra GET request will be issued to first retrieve the VendorCredit 
+* `idOrEntity` - The persistent VendorCredit to be deleted, or the Id of the VendorCredit, in which case an extra GET request will be issued to first retrieve the VendorCredit
 * `callback` - Callback function which is called with any error and the status of the persistent VendorCredit
 
 
@@ -1446,9 +1462,9 @@ __Arguments__
 
 <a name="findAccounts" />
 #### findAccounts(criteria, callback)
-  
+
 Finds all Accounts in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1457,9 +1473,9 @@ __Arguments__
 
 <a name="findAttachables" />
 #### findAttachables(criteria, callback)
-  
+
 Finds all Attachables in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1468,9 +1484,9 @@ __Arguments__
 
 <a name="findBills" />
 #### findBills(criteria, callback)
-  
+
 Finds all Bills in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1479,9 +1495,9 @@ __Arguments__
 
 <a name="findBillPayments" />
 #### findBillPayments(criteria, callback)
-  
+
 Finds all BillPayments in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1490,9 +1506,9 @@ __Arguments__
 
 <a name="findBudgets" />
 #### findBudgets(criteria, callback)
-  
+
 Finds all Budgets in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1501,9 +1517,9 @@ __Arguments__
 
 <a name="findClasses" />
 #### findClasses(criteria, callback)
-  
+
 Finds all Classs in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1512,9 +1528,9 @@ __Arguments__
 
 <a name="findCompanyInfos" />
 #### findCompanyInfos(criteria, callback)
-  
+
 Finds all CompanyInfos in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1523,9 +1539,9 @@ __Arguments__
 
 <a name="findCreditMemos" />
 #### findCreditMemos(criteria, callback)
-  
+
 Finds all CreditMemos in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1534,9 +1550,9 @@ __Arguments__
 
 <a name="findCustomers" />
 #### findCustomers(criteria, callback)
-  
+
 Finds all Customers in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1545,9 +1561,9 @@ __Arguments__
 
 <a name="findDepartments" />
 #### findDepartments(criteria, callback)
-  
+
 Finds all Departments in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1556,9 +1572,9 @@ __Arguments__
 
 <a name="findEmployees" />
 #### findEmployees(criteria, callback)
-  
+
 Finds all Employees in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1567,9 +1583,9 @@ __Arguments__
 
 <a name="findEstimates" />
 #### findEstimates(criteria, callback)
-  
+
 Finds all Estimates in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1578,9 +1594,9 @@ __Arguments__
 
 <a name="findInvoices" />
 #### findInvoices(criteria, callback)
-  
+
 Finds all Invoices in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1589,9 +1605,9 @@ __Arguments__
 
 <a name="findItems" />
 #### findItems(criteria, callback)
-  
+
 Finds all Items in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1600,9 +1616,9 @@ __Arguments__
 
 <a name="findJournalEntries" />
 #### findJournalEntries(criteria, callback)
-  
+
 Finds all JournalEntrys in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1611,9 +1627,9 @@ __Arguments__
 
 <a name="findPayments" />
 #### findPayments(criteria, callback)
-  
+
 Finds all Payments in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1622,9 +1638,9 @@ __Arguments__
 
 <a name="findPaymentMethods" />
 #### findPaymentMethods(criteria, callback)
-  
+
 Finds all PaymentMethods in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1633,9 +1649,9 @@ __Arguments__
 
 <a name="findPreferenceses" />
 #### findPreferenceses(criteria, callback)
-  
+
 Finds all Preferencess in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1644,9 +1660,9 @@ __Arguments__
 
 <a name="findPurchases" />
 #### findPurchases(criteria, callback)
-  
+
 Finds all Purchases in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1655,9 +1671,9 @@ __Arguments__
 
 <a name="findPurchaseOrders" />
 #### findPurchaseOrders(criteria, callback)
-  
+
 Finds all PurchaseOrders in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1666,9 +1682,9 @@ __Arguments__
 
 <a name="findRefundReceipts" />
 #### findRefundReceipts(criteria, callback)
-  
+
 Finds all RefundReceipts in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1677,9 +1693,9 @@ __Arguments__
 
 <a name="findSalesReceipts" />
 #### findSalesReceipts(criteria, callback)
-  
+
 Finds all SalesReceipts in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1688,9 +1704,9 @@ __Arguments__
 
 <a name="findTaxAgencies" />
 #### findTaxAgencies(criteria, callback)
-  
+
 Finds all TaxAgencys in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1699,9 +1715,9 @@ __Arguments__
 
 <a name="findTaxCodes" />
 #### findTaxCodes(criteria, callback)
-  
+
 Finds all TaxCodes in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1710,9 +1726,9 @@ __Arguments__
 
 <a name="findTaxRates" />
 #### findTaxRates(criteria, callback)
-  
+
 Finds all TaxRates in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1721,9 +1737,9 @@ __Arguments__
 
 <a name="findTerms" />
 #### findTerms(criteria, callback)
-  
+
 Finds all Terms in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1732,9 +1748,9 @@ __Arguments__
 
 <a name="findTimeActivities" />
 #### findTimeActivities(criteria, callback)
-  
+
 Finds all TimeActivitys in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1743,9 +1759,9 @@ __Arguments__
 
 <a name="findVendors" />
 #### findVendors(criteria, callback)
-  
+
 Finds all Vendors in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1754,9 +1770,9 @@ __Arguments__
 
 <a name="findVendorCredits" />
 #### findVendorCredits(criteria, callback)
-  
+
 Finds all VendorCredits in QuickBooks, optionally matching the specified criteria
- 
+
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1767,9 +1783,9 @@ __Arguments__
 
 <a name="reportBalanceSheet" />
 #### reportBalanceSheet(options, callback)
-  
+
 Retrieves the BalanceSheet Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1778,9 +1794,9 @@ __Arguments__
 
 <a name="reportProfitAndLoss" />
 #### reportProfitAndLoss(options, callback)
-  
+
 Retrieves the ProfitAndLoss Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1789,9 +1805,9 @@ __Arguments__
 
 <a name="reportProfitAndLossDetail" />
 #### reportProfitAndLossDetail(options, callback)
-  
+
 Retrieves the ProfitAndLossDetail Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1800,9 +1816,9 @@ __Arguments__
 
 <a name="reportTrialBalance" />
 #### reportTrialBalance(options, callback)
-  
+
 Retrieves the TrialBalance Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1811,9 +1827,9 @@ __Arguments__
 
 <a name="reportCashFlow" />
 #### reportCashFlow(options, callback)
-  
+
 Retrieves the CashFlow Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1822,9 +1838,9 @@ __Arguments__
 
 <a name="reportInventoryValuationSummary" />
 #### reportInventoryValuationSummary(options, callback)
-  
+
 Retrieves the InventoryValuationSummary Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1833,9 +1849,9 @@ __Arguments__
 
 <a name="reportCustomerSales" />
 #### reportCustomerSales(options, callback)
-  
+
 Retrieves the CustomerSales Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1844,9 +1860,9 @@ __Arguments__
 
 <a name="reportItemSales" />
 #### reportItemSales(options, callback)
-  
+
 Retrieves the ItemSales Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1855,9 +1871,9 @@ __Arguments__
 
 <a name="reportCustomerIncome" />
 #### reportCustomerIncome(options, callback)
-  
+
 Retrieves the CustomerIncome Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1866,9 +1882,9 @@ __Arguments__
 
 <a name="reportCustomerBalance" />
 #### reportCustomerBalance(options, callback)
-  
+
 Retrieves the CustomerBalance Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1877,9 +1893,9 @@ __Arguments__
 
 <a name="reportCustomerBalanceDetail" />
 #### reportCustomerBalanceDetail(options, callback)
-  
+
 Retrieves the CustomerBalanceDetail Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1888,9 +1904,9 @@ __Arguments__
 
 <a name="reportAgedReceivables" />
 #### reportAgedReceivables(options, callback)
-  
+
 Retrieves the AgedReceivables Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1899,9 +1915,9 @@ __Arguments__
 
 <a name="reportAgedReceivableDetail" />
 #### reportAgedReceivableDetail(options, callback)
-  
+
 Retrieves the AgedReceivableDetail Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1910,9 +1926,9 @@ __Arguments__
 
 <a name="reportVendorBalance" />
 #### reportVendorBalance(options, callback)
-  
+
 Retrieves the VendorBalance Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1921,9 +1937,9 @@ __Arguments__
 
 <a name="reportVendorBalanceDetail" />
 #### reportVendorBalanceDetail(options, callback)
-  
+
 Retrieves the VendorBalanceDetail Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1932,9 +1948,9 @@ __Arguments__
 
 <a name="reportAgedPayables" />
 #### reportAgedPayables(options, callback)
-  
+
 Retrieves the AgedPayables Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1943,9 +1959,9 @@ __Arguments__
 
 <a name="reportAgedPayableDetail" />
 #### reportAgedPayableDetail(options, callback)
-  
+
 Retrieves the AgedPayableDetail Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1954,9 +1970,9 @@ __Arguments__
 
 <a name="reportVendorExpenses" />
 #### reportVendorExpenses(options, callback)
-  
+
 Retrieves the VendorExpenses Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1965,9 +1981,9 @@ __Arguments__
 
 <a name="reportGeneralLedgerDetail" />
 #### reportGeneralLedgerDetail(options, callback)
-  
+
 Retrieves the GeneralLedgerDetail Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1976,9 +1992,9 @@ __Arguments__
 
 <a name="reportDepartmentSales" />
 #### reportDepartmentSales(options, callback)
-  
+
 Retrieves the DepartmentSales Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
@@ -1987,9 +2003,9 @@ __Arguments__
 
 <a name="reportClassSales" />
 #### reportClassSales(options, callback)
-  
+
 Retrieves the ClassSales Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
