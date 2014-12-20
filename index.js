@@ -11,7 +11,8 @@ var request = require('request'),
     debug   = require('request-debug'),
     util    = require('util'),
     moment  = require('moment'),
-    _       = require('underscore')
+    _       = require('underscore'),
+    version = require('./package.json').version
 
 module.exports = QuickBooks
 
@@ -1652,6 +1653,7 @@ module.request = function(context, verb, options, entity, callback) {
         oauth:   module.oauth(context),
         json:    true
       }
+  opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
   if (options.url.indexOf('/charge') === 0) {
     opts.headers['Request-Id'] = uuid.v1()
   }
