@@ -11,4 +11,7 @@ module.exports = {
   //
   // ,endpointBaseUrl: 'https://sandbox-quickbooks.api.intuit.com/v3/company/'
   //
+
+  // Payments API Sandbox usage can be configured by uncomenting the following line
+  //paymentsApiUrl: 'https://sandbox.api.intuit.com/quickbooks/v4/payments'
 }
