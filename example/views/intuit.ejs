@@ -2,12 +2,15 @@
 <head><meta http-equiv="Content-Type"
             content="text/html; charset=ISO-8859-1">
   <title>QBO Connect</title>
-  <script type="text/javascript" src="<%= appCenter %>/Content/IA/intuit.ipp.anywhere.js">
-  </script>
+                                                             <!-- intuit.ipp.anywhere-1.3.1.js may be current -->
+  <script type="text/javascript" src="<%= appCenter %>/Content/IA/intuit.ipp.anywhere.js"></script>
   <script>
     intuit.ipp.anywhere.setup({
-      menuProxy: '',
-      grantUrl: 'http://localhost:' + <%= port %> + '/requestToken'
+      grantUrl: 'http://localhost:' + <%= port %> + '/requestToken',
+      datasources: {
+        quickbooks : true,  // set to false if NOT using Quickbooks API
+        payments : false    // set to true if using Payments API
+      }
     });
   </script>
 </head>

@@ -16,13 +16,14 @@ var request = require('request'),
 
 module.exports = QuickBooks
 
-QuickBooks.REQUEST_TOKEN_URL        = 'https://oauth.intuit.com/oauth/v1/get_request_token'
-QuickBooks.ACCESS_TOKEN_URL         = 'https://oauth.intuit.com/oauth/v1/get_access_token'
-QuickBooks.APP_CENTER_BASE          = 'https://appcenter.intuit.com'
-QuickBooks.APP_CENTER_URL           = QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token='
-QuickBooks.V3_ENDPOINT_BASE_URL     = 'https://quickbooks.api.intuit.com/v3/company/'
-QuickBooks.PAYMENTS_API_V2_BASE_URL = 'https://transaction-qa.payments.intuit.net/v2'
-QuickBooks.QUERY_OPERATORS          = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
+QuickBooks.REQUEST_TOKEN_URL          = 'https://oauth.intuit.com/oauth/v1/get_request_token'
+QuickBooks.ACCESS_TOKEN_URL           = 'https://oauth.intuit.com/oauth/v1/get_access_token'
+QuickBooks.APP_CENTER_BASE            = 'https://appcenter.intuit.com'
+QuickBooks.APP_CENTER_URL             = QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token='
+QuickBooks.V3_ENDPOINT_BASE_URL       = 'https://quickbooks.api.intuit.com/v3/company/'
+QuickBooks.PAYMENTS_API_BETA_BASE_URL = 'https://merchantaccount.quickbooks.com/j/AppGateway'
+QuickBooks.PAYMENTS_API_SANDBOX_URL   = 'https://sandbox.api.intuit.com/quickbooks/v4/payments'
+QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
 
 /**
  * Node.js client encapsulating access to the QuickBooks V3 Rest API. An instance
@@ -37,7 +38,7 @@ QuickBooks.QUERY_OPERATORS          = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
  * @param endpointBaseUrl - string - See https://developer.intuit.com/v2/blog/2014/10/24/intuit-developer-now-offers-quickbooks-sandboxes
  * @constructor
  */
-function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, debug, endpointBaseUrl) {
+function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, debug, endpointBaseUrl, paymentsApiUrl) {
   var prefix           = _.isObject(consumerKey) ? 'consumerKey.' : ''
   this.consumerKey     = eval(prefix + 'consumerKey')
   this.consumerSecret  = eval(prefix + 'consumerSecret')
@@ -46,6 +47,7 @@ function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, de
   this.realmId         = eval(prefix + 'realmId')
   this.debug           = eval(prefix + 'debug')
   this.endpointBaseUrl = eval(prefix + 'endpointBaseUrl') || QuickBooks.V3_ENDPOINT_BASE_URL
+  QuickBooks.PAYMENTS_API_BETA_BASE_URL = eval(prefix + 'paymentsApiUrl') || QuickBooks.PAYMENTS_API_BETA_BASE_URL
 }
 
 /**
@@ -81,6 +83,16 @@ QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
 
 
 // **********************  Charge Api **********************
+
+QuickBooks.prototype.cardToken = function(token, callback) {
+  module.request(this, 'post', {
+    url: '/tokens',
+    headers: {
+      company_id: this.realmId
+    }
+  }, token, callback)
+}
+
 
 /**
  * Process a credit card charge using card details or token.
@@ -1643,8 +1655,9 @@ QuickBooks.prototype.reportClassSales = function(options, callback) {
 
 
 module.request = function(context, verb, options, entity, callback) {
-  var url = options.url.indexOf('/charge') === 0 ?
-          QuickBooks.PAYMENTS_API_V2_BASE_URL + options.url:
+  var url = (options.url.indexOf('/charge') === 0 ||
+             options.url.indexOf('/tokens') === 0) ?
+          QuickBooks.PAYMENTS_API_BETA_BASE_URL + options.url :
           context.endpointBaseUrl + context.realmId + options.url,
       opts = {
         url:     url,
@@ -1660,7 +1673,7 @@ module.request = function(context, verb, options, entity, callback) {
   if (entity !== null) {
     opts.body = entity
   }
-  if ('production' != process.env.NODE_ENV && context.debug) {
+  if ('production' !== process.env.NODE_ENV && context.debug) {
     debug(request)
   }
   request[verb].call(context, opts, function (err, res, body) {
