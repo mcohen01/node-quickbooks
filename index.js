@@ -20,10 +20,8 @@ QuickBooks.REQUEST_TOKEN_URL          = 'https://oauth.intuit.com/oauth/v1/get_r
 QuickBooks.ACCESS_TOKEN_URL           = 'https://oauth.intuit.com/oauth/v1/get_access_token'
 QuickBooks.APP_CENTER_BASE            = 'https://appcenter.intuit.com'
 QuickBooks.APP_CENTER_URL             = QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token='
-QuickBooks.V3_ENDPOINT_BASE_URL       = 'https://quickbooks.api.intuit.com/v3/company/'
-QuickBooks.PAYMENTS_API_BETA_BASE_URL = 'https://merchantaccount.quickbooks.com/j/AppGateway'
-QuickBooks.PAYMENTS_API_SANDBOX_URL   = 'https://sandbox.api.intuit.com/quickbooks/v4/payments'
-QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
+QuickBooks.V3_ENDPOINT_BASE_URL       = 'https://sandbox-quickbooks.api.intuit.com/v3/company/'
+QuickBooks.PAYMENTS_API_BASE_URL      = 'https://sandbox.api.intuit.com/quickbooks/v4/payments'
 
 /**
  * Node.js client encapsulating access to the QuickBooks V3 Rest API. An instance
@@ -34,20 +32,24 @@ QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE'
  * @param token - the OAuth generated user-specific key
  * @param tokenSecret - the OAuth generated user-specific password
  * @param realmId - QuickBooks companyId, returned as a request parameter when the user is redirected to the provided callback URL following authentication
+ * @param useSandbox - boolean - See https://developer.intuit.com/v2/blog/2014/10/24/intuit-developer-now-offers-quickbooks-sandboxes
  * @param debug - boolean flag to turn on logging of HTTP requests, including headers and body
- * @param endpointBaseUrl - string - See https://developer.intuit.com/v2/blog/2014/10/24/intuit-developer-now-offers-quickbooks-sandboxes
  * @constructor
  */
-function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, debug, endpointBaseUrl, paymentsApiUrl) {
+QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
+function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, useSandbox, debug) {
   var prefix           = _.isObject(consumerKey) ? 'consumerKey.' : ''
   this.consumerKey     = eval(prefix + 'consumerKey')
   this.consumerSecret  = eval(prefix + 'consumerSecret')
   this.token           = eval(prefix + 'token')
   this.tokenSecret     = eval(prefix + 'tokenSecret')
   this.realmId         = eval(prefix + 'realmId')
+  this.useSandbox      = eval(prefix + 'useSandbox')
   this.debug           = eval(prefix + 'debug')
-  this.endpointBaseUrl = eval(prefix + 'endpointBaseUrl') || QuickBooks.V3_ENDPOINT_BASE_URL
-  QuickBooks.PAYMENTS_API_BETA_BASE_URL = eval(prefix + 'paymentsApiUrl') || QuickBooks.PAYMENTS_API_BETA_BASE_URL
+  if (! this.useSandbox) {
+    QuickBooks.V3_ENDPOINT_BASE_URL = QuickBooks.V3_ENDPOINT_BASE_URL.replace('sandbox-', '')
+    QuickBooks.PAYMENTS_API_BASE_URL = QuickBooks.PAYMENTS_API_BASE_URL.replace('sandbox.', '')
+  }
 }
 
 /**
@@ -84,13 +86,13 @@ QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
 
 // **********************  Charge Api **********************
 
-QuickBooks.prototype.cardToken = function(token, callback) {
+QuickBooks.prototype.cardToken = function(card, callback) {
   module.request(this, 'post', {
     url: '/tokens',
     headers: {
       company_id: this.realmId
     }
-  }, token, callback)
+  }, card, callback)
 }
 
 
@@ -1655,10 +1657,9 @@ QuickBooks.prototype.reportClassSales = function(options, callback) {
 
 
 module.request = function(context, verb, options, entity, callback) {
-  var url = (options.url.indexOf('/charge') === 0 ||
-             options.url.indexOf('/tokens') === 0) ?
-          QuickBooks.PAYMENTS_API_BETA_BASE_URL + options.url :
-          context.endpointBaseUrl + context.realmId + options.url,
+  var isPayment = options.url.match(/^\/(charge|tokens)/),
+      url = isPayment ? QuickBooks.PAYMENTS_API_BASE_URL + options.url :
+                        QuickBooks.V3_ENDPOINT_BASE_URL + context.realmId + options.url,
       opts = {
         url:     url,
         qs:      options.qs || {},
@@ -1667,7 +1668,7 @@ module.request = function(context, verb, options, entity, callback) {
         json:    true
       }
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
-  if (options.url.indexOf('/charge') === 0) {
+  if (isPayment) {
     opts.headers['Request-Id'] = uuid.v1()
   }
   if (entity !== null) {
@@ -1677,7 +1678,7 @@ module.request = function(context, verb, options, entity, callback) {
     debug(request)
   }
   request[verb].call(context, opts, function (err, res, body) {
-    if ('production' != process.env.NODE_ENV && context.debug) {
+    if ('production' !== process.env.NODE_ENV && context.debug) {
       console.log('invoking endpoint: ' + url)
       console.log(entity || '')
       console.log(util.inspect(body, {showHidden: false, depth: null}));

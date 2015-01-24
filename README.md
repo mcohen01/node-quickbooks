@@ -18,6 +18,7 @@ var qbo = new QuickBooks(consumerKey,
                          oauthToken,
                          oauthTokenSecret,
                          realmId,
+                         false, // don't use the sandbox (i.e. for testing)
                          true); // turn debugging on
 
 qbo.createAttachable({Note: 'My File'}, function(err, attachable) {
@@ -65,6 +66,7 @@ var qbo = new QuickBooks(consumerKey,
                          consumerSecret,
                          oauthToken,
                          oauthTokenSecret,
+                         useSandbox,
                          realmId)
 
 var chargeId
@@ -154,6 +156,7 @@ __Arguments__
 * `oauth_token` - The user's generated token
 * `oauth_token_secret` - The user's generated secret
 * `realmId` - The company ID
+* `useSandbox` - boolean flag to indicate whether to use Sandbox (i.e. for testing)
 * `debug` - boolean flag to log http requests, headers, and response bodies to the console
 
 

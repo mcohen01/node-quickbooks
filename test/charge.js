@@ -11,35 +11,41 @@ describe('Charge Api', function() {
 
   it('should create a Charge, get a charge, capture, and refund', function(done) {
 
-    var charge = {
-      capture: false,
-      currency: 'USD',
-      amount: '42.21',
+    var card = {
+      name: 'Brad Smith',
       card: {
-        exp_year: '2016',
-        exp_month: '02',
+        cvc: '123',
+        number: '4111111111111111',
+        expYear: '2016',
+        expMonth: '02',
         address: {
           region: 'CA',
-          postal_code: '94062',
-          street_address: '131 Fairy Lane',
+          postalCode: '94062',
+          streetAddress: '131 Fairy Lane',
           country: 'US',
           city: 'Sunnyvale'
-        },
-        name: 'Brad Smith',
-        cvc: '123',
-        number: '4111111111111111'
+        }
       }
     }
 
-    var chargeId, refundId
+    var token, chargeId, refundId
     async.series([function(cb) {
-      qbo.charge(charge, function(err, charged) {
+      qbo.cardToken(card, function(err, cardToken) {
+        token = cardToken.value
+        cb()
+      })
+    }, function(cb) {
+      qbo.charge({
+        "amount": "42.21",
+        "token": token,
+        "currency": "USD"
+      }, function(err, charged) {
         expect(err).toBe(null)
         expect(charged.errors).toBe(undefined)
         expect(charged.amount).toBe(42.21)
-        expect(charged.card.number).toBe('xxxxxxxxxxxx1111')
-        expect(charged.card.name).toBe('Brad Smith')
-        expect(charged.card.address.street_address).toBe('131 Fairy Lane')
+        expect(charged.card.token).toExist()
+        expect(charged.card.id).toExist()
+        expect(charged.card.authCode).toExist()
         chargeId = charged.id
         cb()
       })
@@ -47,11 +53,10 @@ describe('Charge Api', function() {
       qbo.getCharge(chargeId, function(err, charge) {
         expect(err).toBe(null)
         expect(charge.errors).toBe(undefined)
-        expect(charge.status).toBe('authorized')
+        expect(charge.status.toUpperCase()).toBe('AUTHORIZED')
         expect(charge.amount).toBe(42.21)
         expect(charge.card.number).toBe('xxxxxxxxxxxx1111')
         expect(charge.card.name).toBe('Brad Smith')
-        expect(charge.card.address.street_address).toBe('131 Fairy Lane')
         cb()
       })
     }, function(cb) {
@@ -71,7 +76,6 @@ describe('Charge Api', function() {
         expect(charged.amount).toBe(42.21)
         expect(charged.card.number).toBe('xxxxxxxxxxxx1111')
         expect(charged.card.name).toBe('Brad Smith')
-        expect(charged.card.address.street_address).toBe('131 Fairy Lane')
         chargeId = charged.id
         cb()
       })
