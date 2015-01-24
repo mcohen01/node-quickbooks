@@ -71,6 +71,7 @@ app.get('/callback', function(req, res) {
                          accessToken.oauth_token,
                          accessToken.oauth_token_secret,
                          postBody.oauth.realmId,
+                         true, // use the Sandbox
                          true); // turn debugging on
 
     // test out account access
