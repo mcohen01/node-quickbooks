@@ -1691,6 +1691,19 @@ module.request = function(context, verb, options, entity, callback) {
   })
 }
 
+/**
+ * A generic way to access the QuickBooks api. Useful if an endpoint is missing from `node-quickbooks`.
+ *
+ * @param  {string} verb - "get" or "post"
+ * @param  {object} options - `.url` is required. `qs` and `headers` are optional.
+ * @param  {string|object} entity - Optional. The body payload
+ * @param  {function} callback - Callback function which is called with any error and the response
+ */
+QuickBooks.prototype.request = function (verb, options, entity, callback) {
+  module.request(this, verb, options, entity, callback)
+};
+
+
 // **********************  CRUD Api **********************
 module.create = function(context, entityName, entity, callback) {
   var url = '/' + entityName.toLowerCase()
