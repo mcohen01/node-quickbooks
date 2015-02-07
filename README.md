@@ -202,7 +202,6 @@ __Arguments__
 * [`getEmployee`](#getEmployee)
 * [`getEstimate`](#getEstimate)
 * [`getInvoice`](#getInvoice)
-* [`getInvoicePdf`](#getInvoicePdf)
 * [`getItem`](#getItem)
 * [`getJournalEntry`](#getJournalEntry)
 * [`getPayment`](#getPayment)
@@ -213,7 +212,6 @@ __Arguments__
 * [`getRefundReceipt`](#getRefundReceipt)
 * [`getReports`](#getReports)
 * [`getSalesReceipt`](#getSalesReceipt)
-* [`getSalesReceiptPdf`](#getSalesReceiptPdf)
 * [`getTaxAgency`](#getTaxAgency)
 * [`getTaxCode`](#getTaxCode)
 * [`getTaxRate`](#getTaxRate)
@@ -381,6 +379,8 @@ qbo.findAttachables({
 
 
 #### SalesReceipt and Invoice PDFs
+* [`getInvoicePdf`](#getInvoicePdf)
+* [`getSalesReceiptPdf`](#getSalesReceiptPdf)
 * [`sendInvoicePdf`](#sendInvoicePdf)
 * [`sendSalesReceiptPdf`](#sendSalesReceiptPdf)
 
@@ -804,17 +804,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Invoice
 
 
-<a name="getInvoicePdf" />
-#### getInvoicePdf(id, callback)
-
-Retrieves the Invoice PDF from QuickBooks
-
-__Arguments__
-
-* `id` - The Id of persistent Invoice
-* `callback` - Callback function which is called with any error and the Invoice PDF
-
-
 <a name="getItem" />
 #### getItem(id, callback)
 
@@ -923,17 +912,6 @@ __Arguments__
 
 * `id` - The Id of persistent SalesReceipt
 * `callback` - Callback function which is called with any error and the persistent SalesReceipt
-
-
-<a name="getSalesReceiptPdf" />
-#### getSalesReceiptPdf(id, callback)
-
-Retrieves the SalesReceipt PDF from QuickBooks
-
-__Arguments__
-
-* `id` - The Id of persistent SalesReceipt
-* `callback` - Callback function which is called with any error and the persistent SalesReceipt PDF
 
 
 <a name="getTaxAgency" />
@@ -2042,6 +2020,28 @@ __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
 * `callback` - Callback function which is called with any error and the ClassSales Report
+
+
+<a name="getInvoicePdf" />
+#### getInvoicePdf(id, callback)
+
+Retrieves the Invoice PDF from QuickBooks
+
+__Arguments__
+
+* `id` - The Id of persistent Invoice
+* `callback` - Callback function which is called with any error and the Invoice PDF
+
+
+<a name="getSalesReceiptPdf" />
+#### getSalesReceiptPdf(id, callback)
+
+Retrieves the SalesReceipt PDF from QuickBooks
+
+__Arguments__
+
+* `id` - The Id of persistent SalesReceipt
+* `callback` - Callback function which is called with any error and the persistent SalesReceipt PDF
 
 
 <a name="sendInvoicePdf" />
