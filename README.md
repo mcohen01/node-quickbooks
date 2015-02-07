@@ -202,6 +202,7 @@ __Arguments__
 * [`getEmployee`](#getEmployee)
 * [`getEstimate`](#getEstimate)
 * [`getInvoice`](#getInvoice)
+* [`getInvoicePdf`](#getInvoicePdf)
 * [`getItem`](#getItem)
 * [`getJournalEntry`](#getJournalEntry)
 * [`getPayment`](#getPayment)
@@ -212,6 +213,7 @@ __Arguments__
 * [`getRefundReceipt`](#getRefundReceipt)
 * [`getReports`](#getReports)
 * [`getSalesReceipt`](#getSalesReceipt)
+* [`getSalesReceiptPdf`](#getSalesReceiptPdf)
 * [`getTaxAgency`](#getTaxAgency)
 * [`getTaxCode`](#getTaxCode)
 * [`getTaxRate`](#getTaxRate)
@@ -376,6 +378,11 @@ qbo.findAttachables({
 * [`reportGeneralLedgerDetail`](#reportGeneralLedgerDetail)
 * [`reportDepartmentSales`](#reportDepartmentSales)
 * [`reportClassSales`](#reportClassSales)
+
+
+#### SalesReceipt and Invoice PDFs
+* [`sendInvoicePdf`](#sendInvoicePdf)
+* [`sendSalesReceiptPdf`](#sendSalesReceiptPdf)
 
 
 #### Payments/Charge Api
@@ -797,6 +804,17 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Invoice
 
 
+<a name="getInvoicePdf" />
+#### getInvoicePdf(id, callback)
+
+Retrieves the Invoice PDF from QuickBooks
+
+__Arguments__
+
+* `id` - The Id of persistent Invoice
+* `callback` - Callback function which is called with any error and the Invoice PDF
+
+
 <a name="getItem" />
 #### getItem(id, callback)
 
@@ -905,6 +923,17 @@ __Arguments__
 
 * `id` - The Id of persistent SalesReceipt
 * `callback` - Callback function which is called with any error and the persistent SalesReceipt
+
+
+<a name="getSalesReceiptPdf" />
+#### getSalesReceiptPdf(id, callback)
+
+Retrieves the SalesReceipt PDF from QuickBooks
+
+__Arguments__
+
+* `id` - The Id of persistent SalesReceipt
+* `callback` - Callback function which is called with any error and the persistent SalesReceipt PDF
 
 
 <a name="getTaxAgency" />
@@ -2013,6 +2042,30 @@ __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
 * `callback` - Callback function which is called with any error and the ClassSales Report
+
+
+<a name="sendInvoicePdf" />
+#### sendInvoicePdf(id, sendTo, callback)
+
+Emails the Invoice PDF from QuickBooks to the address supplied in Invoice.BillEmail.EmailAddress or the specified 'sendTo' address
+
+__Arguments__
+
+* `Id` - The Id of persistent Invoice
+* `sendTo` - (Optional) optional email address to send the PDF to. If not provided, address supplied in Invoice.BillEmail.EmailAddress will be used
+* `callback` - Callback function which is called with any error and the Invoice PDF
+
+
+<a name="sendSalesReceiptPdf" />
+#### sendSalesReceiptPdf(id, sendTo, callback)
+
+Emails the SalesReceipt PDF from QuickBooks to the address supplied in SalesReceipt.BillEmail.EmailAddress or the specified 'sendTo' address
+
+__Arguments__
+
+* `Id` - The Id of persistent SalesReceipt
+* `sendTo` - (Optional) optional email address to send the PDF to. If not provided, address supplied in SalesReceipt.BillEmail.EmailAddress will be used
+* `callback` - Callback function which is called with any error and the SalesReceipt PDF
 
 
 <a name="charge" />

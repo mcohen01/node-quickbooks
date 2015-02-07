@@ -42,7 +42,7 @@ describe('Attachable CRUDQ', function() {
       qbo.findAttachables(function(err, list) {
         expect(err).toBe(null)
         expect(list.Fault).toBe(undefined)
-        expect(list.QueryResponse.Attachable.length).toBe(1)
+        expect(list.QueryResponse.Attachable.length).toBeGreaterThan(0)
         expect(list.QueryResponse.Attachable[0].Note).toBe('My Updated File')
         cb()
       })
@@ -83,7 +83,7 @@ describe('Query', function() {
     qbo.findAccounts({AccountType: 'Expense'}, function(err, accounts) {
       expect(err).toBe(null)
       expect(accounts.Fault).toBe(undefined)
-      expect(accounts.QueryResponse.Account.length).toBeLessThan(20)
+      expect(accounts.QueryResponse.Account.length).toBeLessThan(40)
       expect(accounts.QueryResponse.Account[0].AccountType).toBe('Expense')
       done()
     })
@@ -166,7 +166,17 @@ describe('SalesReceipt', function() {
       ]}, function(err, salesReceipt) {
       expect(err).toBe(null)
       expect(salesReceipt.Fault).toBe(undefined)
-      done()
+      async.series([function(cb) {
+        qbo.sendSalesReceiptPdf(salesReceipt.Id, 'mcohen01@gmail.com', function(err, data) {
+          console.log(util.inspect(data, {showHidden: false, depth: null}));
+          cb()
+        })
+      }, function(cb) {
+        qbo.getSalesReceiptPdf(salesReceipt.Id, function(err, data) {
+          console.log(util.inspect(data, {showHidden: false, depth: null}));
+          cb()
+        })
+      }],function(e, r) { done() })
     })
   })
 

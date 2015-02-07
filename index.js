@@ -548,6 +548,33 @@ QuickBooks.prototype.getInvoice = function(id, callback) {
 }
 
 /**
+ * Retrieves the Invoice PDF from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent Invoice
+ * @param  {function} callback - Callback function which is called with any error and the Invoice PDF
+ */
+QuickBooks.prototype.getInvoicePdf = function(id, callback) {
+  module.read(this, 'Invoice', id + '/pdf', callback)
+}
+
+/**
+ * Emails the Invoice PDF from QuickBooks to the address supplied in Invoice.BillEmail.EmailAddress
+ * or the specified 'sendTo' address
+ *
+ * @param  {string} Id - The Id of persistent Invoice
+ * @param  {string} sendTo - optional email address to send the PDF to. If not provided, address supplied in Invoice.BillEmail.EmailAddress will be used
+ * @param  {function} callback - Callback function which is called with any error and the Invoice PDF
+ */
+QuickBooks.prototype.sendInvoicePdf = function(id, sendTo, callback) {
+  var path = '/invoice/' + id + '/send'
+  callback = _.isFunction(sendTo) ? sendTo : callback
+  if (sendTo && ! _.isFunction(sendTo)) {
+    path += '?sendTo=' + sendTo
+  }
+  module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'Invoice'))
+}
+
+/**
  * Retrieves the Item from QuickBooks
  *
  * @param  {string} Id - The Id of persistent Item
@@ -645,6 +672,33 @@ QuickBooks.prototype.getReports = function(id, callback) {
  */
 QuickBooks.prototype.getSalesReceipt = function(id, callback) {
   module.read(this, 'salesReceipt', id, callback)
+}
+
+/**
+ * Retrieves the SalesReceipt PDF from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent SalesReceipt
+ * @param  {function} callback - Callback function which is called with any error and the SalesReceipt PDF
+ */
+QuickBooks.prototype.getSalesReceiptPdf = function(id, callback) {
+  module.read(this, 'salesReceipt', id + '/pdf', callback)
+}
+
+/**
+ * Emails the SalesReceipt PDF from QuickBooks to the address supplied in SalesReceipt.BillEmail.EmailAddress
+ * or the specified 'sendTo' address
+ *
+ * @param  {string} Id - The Id of persistent SalesReceipt
+ * @param  {string} sendTo - optional email address to send the PDF to. If not provided, address supplied in SalesReceipt.BillEmail.EmailAddress will be used
+ * @param  {function} callback - Callback function which is called with any error and the SalesReceipt PDF
+ */
+QuickBooks.prototype.sendSalesReceiptPdf = function(id, sendTo, callback) {
+  var path = '/salesreceipt/' + id + '/send'
+  callback = _.isFunction(sendTo) ? sendTo : callback
+  if (sendTo && ! _.isFunction(sendTo)) {
+    path += '?sendTo=' + sendTo
+  }
+  module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'SalesReceipt'))
 }
 
 /**
@@ -1670,6 +1724,9 @@ module.request = function(context, verb, options, entity, callback) {
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
   if (isPayment) {
     opts.headers['Request-Id'] = uuid.v1()
+  }
+  if (options.url.match(/pdf$/)) {
+    opts.headers['accept'] = 'application/pdf'
   }
   if (entity !== null) {
     opts.body = entity
