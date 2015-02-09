@@ -46,10 +46,8 @@ function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, us
   this.realmId         = eval(prefix + 'realmId')
   this.useSandbox      = eval(prefix + 'useSandbox')
   this.debug           = eval(prefix + 'debug')
-  if (! this.useSandbox) {
-    QuickBooks.V3_ENDPOINT_BASE_URL = QuickBooks.V3_ENDPOINT_BASE_URL.replace('sandbox-', '')
-    QuickBooks.PAYMENTS_API_BASE_URL = QuickBooks.PAYMENTS_API_BASE_URL.replace('sandbox.', '')
-  }
+  this.endpoint        = this.useSandbox ? QuickBooks.V3_ENDPOINT_BASE_URL : QuickBooks.V3_ENDPOINT_BASE_URL.replace('sandbox-', '')
+  this.paymentEndpoint = this.useSandbox ? QuickBooks.PAYMENTS_API_BASE_URL : QuickBooks.PAYMENTS_API_BASE_URL.replace('sandbox.', '')
 }
 
 /**
@@ -1712,8 +1710,8 @@ QuickBooks.prototype.reportClassSales = function(options, callback) {
 
 module.request = function(context, verb, options, entity, callback) {
   var isPayment = options.url.match(/^\/(charge|tokens)/),
-      url = isPayment ? QuickBooks.PAYMENTS_API_BASE_URL + options.url :
-                        QuickBooks.V3_ENDPOINT_BASE_URL + context.realmId + options.url,
+      url = isPayment ? context.paymentEndpoint + options.url :
+                        context.endpoint + context.realmId + options.url,
       opts = {
         url:     url,
         qs:      options.qs || {},
