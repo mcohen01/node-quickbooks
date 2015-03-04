@@ -83,7 +83,7 @@ describe('Query', function() {
     qbo.findAccounts({AccountType: 'Expense'}, function(err, accounts) {
       expect(err).toBe(null)
       expect(accounts.Fault).toBe(undefined)
-      expect(accounts.QueryResponse.Account.length).toBeLessThan(40)
+      expect(accounts.QueryResponse.Account.length).toBeGreaterThan(0)
       expect(accounts.QueryResponse.Account[0].AccountType).toBe('Expense')
       done()
     })
