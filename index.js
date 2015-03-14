@@ -22,6 +22,7 @@ QuickBooks.APP_CENTER_BASE            = 'https://appcenter.intuit.com'
 QuickBooks.APP_CENTER_URL             = QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token='
 QuickBooks.V3_ENDPOINT_BASE_URL       = 'https://sandbox-quickbooks.api.intuit.com/v3/company/'
 QuickBooks.PAYMENTS_API_BASE_URL      = 'https://sandbox.api.intuit.com/quickbooks/v4/payments'
+QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
 
 /**
  * Node.js client encapsulating access to the QuickBooks V3 Rest API. An instance
@@ -36,7 +37,6 @@ QuickBooks.PAYMENTS_API_BASE_URL      = 'https://sandbox.api.intuit.com/quickboo
  * @param debug - boolean flag to turn on logging of HTTP requests, including headers and body
  * @constructor
  */
-QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
 function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, useSandbox, debug) {
   var prefix           = _.isObject(consumerKey) ? 'consumerKey.' : ''
   this.consumerKey     = eval(prefix + 'consumerKey')
