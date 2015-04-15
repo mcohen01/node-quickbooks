@@ -1794,7 +1794,8 @@ module.query = function(context, entity, criteria, callback) {
   }
   if (criteria && typeof criteria !== 'function') {
     url += module.criteriaToString(criteria) || ''
-    url = url.replace(/'/g, '%27').replace(/=/, '%3D').replace(/</, '%3C').replace(/>/, '%3E').replace(/\&/g, '%26');
+    url = encodeURIComponent(url)
+    url = url.replace(/'/g, '%27') // This isn't encoded by encodeURIComponent
   }
   url = url.replace('@@', '=')
   module.request(context, 'get', {url: url}, null, typeof criteria === 'function' ? criteria : callback)
