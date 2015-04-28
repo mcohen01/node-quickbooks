@@ -1684,7 +1684,7 @@ QuickBooks.prototype.reportVendorExpenses = function(options, callback) {
  * @param  {function} callback - Callback function which is called with any error and the GeneralLedgerDetail Report
  */
 QuickBooks.prototype.reportGeneralLedgerDetail = function(options, callback) {
-  module.report(this, 'GeneralLedgerDetail', options, callback)
+  module.report(this, 'GeneralLedger', options, callback)
 }
 
 /**
@@ -1707,6 +1707,15 @@ QuickBooks.prototype.reportClassSales = function(options, callback) {
   module.report(this, 'ClassSales', options, callback)
 }
 
+/**
+ * Retrieves the AccountListDetail Report from QuickBooks
+ *
+ * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
+ * @param  {function} callback - Callback function which is called with any error and the AccountListDetail Report
+ */
+QuickBooks.prototype.reportAccountListDetail = function(options, callback) {
+  module.report(this, 'AccountList', options, callback)
+}
 
 module.request = function(context, verb, options, entity, callback) {
   var isPayment = options.url.match(/^\/(charge|tokens)/),
