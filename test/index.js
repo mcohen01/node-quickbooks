@@ -167,12 +167,13 @@ describe('SalesReceipt', function() {
       expect(err).toBe(null)
       expect(salesReceipt.Fault).toBe(undefined)
       async.series([function(cb) {
-        qbo.sendSalesReceiptPdf(salesReceipt.Id, 'mcohen01@gmail.com', function(err, data) {
+        qbo.sendSalesReceiptPdf(salesReceipt.Id, config.testEmail, function(err, data) {
           console.log(util.inspect(data, {showHidden: false, depth: null}));
           cb()
         })
       }, function(cb) {
         qbo.getSalesReceiptPdf(salesReceipt.Id, function(err, data) {
+          fs.writeFileSync('salesReceipt_'+salesReceipt.Id+'.pdf',data);
           console.log(util.inspect(data, {showHidden: false, depth: null}));
           cb()
         })
