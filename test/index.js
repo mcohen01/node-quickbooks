@@ -1,4 +1,5 @@
-var fs         = require('fs'),
+var os         = require('os'), 
+    fs         = require('fs'),
     util       = require('util'),
     expect     = require('expect'),
     async      = require('async'),
@@ -99,7 +100,7 @@ describe('Query', function() {
     })
   })
 
-  var queries = fs.readFileSync('build/query.txt').toString('utf-8').split('\n')
+  var queries = fs.readFileSync('build/query.txt').toString('utf-8').split(os.EOL)
   queries.forEach(function(q) {
     it('should fetch ' + qbo.capitalize(q), function (done) {
       qbo['find' +  qbo.pluralize(qbo.capitalize(q))].call(qbo, function(err, data) {
@@ -118,7 +119,7 @@ describe('Reports', function() {
 
   this.timeout(30000);
 
-  var reports = fs.readFileSync('build/report.txt').toString('utf-8').split('\n')
+  var reports = fs.readFileSync('build/report.txt').toString('utf-8').split(os.EOL)
   reports.some(function (line) {
     if (line === '') return true
     it('should fetch ' + line + ' Report', function (done) {
