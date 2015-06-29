@@ -1734,6 +1734,7 @@ module.request = function(context, verb, options, entity, callback) {
   }
   if (options.url.match(/pdf$/)) {
     opts.headers['accept'] = 'application/pdf'
+    opts.encoding = null
   }
   if (entity !== null) {
     opts.body = entity
