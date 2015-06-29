@@ -536,6 +536,23 @@ QuickBooks.prototype.getEstimate = function(id, callback) {
 }
 
 /**
+ * Emails the Estimate PDF from QuickBooks to the address supplied in Estimate.BillEmail.EmailAddress
+ * or the specified 'sendTo' address
+ *
+ * @param  {string} Id - The Id of persistent Estimate
+ * @param  {string} sendTo - optional email address to send the PDF to. If not provided, address supplied in Estimate.BillEmail.EmailAddress will be used
+ * @param  {function} callback - Callback function which is called with any error and the Estimate PDF
+ */
+QuickBooks.prototype.sendEstimatePdf = function(id, sendTo, callback) {
+  var path = '/estimate/' + id + '/send'
+  callback = _.isFunction(sendTo) ? sendTo : callback
+  if (sendTo && ! _.isFunction(sendTo)) {
+    path += '?sendTo=' + sendTo
+  }
+  module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'Estimate'))
+}
+
+/**
  * Retrieves the Invoice from QuickBooks
  *
  * @param  {string} Id - The Id of persistent Invoice

@@ -382,6 +382,7 @@ qbo.findAttachables({
 * [`getInvoicePdf`](#getInvoicePdf)
 * [`getSalesReceiptPdf`](#getSalesReceiptPdf)
 * [`sendInvoicePdf`](#sendInvoicePdf)
+* [`sendEstimatePdf`](#sendEstimatePdf)
 * [`sendSalesReceiptPdf`](#sendSalesReceiptPdf)
 
 
@@ -2054,6 +2055,18 @@ __Arguments__
 * `Id` - The Id of persistent Invoice
 * `sendTo` - (Optional) optional email address to send the PDF to. If not provided, address supplied in Invoice.BillEmail.EmailAddress will be used
 * `callback` - Callback function which is called with any error and the Invoice PDF
+
+
+<a name="sendEstimatePdf" />
+#### sendEstimatePdf(id, sendTo, callback)
+
+Emails the Estimate PDF from QuickBooks to the address supplied in Estimate.BillEmail.EmailAddress or the specified 'sendTo' address
+
+__Arguments__
+
+* `Id` - The Id of persistent Estimate
+* `sendTo` - (Optional) optional email address to send the PDF to. If not provided, address supplied in Estimate.BillEmail.EmailAddress will be used
+* `callback` - Callback function which is called with any error and the Estimate PDF
 
 
 <a name="sendSalesReceiptPdf" />
