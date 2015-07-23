@@ -246,7 +246,6 @@ __Arguments__
 * [`updateTaxAgency`](#updateTaxAgency)
 * [`updateTaxCode`](#updateTaxCode)
 * [`updateTaxRate`](#updateTaxRate)
-* [`updateTaxService`](#updateTaxService)
 * [`updateTerm`](#updateTerm)
 * [`updateTimeActivity`](#updateTimeActivity)
 * [`updateVendor`](#updateVendor)
@@ -1256,17 +1255,6 @@ __Arguments__
 
 * `object` - The persistent TaxRate, including Id and SyncToken fields
 * `callback` - Callback function which is called with any error and the updated TaxRate
-
-
-<a name="updateTaxService" />
-#### updateTaxService(object, callback)
-
-Updates QuickBooks version of TaxService
-
-__Arguments__
-
-* `object` - The persistent TaxService, including Id and SyncToken fields
-* `callback` - Callback function which is called with any error and the updated TaxService
 
 
 <a name="updateTerm" />
