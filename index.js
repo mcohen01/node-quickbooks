@@ -380,7 +380,7 @@ QuickBooks.prototype.createTaxAgency = function(taxAgency, callback) {
  * @param  {function} callback - Callback function which is called with any error and the persistent TaxService
  */
 QuickBooks.prototype.createTaxService = function(taxService, callback) {
-  module.create(this, 'taxService', taxService, callback)
+  module.create(this, 'taxService/taxcode', taxService, callback)
 }
 
 /**
@@ -1026,16 +1026,6 @@ QuickBooks.prototype.updateTaxCode = function(taxCode, callback) {
  */
 QuickBooks.prototype.updateTaxRate = function(taxRate, callback) {
   module.update(this, 'taxRate', taxRate, callback)
-}
-
-/**
- * Updates QuickBooks version of TaxService
- *
- * @param  {object} taxService - The persistent TaxService, including Id and SyncToken fields
- * @param  {function} callback - Callback function which is called with any error and the persistent TaxService
- */
-QuickBooks.prototype.updateTaxService = function(taxService, callback) {
-  module.update(this, 'taxService', taxService, callback)
 }
 
 /**
