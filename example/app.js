@@ -3,6 +3,9 @@ var http       = require('http'),
     request    = require('request'),
     qs         = require('querystring'),
     util       = require('util'),
+    bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    session    = require('express-session'),
     express    = require('express'),
     app        = express(),
     QuickBooks = require('../index')
@@ -11,16 +14,14 @@ var http       = require('http'),
 // Generic Express config
 app.set('port', port)
 app.set('views', 'views')
-app.use(express.bodyParser())
-app.use(express.cookieParser('brad'))
-app.use(express.session({secret: 'smith'}));
-app.use(app.router)
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(cookieParser('brad'))
+app.use(session({resave: false, saveUninitialized: false, secret: 'smith'}));
 
-http.createServer(app).listen(app.get('port'), function() {
+app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'))
 })
-
-
 
 // INSERT YOUR CONSUMER_KEY AND CONSUMER_SECRET HERE
 
