@@ -1,12 +1,12 @@
 {
   "name": "node-quickbooks-example-app",
   "version": "0.0.1",
-  "description": "Example Express application for Intuit's node.js client for IPP QuickBooks V3 API.",
+  "description": "Example Express application for Intuit's node.js client for QuickBooks V3 API.",
   "main": "app.js",
   "keywords": [
     "Intuit",
     "QuickBooks",
-    "IPP"
+    "Intuit Developer"
   ],
   "author": "Michael Cohen",
   "license": "ISC",
