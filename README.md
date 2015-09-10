@@ -119,7 +119,7 @@ The `example` directory contains a barebones Express application that demonstrat
 
 ### Setup
 
-Install the required dependencies from NPM
+First navigate to the `example` directory and install the required dependencies from NPM
 
     npm install
 
