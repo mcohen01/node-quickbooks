@@ -2127,4 +2127,4 @@ __Arguments__
 * `callback` - Callback function which is called with any error or the Refund
 
 
-[1]: https://developer.intuit.com/docs/0025_quickbooksapi/0050_data_services
+[1]: https://developer.intuit.com/docs/api/accounting
