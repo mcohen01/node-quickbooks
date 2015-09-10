@@ -28,6 +28,10 @@ app.listen(app.get('port'), function() {
 var consumerKey    = '',
     consumerSecret = ''
 
+app.get('/',function(req,res){
+  res.redirect('/start');
+})
+
 app.get('/start', function(req, res) {
   res.render('intuit.ejs', {locals: {port:port, appCenter: QuickBooks.APP_CENTER_BASE}})
 })
