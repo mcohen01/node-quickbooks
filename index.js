@@ -1853,7 +1853,7 @@ module.checkProperty = function(field, name) {
 }
 
 module.criteriaToString = function(criteria) {
-  if (_.isString(criteria)) return criteria
+  if (_.isString(criteria)) return criteria.indexOf(' ') === 0 ? criteria : " " + criteria
   var flattened = [];
   if (_.isArray(criteria)) {
     if (criteria.length === 0) return ''
