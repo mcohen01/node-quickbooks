@@ -1760,7 +1760,7 @@ module.request = function(context, verb, options, entity, callback) {
       console.log(util.inspect(body, {showHidden: false, depth: null}));
     }
     if (callback) {
-      callback(err, body)
+      callback(err || res.statusCode >= 300 ? body : null, body)
     } else {
       return
     }
