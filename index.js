@@ -1966,7 +1966,7 @@ module.unwrap = function(callback, entityName) {
       if (callback) callback(err)
     } else {
       var name = module.capitalize(entityName)
-      if (callback) callback(err, data[name] || data)
+      if (callback) callback(err, (data || {})[name] || data)
     }
   }
 }
