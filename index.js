@@ -1817,11 +1817,25 @@ module.delete = function(context, entityName, idOrEntity, callback) {
 // **********************  Query Api **********************
 module.query = function(context, entity, criteria, callback) {
   var url = '/query?query@@select * from ' + entity
-  for (var p in criteria) {
-    if (p.toLowerCase() === 'count' && criteria[p]) {
-      url = url.replace('select \* from', 'select count(*) from')
-      delete criteria[p]
-      continue
+  var count = function(obj) {
+    for (var p in obj) {
+      if (p.toLowerCase() === 'count' && obj[p]) {
+        url = url.replace('select \* from', 'select count(*) from')
+        delete obj[p]
+        continue
+      }
+    }
+  }
+  count(criteria)
+  if (_.isArray(criteria)) {
+    for (var i = 0; i < criteria.length; i++) {
+      if (_.isObject(criteria[i])) {
+        var j = Object.keys(criteria[i]).length
+        count(criteria[i])
+        if (j !== Object.keys(criteria[i]).length) {
+          criteria.splice(i, i + 1)
+        }
+      }
     }
   }
   if (criteria && typeof criteria !== 'function') {
