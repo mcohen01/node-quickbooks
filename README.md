@@ -109,12 +109,12 @@ var charge = {
   currency: 'USD',
   amount: '42.21',
   card: {
-    exp_year: '2016',
-    exp_month: '02',
+    expYear: '2016',
+    expMonth: '02',
     address: {
       region: 'CA',
-      postal_code: '94062',
-      street_address: '131 Fairy Lane',
+      postalCode: '94062',
+      streetAddress: '131 Fairy Lane',
       country: 'US',
       city: 'Sunnyvale'
     },
