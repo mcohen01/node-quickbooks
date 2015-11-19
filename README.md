@@ -77,13 +77,13 @@ qbo.findAccounts({
   desc: 'MetaData.LastUpdatedTime',
   limit: 5,
   offset: 5
-  }, function(_, accounts) {
+  }, function(err, accounts) {
   accounts.QueryResponse.Account.forEach(function(account) {
     console.log(account.Name)
   })
 })
 
-qbo.reportBalanceSheet({department: '1,4,7'}, function(_, balanceSheet) {
+qbo.reportBalanceSheet({department: '1,4,7'}, function(err, balanceSheet) {
   console.log(balanceSheet)
 })
 
