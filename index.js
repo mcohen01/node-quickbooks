@@ -1843,15 +1843,15 @@ module.query = function(context, entity, criteria, callback) {
   }
   if (criteria && typeof criteria !== 'function') {
     url += module.criteriaToString(criteria) || ''
-    url = url.replace(/%/, '%25')
-            .replace(/'/g, '%27')
-            .replace(/=/, '%3D')
-            .replace(/</, '%3C')
-            .replace(/>/, '%3E')
-            .replace(/\&/g, '%26')
-            .replace(/\#/g, '%23')
-            .replace(/\\/g, '%5C')
-            .replace(/\+/g, '%2B')
+    url = url.replace(/%/g, '%25')
+             .replace(/'/g, '%27')
+             .replace(/=/g, '%3D')
+             .replace(/</g, '%3C')
+             .replace(/>/g, '%3E')
+             .replace(/\&/g, '%26')
+             .replace(/\#/g, '%23')
+             .replace(/\\/g, '%5C')
+             .replace(/\+/g, '%2B')
   }
   url = url.replace('@@', '=')
   module.request(context, 'get', {url: url}, null, typeof criteria === 'function' ? criteria : callback)
