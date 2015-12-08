@@ -1937,7 +1937,14 @@ module.criteriaToString = function(criteria) {
       sql += ' and '
     }
     sql += criterion.field + ' ' + criterion.operator + ' '
-    sql += "'" + criterion.value + "'"
+    if (_.isArray(criterion.value)) {
+      var quoted = criterion.value.map(function(x) {
+        return "'" + x + "'"
+      })
+      sql += '(' + quoted.join(',') + ')'
+    } else {
+      sql += "'" + criterion.value + "'"
+    }
   }
   if (sql != '') {
     sql = ' where ' + sql
