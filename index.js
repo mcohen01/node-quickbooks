@@ -1763,7 +1763,7 @@ module.request = function(context, verb, options, entity, callback) {
       if (err ||
         res.statusCode >= 300 ||
         (_.isObject(body) && body.Fault && body.Fault.Error && body.Fault.Error.length)) {
-        callback(body, body)
+        callback(err || body, body)
       } else {
         callback(null, body)
       }
