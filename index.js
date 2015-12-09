@@ -1739,6 +1739,7 @@ module.request = function(context, verb, options, entity, callback) {
     oauth:   module.oauth(context),
     json:    true
   }
+  opts.qs.minorversion = opts.qs.minorversion || 4
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
   if (isPayment) {
     opts.headers['Request-Id'] = uuid.v1()
