@@ -374,6 +374,7 @@ qbo.findAttachables({
 * [`reportAgedPayables`](#reportAgedPayables)
 * [`reportAgedPayableDetail`](#reportAgedPayableDetail)
 * [`reportVendorExpenses`](#reportVendorExpenses)
+* [`reportTransactionList`](#reportTransactionList)
 * [`reportGeneralLedgerDetail`](#reportGeneralLedgerDetail)
 * [`reportDepartmentSales`](#reportDepartmentSales)
 * [`reportClassSales`](#reportClassSales)
@@ -1978,6 +1979,17 @@ __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
 * `callback` - Callback function which is called with any error and the VendorExpenses Report
+
+
+<a name="reportTransactionList" />
+#### reportTransactionList(options, callback)
+  
+Retrieves the TransactionList Report from QuickBooks
+ 
+__Arguments__
+
+* `options` - (Optional) Map of key-value pairs passed as options to the Report
+* `callback` - Callback function which is called with any error and the TransactionList Report
 
 
 <a name="reportGeneralLedgerDetail" />

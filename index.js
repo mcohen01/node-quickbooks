@@ -1686,6 +1686,16 @@ QuickBooks.prototype.reportVendorExpenses = function(options, callback) {
 }
 
 /**
+ * Retrieves the TransactionList Report from QuickBooks
+ *
+ * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
+ * @param  {function} callback - Callback function which is called with any error and the TransactionList Report
+ */
+QuickBooks.prototype.reportTransactionList = function(options, callback) {
+  module.report(this, 'TransactionList', options, callback)
+}
+
+/**
  * Retrieves the GeneralLedgerDetail Report from QuickBooks
  *
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report

@@ -16,6 +16,7 @@ VendorBalanceDetail
 AgedPayables
 AgedPayableDetail
 VendorExpenses
+TransactionList
 
 # these are broken on QBO right now
 GeneralLedgerDetail
