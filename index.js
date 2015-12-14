@@ -83,97 +83,6 @@ QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
 }
 
 
-// **********************  Charge Api **********************
-
-QuickBooks.prototype.cardToken = function(card, callback) {
-  module.request(this, 'post', {
-    url: '/tokens',
-    headers: {
-      company_id: this.realmId
-    }
-  }, card, callback)
-}
-
-
-/**
- * Process a credit card charge using card details or token.
- * Can capture funds or just authorize.
- *
- * @param {object} charge - details, amount, currency etc. of charge to be processed
- * @param callback - Callback function which is called with any error or the saved Charge
- */
-QuickBooks.prototype.charge = function(charge, callback) {
-  module.request(this, 'post', {
-    url: '/charges',
-    headers: {
-      company_id: this.realmId
-    }
-  }, charge, callback)
-}
-
-/**
- * Get details of charge.
- *
- * @param {string} chargeId - of previously created charge
- * @param callback - Callback function which is called with any error or the Charge
- */
-QuickBooks.prototype.getCharge = function(chargeId, callback) {
-  module.request(this, 'get', {
-    url: '/charges/' + chargeId,
-    headers: {
-      company_id: this.realmId
-    }
-  }, null, callback)
-}
-
-/**
- * Allows you to capture funds for an existing charge that was intended to be captured at a later time.
- *
- * @param {string} chargeId - of previously created charge
- * @param {object} charge - details, amount, currency to capture
- * @param callback - Callback function which is called with any error or the capture description
- */
-QuickBooks.prototype.capture = function(chargeId, capture, callback) {
-  module.request(this, 'post', {
-    url: '/charges/' + chargeId + '/capture',
-    headers: {
-      company_id: this.realmId
-    }
-  }, capture, callback)
-}
-
-/**
- * Allows you to refund an existing charge. Full and partial refund are supported.
- *
- * @param {string} chargeId - of previously created charge
- * @param {object} refund - details, amount, currency to refund
- * @param callback - Callback function which is called with any error or the refund description
- */
-QuickBooks.prototype.refund = function(chargeId, refund, callback) {
-  module.request(this, 'post', {
-    url: '/charges/' + chargeId + '/refunds',
-    headers: {
-      company_id: this.realmId
-    }
-  }, refund, callback)
-}
-
-/**
- * Retrieves the Refund for the given refund id
- *
- * @param {string} chargeId - id of previously created charge
- * @param {string} refundId - id of previously created Refund
- * @param callback - Callback function which is called with any error or the Refund
- */
-QuickBooks.prototype.getRefund = function(chargeId, refundId, callback) {
-  module.request(this, 'get', {
-    url: '/charges/' + chargeId + '/refunds/' + refundId,
-    headers: {
-      company_id: this.realmId
-    }
-  }, null, callback)
-}
-
 /**
  * Creates the Account in QuickBooks
  *
@@ -1706,6 +1615,16 @@ QuickBooks.prototype.reportGeneralLedgerDetail = function(options, callback) {
 }
 
 /**
+ * Retrieves the TaxSummary Report from QuickBooks
+ *
+ * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
+ * @param  {function} callback - Callback function which is called with any error and the TaxSummary Report
+ */
+QuickBooks.prototype.reportTaxSummary = function(options, callback) {
+  module.report(this, 'TaxSummary', options, callback)
+}
+
+/**
  * Retrieves the DepartmentSales Report from QuickBooks
  *
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
@@ -1801,7 +1720,7 @@ module.read = function(context, entityName, id, callback) {
 }
 
 module.update = function(context, entityName, entity, callback) {
-  if (_.isUndefined(entity.Id) || 
+  if (_.isUndefined(entity.Id) ||
       _.isEmpty(entity.Id) ||
       _.isUndefined(entity.SyncToken) || 
       _.isEmpty(entity.SyncToken)) {

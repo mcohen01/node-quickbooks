@@ -6,39 +6,6 @@ Node.js client for [QuickBooks V3 API] [1].
 
 `npm install node-quickbooks`
 
-## Example App
-
-The `example` directory contains a barebones Express application that demonstrates the OAuth workflow.
-
-### Setup
-
-First navigate to the `example` directory and install the required dependencies from NPM
-
-    npm install
-
-You will need to create an Intuit Developer account at <https://developer.intuit.com> and add your app's OAuth Consumer Key and Secret to `app.js`. Pay attention to which APIs (Payments, QuickBooks) you select during the application creation process, you will have to update `example/views/intuit.ejs` if you did not select both.
-### Running
-
-Start the app
-
-    node app.js
-
-Browse to http://localhost:3000/start and you will see a page containing only the Intuit Developer Javascript-rendered button.  Clicking on this kicks off the OAuth exchange.
-
-The Intuit Developer Javascript code calls back into the node application, which needs to invoke the OAuth Request Token URL at https://oauth.intuit.com/oauth/v1/get_request_token via a server-side http POST method. Note how the response from the http POST is parsed and the browser is redirected to the App Center URL at https://appcenter.intuit.com/Connect/Begin?oauth_token= with the `oauth_token` passed as a URL parameter. Note also how the `oauth_token_secret` needs to somehow be maintained across http requests, as it needs to be passed in the second server-side http POST to the Access Token URL at https://oauth.intuit.com/oauth/v1/get_access_token. This final step is invoked once the user has authenticated on Intuit's site and authorized the application, and then the user is redirected back to the node application at the callback URL specified as a parameter in the Request Token remote call, in the example app's case, http://localhost:3000/callback.
-
-### Configuration
-
-The Intuit Developer Javascript code contained in `intuit.ejs` is configured with the `grantUrl` option set to "http://localhost:3000/requestToken". You will want to change this to an appropriate URL for your application, but you will need to write similar functionality to that contained in the  '/requestToken' route configured in `app.js`, also taking care to configure your `consumerKey` and `consumerSecret` on lines 27-28 in app.js.
-
-
-## Running the tests
-
-First you'll need to fill in the missing values in config.js. The consumerKey and consumerSecret you can get from the Intuit Developer portal, the token, tokenSecret, and realmId are easiest to obtain by running the example app, completing the OAuth workflow, and copying the values that are logged to the console. Once you've filled in the missing credentials in config.js you can simply run:
-
-`npm test`
-
-
 
 ## Documentation
 
@@ -89,62 +56,91 @@ qbo.reportBalanceSheet({department: '1,4,7'}, function(err, balanceSheet) {
 
 ```
 
-#####Payments (Charge) Api
+#### Query
 
+###### Filters
+All query functions take an optional first argument object which will be converted to a
+where clause by means of the keys and values of the object used as column names and parameter values of the where clause. For example, in order to issue a query with a simple where clause such as, `select * from attachable where Note = 'My sample note field'`, the following code would be needed:
 ```javascript
-
-var QuickBooks = require('node-quickbooks')
-
-var qbo = new QuickBooks(consumerKey,
-                         consumerSecret,
-                         oauthToken,
-                         oauthTokenSecret,
-                         useSandbox,
-                         realmId)
-
-var chargeId
-
-var charge = {
-  capture: false,
-  currency: 'USD',
-  amount: '42.21',
-  card: {
-    expYear: '2016',
-    expMonth: '02',
-    address: {
-      region: 'CA',
-      postalCode: '94062',
-      streetAddress: '131 Fairy Lane',
-      country: 'US',
-      city: 'Sunnyvale'
-    },
-    name: 'Brad Smith',
-    cvc: '123',
-    number: '4111111111111111'
-  }
-}
-
-qbo.charge(charge, function(err, charged) {
-  console.log(charged.id)
+qbo.findAttachables({
+  Note: 'My sample note field'
+}, function(e, attachables) {
+  console.log(attachables)
 })
-
-qbo.getCharge(chargeId, function(err, charge) {
-  console.log(charge.card.address.street_address)
-})
-
-qbo.capture(chargeId, { amount: 42.21 }, function(err, capture) {
-  console.log(capture)
-})
-
-qbo.refund(chargeId, {amount: 20.00}, function(err, refund) {
-  console.log(refund)
-})
-
-qbo.getRefund(chargeId, refundId, function(err, refund) {
-  console.log(refund)
-})
-
 ```
+
+Alternatively, the object can be an array of objects, each specifying a `field`, `value` and `operator` (optional) keys. This allows you to build a more complex query using operators such as `=`, `IN`, `<`, `>`, `<=`, `>=`, or `LIKE`.
+```javascript
+qbo.findTimeActivities([
+  {field: 'TxnDate', value: '2014-12-01', operator: '>'},
+  {field: 'TxnDate', value: '2014-12-03', operator: '<'},
+  {field: 'limit', value: 5}
+], function (e, timeActivities) {
+  console.log(timeActivities)
+})
+```
+
+###### Sorting
+Basic ordering is achieved via the optional first argument object as well. Include `asc` or `desc` keys in the object whose values are the columns you wish to sort on. For example:
+```javascript
+qbo.findAttachables({
+  desc: 'MetaData.LastUpdatedTime'
+}, function(e, attachables) {
+  console.log(attachables)
+})
+```
+###### Pagination
+Pagination is achieved via the optional first argument object as well. Include `limit` and/or `offset` keys in the object whose values are the number of rows you wish to limit the result set to or from respectively. For example:
+```javascript
+qbo.findAttachables({
+  limit: 10,
+  offset: 10
+}, function(e, attachables) {
+  console.log(attachables)
+})
+```
+
+###### Counts
+Row counts rather than full result sets can be obtained by passing the `count` key in the optional first argument object with a boolean true value. For example:
+```javascript
+qbo.findAttachables({
+  count: true
+}, function(e, attachables) {
+  console.log(attachables)
+})
+```
+
+## Example App
+
+The `example` directory contains a barebones Express application that demonstrates the OAuth workflow.
+
+### Setup
+
+First navigate to the `example` directory and install the required dependencies from NPM
+
+    npm install
+
+You will need to create an Intuit Developer account at <https://developer.intuit.com> and add your app's OAuth Consumer Key and Secret to `app.js`. Pay attention to which APIs (Payments, QuickBooks) you select during the application creation process, you will have to update `example/views/intuit.ejs` if you did not select both.
+### Running
+
+Start the app
+
+    node app.js
+
+Browse to http://localhost:3000/start and you will see a page containing only the Intuit Developer Javascript-rendered button.  Clicking on this kicks off the OAuth exchange.
+
+The Intuit Developer Javascript code calls back into the node application, which needs to invoke the OAuth Request Token URL at https://oauth.intuit.com/oauth/v1/get_request_token via a server-side http POST method. Note how the response from the http POST is parsed and the browser is redirected to the App Center URL at https://appcenter.intuit.com/Connect/Begin?oauth_token= with the `oauth_token` passed as a URL parameter. Note also how the `oauth_token_secret` needs to somehow be maintained across http requests, as it needs to be passed in the second server-side http POST to the Access Token URL at https://oauth.intuit.com/oauth/v1/get_access_token. This final step is invoked once the user has authenticated on Intuit's site and authorized the application, and then the user is redirected back to the node application at the callback URL specified as a parameter in the Request Token remote call, in the example app's case, http://localhost:3000/callback.
+
+### Configuration
+
+The Intuit Developer Javascript code contained in `intuit.ejs` is configured with the `grantUrl` option set to "http://localhost:3000/requestToken". You will want to change this to an appropriate URL for your application, but you will need to write similar functionality to that contained in the  '/requestToken' route configured in `app.js`, also taking care to configure your `consumerKey` and `consumerSecret` on lines 27-28 in app.js.
+
+
+## Running the tests
+
+First you'll need to fill in the missing values in config.js. The consumerKey and consumerSecret you can get from the Intuit Developer portal, the token, tokenSecret, and realmId are easiest to obtain by running the example app, completing the OAuth workflow, and copying the values that are logged to the console. Once you've filled in the missing credentials in config.js you can simply run:
+
+`npm test`
 
 
 ## Public Api
@@ -272,58 +268,6 @@ __Arguments__
 
 #### Query
 
-###### Filters
-All query functions take an optional first argument object which will be converted to a
-where clause by means of the keys and values of the object used as column names and parameter values of the where clause. For example, in order to issue a query with a simple where clause such as, `select * from attachable where Note = 'My sample note field'`, the following code would be needed:
-```javascript
-qbo.findAttachables({
-  Note: 'My sample note field'
-}, function(e, attachables) {
-  console.log(attachables)
-})
-```
-
-Alternatively, the object can be an array of objects, each specifying a `field`, `value` and `operator` (optional) keys. This allows you to build a more complex query using operators such as `=`, `IN`, `<`, `>`, `<=`, `>=`, or `LIKE`.
-```javascript
-qbo.findTimeActivities([
-  {field: 'TxnDate', value: '2014-12-01', operator: '>'},
-  {field: 'TxnDate', value: '2014-12-03', operator: '<'},
-  {field: 'limit', value: 5}
-], function (e, timeActivities) {
-  console.log(timeActivities)
-})
-```
-
-###### Sorting
-Basic ordering is achieved via the optional first argument object as well. Include `asc` or `desc` keys in the object whose values are the columns you wish to sort on. For example:
-```javascript
-qbo.findAttachables({
-  desc: 'MetaData.LastUpdatedTime'
-}, function(e, attachables) {
-  console.log(attachables)
-})
-```
-###### Pagination
-Pagination is achieved via the optional first argument object as well. Include `limit` and/or `offset` keys in the object whose values are the number of rows you wish to limit the result set to or from respectively. For example:
-```javascript
-qbo.findAttachables({
-  limit: 10,
-  offset: 10
-}, function(e, attachables) {
-  console.log(attachables)
-})
-```
-
-###### Counts
-Row counts rather than full result sets can be obtained by passing the `count` key in the optional first argument object with a boolean true value. For example:
-```javascript
-qbo.findAttachables({
-  count: true
-}, function(e, attachables) {
-  console.log(attachables)
-})
-```
-
 * [`findAccounts`](#findAccounts)
 * [`findAttachables`](#findAttachables)
 * [`findBills`](#findBills)
@@ -386,15 +330,6 @@ qbo.findAttachables({
 * [`sendInvoicePdf`](#sendInvoicePdf)
 * [`sendEstimatePdf`](#sendEstimatePdf)
 * [`sendSalesReceiptPdf`](#sendSalesReceiptPdf)
-
-
-#### Payments/Charge Api
-
-* [`charge`](#charge)
-* [`getCharge`](#getCharge)
-* [`capture`](#capture)
-* [`refund`](#refund)
-* [`getRefund`](#getRefund)
 
 
 
@@ -2082,63 +2017,6 @@ __Arguments__
 * `sendTo` - (Optional) optional email address to send the PDF to. If not provided, address supplied in SalesReceipt.BillEmail.EmailAddress will be used
 * `callback` - Callback function which is called with any error and the SalesReceipt PDF
 
-
-<a name="charge" />
-#### charge(charge, callback)
-
-Process a credit card charge using card details or token. Can capture funds or just authorize.
-
-__Arguments__
-
-* `charge` - details, amount, currency etc. of charge to be processed
-* `callback` - Callback function which is called with any error or the saved Charge
-
-
-<a name="getCharge" />
-#### getCharge(chargeId, callback)
-
-Get details of charge.
-
-__Arguments__
-
-* `chargeId` - of previously created charge
-* `callback` - Callback function which is called with any error or the Charge
-
-
-<a name="capture" />
-#### capture(chargeId, capture, callback)
-
-Allows you to capture funds for an existing charge that was intended to be captured at a later time.
-
-__Arguments__
-
-* `chargeId` - of previously created charge
-* `capture` - details, amount, currency to capture
-* `callback` - Callback function which is called with any error or the capture description
-
-
-<a name="refund" />
-#### refund(chargeId, refund, callback)
-
-Allows you to refund an existing charge. Full and partial refund are supported.
-
-__Arguments__
-
-* `chargeId` - of previously created charge
-* `refund` - details, amount, currency to refund
-* `callback` - Callback function which is called with any error or the refund description
-
-
-<a name="getRefund" />
-#### getRefund(chargeId, refundId, callback)
-
-Retrieves the Refund for the given refund id
-
-__Arguments__
-
-* `chargeId` - of previously created charge
-* `refundId` - of previously created refund
-* `callback` - Callback function which is called with any error or the Refund
 
 
 [1]: https://developer.intuit.com/docs/api/accounting
