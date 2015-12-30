@@ -16,6 +16,6 @@
     "ejs": "0.7.2",
     "express": "^4.13.3",
     "express-session": "^1.11.3",
-    "node-quickbooks": "1.0.19"
+    "node-quickbooks": "2.0.0"
   }
 }
