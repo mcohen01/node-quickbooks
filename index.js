@@ -12,6 +12,7 @@ var request = require('request'),
     util    = require('util'),
     moment  = require('moment'),
     _       = require('underscore'),
+    Promise = require('bluebird'),
     version = require('./package.json').version
 
 module.exports = QuickBooks
@@ -1129,7 +1130,11 @@ QuickBooks.prototype.deleteVendorCredit = function(idOrEntity, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Account
  */
 QuickBooks.prototype.findAccounts = function(criteria, callback) {
-  module.query(this, 'account', criteria, callback)
+  module.query(this, 'account', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1139,7 +1144,11 @@ QuickBooks.prototype.findAccounts = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Attachable
  */
 QuickBooks.prototype.findAttachables = function(criteria, callback) {
-  module.query(this, 'attachable', criteria, callback)
+  module.query(this, 'attachable', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1149,7 +1158,11 @@ QuickBooks.prototype.findAttachables = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Bill
  */
 QuickBooks.prototype.findBills = function(criteria, callback) {
-  module.query(this, 'bill', criteria, callback)
+  module.query(this, 'bill', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1159,7 +1172,11 @@ QuickBooks.prototype.findBills = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of BillPayment
  */
 QuickBooks.prototype.findBillPayments = function(criteria, callback) {
-  module.query(this, 'billPayment', criteria, callback)
+  module.query(this, 'billPayment', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1169,7 +1186,11 @@ QuickBooks.prototype.findBillPayments = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Budget
  */
 QuickBooks.prototype.findBudgets = function(criteria, callback) {
-  module.query(this, 'budget', criteria, callback)
+  module.query(this, 'budget', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1179,7 +1200,11 @@ QuickBooks.prototype.findBudgets = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Class
  */
 QuickBooks.prototype.findClasses = function(criteria, callback) {
-  module.query(this, 'class', criteria, callback)
+  module.query(this, 'class', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1189,7 +1214,11 @@ QuickBooks.prototype.findClasses = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of CompanyInfo
  */
 QuickBooks.prototype.findCompanyInfos = function(criteria, callback) {
-  module.query(this, 'companyInfo', criteria, callback)
+  module.query(this, 'companyInfo', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1199,7 +1228,11 @@ QuickBooks.prototype.findCompanyInfos = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of CreditMemo
  */
 QuickBooks.prototype.findCreditMemos = function(criteria, callback) {
-  module.query(this, 'creditMemo', criteria, callback)
+  module.query(this, 'creditMemo', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1209,7 +1242,11 @@ QuickBooks.prototype.findCreditMemos = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Customer
  */
 QuickBooks.prototype.findCustomers = function(criteria, callback) {
-  module.query(this, 'customer', criteria, callback)
+  module.query(this, 'customer', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1219,7 +1256,11 @@ QuickBooks.prototype.findCustomers = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Department
  */
 QuickBooks.prototype.findDepartments = function(criteria, callback) {
-  module.query(this, 'department', criteria, callback)
+  module.query(this, 'department', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1229,7 +1270,11 @@ QuickBooks.prototype.findDepartments = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Employee
  */
 QuickBooks.prototype.findEmployees = function(criteria, callback) {
-  module.query(this, 'employee', criteria, callback)
+  module.query(this, 'employee', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1239,7 +1284,11 @@ QuickBooks.prototype.findEmployees = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Estimate
  */
 QuickBooks.prototype.findEstimates = function(criteria, callback) {
-  module.query(this, 'estimate', criteria, callback)
+  module.query(this, 'estimate', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1249,7 +1298,11 @@ QuickBooks.prototype.findEstimates = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Invoice
  */
 QuickBooks.prototype.findInvoices = function(criteria, callback) {
-  module.query(this, 'invoice', criteria, callback)
+  module.query(this, 'invoice', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1259,7 +1312,11 @@ QuickBooks.prototype.findInvoices = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Item
  */
 QuickBooks.prototype.findItems = function(criteria, callback) {
-  module.query(this, 'item', criteria, callback)
+  module.query(this, 'item', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1269,7 +1326,11 @@ QuickBooks.prototype.findItems = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of JournalEntry
  */
 QuickBooks.prototype.findJournalEntries = function(criteria, callback) {
-  module.query(this, 'journalEntry', criteria, callback)
+  module.query(this, 'journalEntry', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1279,7 +1340,11 @@ QuickBooks.prototype.findJournalEntries = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Payment
  */
 QuickBooks.prototype.findPayments = function(criteria, callback) {
-  module.query(this, 'payment', criteria, callback)
+  module.query(this, 'payment', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1289,7 +1354,11 @@ QuickBooks.prototype.findPayments = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of PaymentMethod
  */
 QuickBooks.prototype.findPaymentMethods = function(criteria, callback) {
-  module.query(this, 'paymentMethod', criteria, callback)
+  module.query(this, 'paymentMethod', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1299,7 +1368,11 @@ QuickBooks.prototype.findPaymentMethods = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Preferences
  */
 QuickBooks.prototype.findPreferenceses = function(criteria, callback) {
-  module.query(this, 'preferences', criteria, callback)
+  module.query(this, 'preferences', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1309,7 +1382,11 @@ QuickBooks.prototype.findPreferenceses = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Purchase
  */
 QuickBooks.prototype.findPurchases = function(criteria, callback) {
-  module.query(this, 'purchase', criteria, callback)
+  module.query(this, 'purchase', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1319,7 +1396,11 @@ QuickBooks.prototype.findPurchases = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of PurchaseOrder
  */
 QuickBooks.prototype.findPurchaseOrders = function(criteria, callback) {
-  module.query(this, 'purchaseOrder', criteria, callback)
+  module.query(this, 'purchaseOrder', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1329,7 +1410,11 @@ QuickBooks.prototype.findPurchaseOrders = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of RefundReceipt
  */
 QuickBooks.prototype.findRefundReceipts = function(criteria, callback) {
-  module.query(this, 'refundReceipt', criteria, callback)
+  module.query(this, 'refundReceipt', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1339,7 +1424,11 @@ QuickBooks.prototype.findRefundReceipts = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of SalesReceipt
  */
 QuickBooks.prototype.findSalesReceipts = function(criteria, callback) {
-  module.query(this, 'salesReceipt', criteria, callback)
+  module.query(this, 'salesReceipt', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1349,7 +1438,11 @@ QuickBooks.prototype.findSalesReceipts = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of TaxAgency
  */
 QuickBooks.prototype.findTaxAgencies = function(criteria, callback) {
-  module.query(this, 'taxAgency', criteria, callback)
+  module.query(this, 'taxAgency', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1359,7 +1452,11 @@ QuickBooks.prototype.findTaxAgencies = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of TaxCode
  */
 QuickBooks.prototype.findTaxCodes = function(criteria, callback) {
-  module.query(this, 'taxCode', criteria, callback)
+  module.query(this, 'taxCode', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1369,7 +1466,11 @@ QuickBooks.prototype.findTaxCodes = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of TaxRate
  */
 QuickBooks.prototype.findTaxRates = function(criteria, callback) {
-  module.query(this, 'taxRate', criteria, callback)
+  module.query(this, 'taxRate', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1379,7 +1480,11 @@ QuickBooks.prototype.findTaxRates = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Term
  */
 QuickBooks.prototype.findTerms = function(criteria, callback) {
-  module.query(this, 'term', criteria, callback)
+  module.query(this, 'term', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1389,7 +1494,11 @@ QuickBooks.prototype.findTerms = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of TimeActivity
  */
 QuickBooks.prototype.findTimeActivities = function(criteria, callback) {
-  module.query(this, 'timeActivity', criteria, callback)
+  module.query(this, 'timeActivity', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1399,7 +1508,11 @@ QuickBooks.prototype.findTimeActivities = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of Vendor
  */
 QuickBooks.prototype.findVendors = function(criteria, callback) {
-  module.query(this, 'vendor', criteria, callback)
+  module.query(this, 'vendor', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 /**
@@ -1409,7 +1522,11 @@ QuickBooks.prototype.findVendors = function(criteria, callback) {
  * @param  {function} callback - Callback function which is called with any error and the list of VendorCredit
  */
 QuickBooks.prototype.findVendorCredits = function(criteria, callback) {
-  module.query(this, 'vendorCredit', criteria, callback)
+  module.query(this, 'vendorCredit', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
 }
 
 
@@ -1691,8 +1808,9 @@ module.request = function(context, verb, options, entity, callback) {
     }
     if (callback) {
       if (err ||
-        res.statusCode >= 300 ||
-        (_.isObject(body) && body.Fault && body.Fault.Error && body.Fault.Error.length)) {
+          res.statusCode >= 300 ||
+          (_.isObject(body) && body.Fault && body.Fault.Error && body.Fault.Error.length) ||
+          (_.isString(body) && !_.isEmpty(body) && body.indexOf('<') === 0)) {
         callback(err || body, body)
       } else {
         callback(null, body)
@@ -1748,7 +1866,9 @@ module.delete = function(context, entityName, idOrEntity, callback) {
 }
 
 // **********************  Query Api **********************
-module.query = function(context, entity, criteria, callback) {
+module.requestPromise = Promise.promisify(module.request)
+
+module.query = function(context, entity, criteria) {
   var url = '/query?query@@select * from ' + entity
   var count = function(obj) {
     for (var p in obj) {
@@ -1771,7 +1891,32 @@ module.query = function(context, entity, criteria, callback) {
       }
     }
   }
-  if (criteria && typeof criteria !== 'function') {
+
+  var fetchAll = false, limit = 1000, offset = 1
+  if (_.isArray(criteria)) {
+    var lmt = _.find(criteria, function(obj) {
+      return obj.field && obj.field === 'limit'
+    })
+    if (lmt) limit = lmt.value
+    var ofs = _.find(criteria, function(obj) {
+      return obj.field && obj.field === 'offset'
+    })
+    if (! ofs) {
+      criteria.push({field: 'offset', value: 1})
+    } else {
+      offset = ofs.value
+    }
+    var fa = _.find(criteria, function(obj) {
+      return obj.field && obj.field === 'fetchAll'
+    })
+    if (fa && fa.value) fetchAll = true
+  } else if (_.isObject(criteria)) {
+    limit = criteria.limit = criteria.limit || 1000
+    offset = criteria.offset = criteria.offset || 1
+    if (criteria.fetchAll) fetchAll = true
+  }
+
+  if (criteria && !_.isFunction(criteria)) {
     url += module.criteriaToString(criteria) || ''
     url = url.replace(/%/g, '%25')
              .replace(/'/g, '%27')
@@ -1784,7 +1929,36 @@ module.query = function(context, entity, criteria, callback) {
              .replace(/\+/g, '%2B')
   }
   url = url.replace('@@', '=')
-  module.request(context, 'get', {url: url}, null, typeof criteria === 'function' ? criteria : callback)
+
+  return new Promise(function(resolve, reject) {
+    module.requestPromise(context, 'get', {url: url}, null).then(function(data) {
+      var fields = Object.keys(data.QueryResponse)
+      var key = _.find(fields, function(k) { return k.toLowerCase() === entity.toLowerCase()})
+      if (fetchAll) {
+        if (data && data.QueryResponse && data.QueryResponse.maxResults === limit) {
+          if (_.isArray(criteria)) {
+            _.each(criteria, function(e) {
+              if (e.field === 'offset') e.value = e.value + limit
+            })
+          } else if (_.isObject(criteria)) {
+            criteria.offset = criteria.offset + limit
+          }
+          return module.query(context, entity, criteria).then(function(more) {
+            data.QueryResponse[key] = data.QueryResponse[key].concat(more.QueryResponse[key] || [])
+            data.QueryResponse.maxResults = data.QueryResponse.maxResults + (more.QueryResponse.maxResults || 0)
+            data.time = more.time || data.time
+            resolve(data)
+          })
+        } else {
+          resolve(data)
+        }
+      } else {
+        resolve(data)
+      }
+    }).catch(function(err) {
+      reject(err)
+    })
+  })
 }
 
 
@@ -1847,6 +2021,9 @@ module.criteriaToString = function(criteria) {
   var sql = '', limit, offset, desc, asc
   for (var i=0, l=flattened.length; i<l; i++) {
     var criterion = flattened[i];
+    if (module.checkProperty(criterion.field, 'fetchall')) {
+      continue
+    }
     if (module.checkProperty(criterion.field, 'limit')) {
       limit = criterion.value
       continue
@@ -1880,9 +2057,9 @@ module.criteriaToString = function(criteria) {
     sql = ' where ' + sql
   }
   if (asc)  sql += ' orderby ' + asc + ' asc'
-  if (desc)  sql += ' orderby ' + desc + ' desc'
-  if (offset) sql += ' startposition ' + offset
-  if (limit)  sql += ' maxresults ' + limit
+  if (desc) sql += ' orderby ' + desc + ' desc'
+  sql += ' startposition ' + (offset || 1)
+  sql += ' maxresults ' + (limit || 1000)
   return sql
 }
 

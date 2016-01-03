@@ -100,6 +100,26 @@ qbo.findAttachables({
 })
 ```
 
+The default (and max) limit is 1000 records returned in a single request. Adding a boolean `fetchAll` parameter
+will return all available records, transparently issuing as many requests as necessary to fetch them. So
+in the first example below, if your QBO business contains 5,000 customers, 5 http requests will be issued behind
+the scenes and finally your callback will be invoked with an array of 5,000 customers passed to it.
+
+```javascript
+qbo.findCustomers({
+  fetchAll: true
+}, function(e, customers) {
+  console.log(customers)
+})
+
+qbo.findCustomers([
+  {field: 'fetchAll', value: true},
+  {field: 'FamilyName', value: 'S%', operator: 'LIKE'}
+], function(e, customers) {
+  console.log(customers)
+})
+```
+
 ###### Counts
 Row counts rather than full result sets can be obtained by passing the `count` key in the optional first argument object with a boolean true value. For example:
 ```javascript
