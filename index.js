@@ -543,11 +543,10 @@ QuickBooks.prototype.getPaymentMethod = function(id, callback) {
 /**
  * Retrieves the Preferences from QuickBooks
  *
- * @param  {string} Id - The Id of persistent Preferences
  * @param  {function} callback - Callback function which is called with any error and the persistent Preferences
  */
-QuickBooks.prototype.getPreferences = function(id, callback) {
-  module.read(this, 'preferences', id, callback)
+QuickBooks.prototype.getPreferences = function(callback) {
+  module.read(this, 'preferences', null, callback)
 }
 
 /**
@@ -1833,7 +1832,8 @@ module.create = function(context, entityName, entity, callback) {
 }
 
 module.read = function(context, entityName, id, callback) {
-  var url = '/' + entityName.toLowerCase() + '/' + id
+  var url = '/' + entityName.toLowerCase()
+  if (id) url = url + '/' + id
   module.request(context, 'get', {url: url}, null, module.unwrap(callback, entityName))
 }
 
