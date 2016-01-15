@@ -1986,38 +1986,31 @@ module.isNumeric = function(n) {
 }
 
 module.checkProperty = function(field, name) {
-  return (field.toLowerCase() === name)
+  return (field && field.toLowerCase() === name)
+}
+
+module.toCriterion = function(c) {
+  if (c.field && c.value) {
+    return {
+      field: c.field,
+      value: c.value,
+      operator: c.operator || '='
+    }
+  } else {
+    return _.keys(c).map(function(k) {
+      return {
+        field: k,
+        value: c[k],
+        operator: '='
+      }
+    })
+  }
 }
 
 module.criteriaToString = function(criteria) {
   if (_.isString(criteria)) return criteria.indexOf(' ') === 0 ? criteria : " " + criteria
-  var flattened = [];
-  if (_.isArray(criteria)) {
-    if (criteria.length === 0) return ''
-    for (var i=0, l=criteria.length; i<l; i++) {
-      var c = criteria[i];
-      if (_.isUndefined(c.field) || _.isUndefined(c.value)) continue
-      var criterion = {
-        field:    c.field,
-        value:    c.value,
-        operator: '='
-      }
-      if (! _.isUndefined(c.operator) && _.contains(QuickBooks.QUERY_OPERATORS, c.operator.toUpperCase())) {
-        criterion.operator = c.operator
-      }
-      flattened[flattened.length] = criterion
-    }
-  } else if (_.isObject(criteria)) {
-    if (! Object.keys(criteria).length) return ''
-    for (var p in criteria) {
-      var criterion = {
-        field:    p,
-        value:    criteria[p],
-        operator: '='
-      }
-      flattened[flattened.length] = criterion
-    }
-  }
+  var cs = _.isArray(criteria) ? criteria.map(module.toCriterion) : module.toCriterion(criteria)
+  var flattened = _.flatten(cs)
   var sql = '', limit, offset, desc, asc
   for (var i=0, l=flattened.length; i<l; i++) {
     var criterion = flattened[i];
@@ -2044,13 +2037,13 @@ module.criteriaToString = function(criteria) {
       sql += ' and '
     }
     sql += criterion.field + ' ' + criterion.operator + ' '
+    var quote = function(x) {
+      return _.isString(x) ? "'" + x + "'" : x
+    }
     if (_.isArray(criterion.value)) {
-      var quoted = criterion.value.map(function(x) {
-        return "'" + x + "'"
-      })
-      sql += '(' + quoted.join(',') + ')'
+      sql += '(' + criterion.value.map(quote).join(',') + ')'
     } else {
-      sql += "'" + criterion.value + "'"
+      sql += quote(criterion.value)
     }
   }
   if (sql != '') {
