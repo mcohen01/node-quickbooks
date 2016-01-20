@@ -1786,9 +1786,7 @@ module.request = function(context, verb, options, entity, callback) {
   }
   opts.qs.minorversion = opts.qs.minorversion || 4
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
-  if (isPayment) {
-    opts.headers['Request-Id'] = uuid.v1()
-  }
+  opts.headers['Request-Id'] = uuid.v1()
   if (options.url.match(/pdf$/)) {
     opts.headers['accept'] = 'application/pdf'
     opts.encoding = null
@@ -1990,14 +1988,15 @@ module.checkProperty = function(field, name) {
 }
 
 module.toCriterion = function(c) {
-  if (c.field && c.value) {
+  var fields = _.keys(c)
+  if (_.intersection(fields, ['field', 'value']).length === 2) {
     return {
       field: c.field,
       value: c.value,
       operator: c.operator || '='
     }
   } else {
-    return _.keys(c).map(function(k) {
+    return fields.map(function(k) {
       return {
         field: k,
         value: c[k],
