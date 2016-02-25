@@ -1844,7 +1844,13 @@ module.update = function(context, entityName, entity, callback) {
         util.inspect(entity, {showHidden: false, depth: null}))
   }
   var url = '/' + entityName.toLowerCase() + '?operation=update'
-  module.request(context, 'post', {url: url}, entity, module.unwrap(callback, entityName))
+  var opts = {url: url}
+  if (entity.void && entity.void.toString() === 'true') {
+    opts.qs = { include: 'void' }
+    entity.sparse = true
+    delete entity.void
+  }
+  module.request(context, 'post', opts, entity, module.unwrap(callback, entityName))
 }
 
 module.delete = function(context, entityName, idOrEntity, callback) {
