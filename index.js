@@ -23,7 +23,6 @@ QuickBooks.APP_CENTER_BASE            = 'https://appcenter.intuit.com'
 QuickBooks.APP_CENTER_URL             = QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token='
 QuickBooks.RECONNECT_URL              = QuickBooks.APP_CENTER_BASE + '/api/v1/connection/reconnect'
 QuickBooks.V3_ENDPOINT_BASE_URL       = 'https://sandbox-quickbooks.api.intuit.com/v3/company/'
-QuickBooks.PAYMENTS_API_BASE_URL      = 'https://sandbox.api.intuit.com/quickbooks/v4/payments'
 QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
 
 /**
@@ -49,7 +48,6 @@ function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, us
   this.useSandbox      = eval(prefix + 'useSandbox')
   this.debug           = eval(prefix + 'debug')
   this.endpoint        = this.useSandbox ? QuickBooks.V3_ENDPOINT_BASE_URL : QuickBooks.V3_ENDPOINT_BASE_URL.replace('sandbox-', '')
-  this.paymentEndpoint = this.useSandbox ? QuickBooks.PAYMENTS_API_BASE_URL : QuickBooks.PAYMENTS_API_BASE_URL.replace('sandbox.', '')
 }
 
 /**
@@ -1771,9 +1769,7 @@ QuickBooks.prototype.reportAccountListDetail = function(options, callback) {
 }
 
 module.request = function(context, verb, options, entity, callback) {
-  var isPayment = options.url.match(/^\/(charge|tokens)/),
-      url = isPayment ? context.paymentEndpoint + options.url :
-                        context.endpoint + context.realmId + options.url
+  var url = context.endpoint + context.realmId + options.url
   if (options.url === QuickBooks.RECONNECT_URL) {
     url = options.url
   }
