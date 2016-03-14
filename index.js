@@ -976,6 +976,15 @@ QuickBooks.prototype.updateVendorCredit = function(vendorCredit, callback) {
   module.update(this, 'vendorCredit', vendorCredit, callback)
 }
 
+/**
+ * Updates QuickBooks version of ExchangeRate
+ *
+ * @param  {object} exchangeRate - The persistent ExchangeRate, including Id and SyncToken fields
+ * @param  {function} callback - Callback function which is called with any error and the persistent ExchangeRate
+ */
+QuickBooks.prototype.updateExchangeRate = function(exchangeRate, callback) {
+  module.update(this, 'exchangerate', exchangeRate, callback)
+}
 
 
 /**
@@ -1526,6 +1535,19 @@ QuickBooks.prototype.findVendorCredits = function(criteria, callback) {
   })
 }
 
+/**
+ * Finds all ExchangeRates in QuickBooks, optionally matching the specified criteria
+ *
+ * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
+ * @param  {function} callback - Callback function which is called with any error and the list of ExchangeRates
+ */
+QuickBooks.prototype.findExchangeRates = function(criteria, callback) {
+  module.query(this, 'exchangerate', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
+}
 
 
 /**
@@ -1808,8 +1830,6 @@ module.request = function(context, verb, options, entity, callback) {
       } else {
         callback(null, body)
       }
-    } else {
-      return
     }
   })
 }
@@ -1834,10 +1854,12 @@ module.read = function(context, entityName, id, callback) {
 module.update = function(context, entityName, entity, callback) {
   if (_.isUndefined(entity.Id) ||
       _.isEmpty(entity.Id) ||
-      _.isUndefined(entity.SyncToken) || 
+      _.isUndefined(entity.SyncToken) ||
       _.isEmpty(entity.SyncToken)) {
-    throw new Error(entityName + ' must contain Id and SyncToken fields: ' +
-        util.inspect(entity, {showHidden: false, depth: null}))
+    if (entityName !== 'exchangerate') {
+      throw new Error(entityName + ' must contain Id and SyncToken fields: ' +
+          util.inspect(entity, {showHidden: false, depth: null}))
+    }
   }
   var url = '/' + entityName.toLowerCase() + '?operation=update'
   var opts = {url: url}
@@ -1851,7 +1873,7 @@ module.update = function(context, entityName, entity, callback) {
 
 module.delete = function(context, entityName, idOrEntity, callback) {
   var url = '/' + entityName.toLowerCase() + '?operation=delete'
-  callback = callback || function(e, r) {}
+  callback = callback || function() {}
   if (_.isObject(idOrEntity)) {
     module.request(context, 'post', {url: url}, idOrEntity, callback)
   } else {
@@ -1872,10 +1894,9 @@ module.query = function(context, entity, criteria) {
   var url = '/query?query@@select * from ' + entity
   var count = function(obj) {
     for (var p in obj) {
-      if (p.toLowerCase() === 'count' && obj[p]) {
+      if (obj[p] && p.toLowerCase() === 'count') {
         url = url.replace('select \* from', 'select count(*) from')
         delete obj[p]
-        continue
       }
     }
   }
@@ -1923,8 +1944,8 @@ module.query = function(context, entity, criteria) {
              .replace(/=/g, '%3D')
              .replace(/</g, '%3C')
              .replace(/>/g, '%3E')
-             .replace(/\&/g, '%26')
-             .replace(/\#/g, '%23')
+             .replace(/&/g, '%26')
+             .replace(/#/g, '%23')
              .replace(/\\/g, '%5C')
              .replace(/\+/g, '%2B')
   }
@@ -2002,7 +2023,7 @@ module.toCriterion = function(c) {
       return {
         field: k,
         value: c[k],
-        operator: '='
+        operator: _.isArray(c[k]) ? 'IN' : '='
       }
     })
   }

@@ -268,6 +268,7 @@ __Arguments__
 * [`updateTimeActivity`](#updateTimeActivity)
 * [`updateVendor`](#updateVendor)
 * [`updateVendorCredit`](#updateVendorCredit)
+* [`updateExchangeRate`](#updateExchangeRate)
 
 #### Delete
 
@@ -317,6 +318,7 @@ __Arguments__
 * [`findTimeActivities`](#findTimeActivities)
 * [`findVendors`](#findVendors)
 * [`findVendorCredits`](#findVendorCredits)
+* [`findExchangeRates`](#findExchangeRates)
 
 #### Reports
 
@@ -1259,6 +1261,17 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated VendorCredit
 
 
+<a name="updateExchangeRate" />
+#### updateExchangeRate(object, callback)
+
+Updates QuickBooks version of ExchangeRate
+
+__Arguments__
+
+* `object` - The persistent ExchangeRate
+* `callback` - Callback function which is called with any error and the updated ExchangeRate
+
+
 
 
 <a name="deleteAttachable" />
@@ -1735,6 +1748,16 @@ __Arguments__
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
 * `callback` - Callback function which is called with any error and the list of VendorCredit
 
+
+<a name="findExchangeRates" />
+#### findExchangeRates(criteria, callback)
+
+Finds all ExchangeRates in QuickBooks, optionally matching the specified criteria
+
+__Arguments__
+
+* `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
+* `callback` - Callback function which is called with any error and the list of ExchangeRates
 
 
 
