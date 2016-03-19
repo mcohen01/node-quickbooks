@@ -35,9 +35,15 @@ qbo.updateCustomer({
   SyncToken: 1,
   sparse: true,
   PrimaryEmailAddr: {Address: 'customer@example.com'}
-})  // with no callback, i.e. "fire 'n forget"
+}, function(err, customer) {
+  if (err) console.log(err)
+  else console.log(customer)
+})
 
-qbo.deleteAttachable(42)
+qbo.deleteAttachable(42, function(err, attachable) {
+  if (err) console.log(err)
+  else console.log(attachable)
+}))
 
 qbo.findAccounts({
   AccountType: 'Expense',
@@ -53,6 +59,15 @@ qbo.findAccounts({
 qbo.reportBalanceSheet({department: '1,4,7'}, function(err, balanceSheet) {
   console.log(balanceSheet)
 })
+
+qbo.upload(
+  fs.createReadStream('contractor.jpg'),
+  'Invoice',
+  40,
+  function(err, data) {
+    console.log(err)
+    console.log(data)
+  })
 
 ```
 
@@ -353,6 +368,11 @@ __Arguments__
 * [`sendEstimatePdf`](#sendEstimatePdf)
 * [`sendSalesReceiptPdf`](#sendSalesReceiptPdf)
 
+
+#### Miscellaneous
+* [`batch`](#batch)
+* [`changeDataCapture`](#changeDataCapture)
+* [`upload`](#upload)
 
 
 <a name="createAccount" />
@@ -2060,6 +2080,47 @@ __Arguments__
 * `sendTo` - (Optional) optional email address to send the PDF to. If not provided, address supplied in SalesReceipt.BillEmail.EmailAddress will be used
 * `callback` - Callback function which is called with any error and the SalesReceipt PDF
 
+
+<a name="batch" />
+#### batch(items, callback)
+
+Batch operation to enable an application to perform multiple operations in a single request. The following batch items are supported:
+- create
+- update
+- delete
+- query
+
+* The maximum number of batch items in a single request is 25.
+
+__Arguments__
+
+* `items` - JavaScript array of batch items
+* `callback` - Callback function which is called with any error and list of BatchItemResponses
+
+
+<a name="changeDataCapture" />
+#### changeDataCapture(entities, since, callback)
+
+The change data capture (CDC) operation returns a list of entities that have changed since a specified time.
+
+__Arguments__
+
+* `entities` - Comma separated list or JavaScript array of entities to search for changes
+* `since` - JavaScript Date or string representation of the form '2012-07-20T22:25:51-07:00' to look back for changes until
+* `callback` - Callback function which is called with any error and list of changes
+
+
+<a name="upload" />
+#### upload(stream, entityType, entityId, callback)
+
+Uploads a file as an Attachable in QBO, optionally linking it to the specified QBO Entity.
+
+__Arguments__
+
+* `stream` - ReadableStream of file contents
+* `entityType` - optional string name of the QBO entity the Attachable will be linked to (e.g. Invoice)
+* `entityId` - optional Id of the QBO entity the Attachable will be linked to
+* `callback` - callback which receives the newly created Attachable
 
 
 [1]: https://developer.intuit.com/docs/api/accounting

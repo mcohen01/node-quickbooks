@@ -81,6 +81,45 @@ QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
   module.request(this, 'get', {url: url}, null, callback)
 }
 
+/**
+ * Uploads a file as an Attachable in QBO, optionally linking it to the specified
+ * QBO Entity.
+ *
+ * @param  {object} stream - ReadableStream of file contents
+ * @param  {object} entityType - optional string name of the QBO entity the Attachable will be linked to (e.g. Invoice)
+ * @param  {object} entityId - optional Id of the QBO entity the Attachable will be linked to
+ * @param  {function} callback - callback which receives the newly created Attachable
+ */
+QuickBooks.prototype.upload = function(stream, entityType, entityId, callback) {
+  var that = this
+  var opts = {
+    url: '/upload',
+    formData: {
+      file_content_01: stream
+    }
+  }
+  module.request(this, 'post', opts, null, module.unwrap(function(err, data) {
+    if (err) {
+      (callback || entityType)(err, null)
+    } else if (_.isFunction(entityType)) {
+      entityType(null, data[0].Attachable)
+    } else {
+      var id = data[0].Attachable.Id
+      that.updateAttachable({
+        Id: id,
+        SyncToken: '0',
+        AttachableRef: [{
+          EntityRef: {
+            type: entityType,
+            value: entityId + ''
+          }
+        }]
+      }, function(err, data) {
+        callback(err, data)
+      })
+    }
+  }, 'AttachableResponse'))
+}
 
 /**
  * Creates the Account in QuickBooks
@@ -1812,6 +1851,9 @@ module.request = function(context, verb, options, entity, callback) {
   if (entity !== null) {
     opts.body = entity
   }
+  if (options.formData) {
+    opts.formData = options.formData
+  }
   if ('production' !== process.env.NODE_ENV && context.debug) {
     debug(request)
   }
@@ -1819,7 +1861,7 @@ module.request = function(context, verb, options, entity, callback) {
     if ('production' !== process.env.NODE_ENV && context.debug) {
       console.log('invoking endpoint: ' + url)
       console.log(entity || '')
-      console.log(util.inspect(body, {showHidden: false, depth: null}));
+      console.log(JSON.stringify(body, null, 2));
     }
     if (callback) {
       if (err ||
@@ -1861,11 +1903,13 @@ module.update = function(context, entityName, entity, callback) {
           util.inspect(entity, {showHidden: false, depth: null}))
     }
   }
+  if (! entity.hasOwnProperty('sparse')) {
+    entity.sparse = true
+  }
   var url = '/' + entityName.toLowerCase() + '?operation=update'
   var opts = {url: url}
   if (entity.void && entity.void.toString() === 'true') {
     opts.qs = { include: 'void' }
-    entity.sparse = true
     delete entity.void
   }
   module.request(context, 'post', opts, entity, module.unwrap(callback, entityName))
