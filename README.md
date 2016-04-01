@@ -203,6 +203,7 @@ __Arguments__
 * [`createCreditMemo`](#createCreditMemo)
 * [`createCustomer`](#createCustomer)
 * [`createDepartment`](#createDepartment)
+* [`createDeposit`](#createDeposit)
 * [`createEmployee`](#createEmployee)
 * [`createEstimate`](#createEstimate)
 * [`createInvoice`](#createInvoice)
@@ -218,6 +219,7 @@ __Arguments__
 * [`createTaxService`](#createTaxService)
 * [`createTerm`](#createTerm)
 * [`createTimeActivity`](#createTimeActivity)
+* [`createTransfer`](#createTransfer)
 * [`createVendor`](#createVendor)
 * [`createVendorCredit`](#createVendorCredit)
 
@@ -232,6 +234,7 @@ __Arguments__
 * [`getCreditMemo`](#getCreditMemo)
 * [`getCustomer`](#getCustomer)
 * [`getDepartment`](#getDepartment)
+* [`getDeposit`](#getDeposit)
 * [`getEmployee`](#getEmployee)
 * [`getEstimate`](#getEstimate)
 * [`getInvoice`](#getInvoice)
@@ -264,6 +267,7 @@ __Arguments__
 * [`updateCreditMemo`](#updateCreditMemo)
 * [`updateCustomer`](#updateCustomer)
 * [`updateDepartment`](#updateDepartment)
+* [`updateDeposit`](#updateDeposit)
 * [`updateEmployee`](#updateEmployee)
 * [`updateEstimate`](#updateEstimate)
 * [`updateInvoice`](#updateInvoice)
@@ -281,6 +285,7 @@ __Arguments__
 * [`updateTaxRate`](#updateTaxRate)
 * [`updateTerm`](#updateTerm)
 * [`updateTimeActivity`](#updateTimeActivity)
+* [`updateTransfer`](#updateTransfer)
 * [`updateVendor`](#updateVendor)
 * [`updateVendorCredit`](#updateVendorCredit)
 * [`updateExchangeRate`](#updateExchangeRate)
@@ -291,6 +296,7 @@ __Arguments__
 * [`deleteBill`](#deleteBill)
 * [`deleteBillPayment`](#deleteBillPayment)
 * [`deleteCreditMemo`](#deleteCreditMemo)
+* [`deleteDeposit`](#deleteDeposit)
 * [`deleteEstimate`](#deleteEstimate)
 * [`deleteInvoice`](#deleteInvoice)
 * [`deleteJournalEntry`](#deleteJournalEntry)
@@ -300,6 +306,7 @@ __Arguments__
 * [`deleteRefundReceipt`](#deleteRefundReceipt)
 * [`deleteSalesReceipt`](#deleteSalesReceipt)
 * [`deleteTimeActivity`](#deleteTimeActivity)
+* [`deleteTransfer`](#deleteTransfer)
 * [`deleteVendorCredit`](#deleteVendorCredit)
 
 #### Query
@@ -314,6 +321,7 @@ __Arguments__
 * [`findCreditMemos`](#findCreditMemos)
 * [`findCustomers`](#findCustomers)
 * [`findDepartments`](#findDepartments)
+* [`findDeposits`](#findDeposits)
 * [`findEmployees`](#findEmployees)
 * [`findEstimates`](#findEstimates)
 * [`findInvoices`](#findInvoices)
@@ -461,6 +469,17 @@ __Arguments__
 
 * `object` - The unsaved department, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Department
+
+
+<a name="createDeposit" />
+#### createDeposit(object, callback)
+
+Creates the Deposit in QuickBooks
+
+__Arguments__
+
+* `object` - The unsaved deposit, to be persisted in QuickBooks
+* `callback` - Callback function which is called with any error and the persistent Deposit
 
 
 <a name="createEmployee" />
@@ -628,6 +647,17 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent TimeActivity
 
 
+<a name="createTransfer" />
+#### createTransfer(object, callback)
+
+Creates the Transfer in QuickBooks
+
+__Arguments__
+
+* `object` - The unsaved transfer, to be persisted in QuickBooks
+* `callback` - Callback function which is called with any error and the persistent Transfer
+
+
 <a name="createVendor" />
 #### createVendor(object, callback)
 
@@ -749,6 +779,17 @@ __Arguments__
 
 * `id` - The Id of persistent Department
 * `callback` - Callback function which is called with any error and the persistent Department
+
+
+<a name="getDeposit" />
+#### getDeposit(id, callback)
+
+Retrieves the Deposit from QuickBooks
+
+__Arguments__
+
+* `id` - The Id of persistent Deposit
+* `callback` - Callback function which is called with any error and the persistent Deposit
 
 
 <a name="getEmployee" />
@@ -949,6 +990,17 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent TimeActivity
 
 
+<a name="getTransfer" />
+#### getTransfer(id, callback)
+
+Retrieves the Transfer from QuickBooks
+
+__Arguments__
+
+* `id` - The Id of persistent Transfer
+* `callback` - Callback function which is called with any error and the persistent Transfer
+
+
 <a name="getVendor" />
 #### getVendor(id, callback)
 
@@ -1070,6 +1122,17 @@ __Arguments__
 
 * `object` - The persistent Department, including Id and SyncToken fields
 * `callback` - Callback function which is called with any error and the updated Department
+
+
+<a name="updateDeposit" />
+#### updateDeposit(object, callback)
+
+Updates QuickBooks version of Deposit
+
+__Arguments__
+
+* `object` - The persistent Deposit, including Id and SyncToken fields
+* `callback` - Callback function which is called with any error and the updated Deposit
 
 
 <a name="updateEmployee" />
@@ -1259,6 +1322,17 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated TimeActivity
 
 
+<a name="updateTransfer" />
+#### updateTransfer(object, callback)
+
+Updates QuickBooks version of Transfer
+
+__Arguments__
+
+* `object` - The persistent Transfer, including Id and SyncToken fields
+* `callback` - Callback function which is called with any error and the updated Transfer
+
+
 <a name="updateVendor" />
 #### updateVendor(object, callback)
 
@@ -1336,6 +1410,17 @@ __Arguments__
 
 * `idOrEntity` - The persistent CreditMemo to be deleted, or the Id of the CreditMemo, in which case an extra GET request will be issued to first retrieve the CreditMemo
 * `callback` - Callback function which is called with any error and the status of the persistent CreditMemo
+
+
+<a name="deleteDeposit" />
+#### deleteDeposit(idOrEntity, callback)
+
+Deletes the Deposit from QuickBooks
+
+__Arguments__
+
+* `idOrEntity` - The persistent Deposit to be deleted, or the Id of the Deposit, in which case an extra GET request will be issued to first retrieve the Deposit
+* `callback` - Callback function which is called with any error and the status of the persistent Deposit
 
 
 <a name="deleteEstimate" />
@@ -1437,6 +1522,17 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent TimeActivity
 
 
+<a name="deleteTransfer" />
+#### deleteTransfer(idOrEntity, callback)
+
+Deletes the Transfer from QuickBooks
+
+__Arguments__
+
+* `idOrEntity` - The persistent Transfer to be deleted, or the Id of the Transfer, in which case an extra GET request will be issued to first retrieve the Transfer
+* `callback` - Callback function which is called with any error and the status of the persistent Transfer
+
+
 <a name="deleteVendorCredit" />
 #### deleteVendorCredit(idOrEntity, callback)
 
@@ -1458,7 +1554,7 @@ Finds all Accounts in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Account
+* `callback` - Callback function which is called with any error and the list of Accounts
 
 
 <a name="findAttachables" />
@@ -1469,7 +1565,7 @@ Finds all Attachables in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Attachable
+* `callback` - Callback function which is called with any error and the list of Attachables
 
 
 <a name="findBills" />
@@ -1480,7 +1576,7 @@ Finds all Bills in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Bill
+* `callback` - Callback function which is called with any error and the list of Bills
 
 
 <a name="findBillPayments" />
@@ -1491,7 +1587,7 @@ Finds all BillPayments in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of BillPayment
+* `callback` - Callback function which is called with any error and the list of BillPayments
 
 
 <a name="findBudgets" />
@@ -1502,7 +1598,7 @@ Finds all Budgets in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Budget
+* `callback` - Callback function which is called with any error and the list of Budgets
 
 
 <a name="findClasses" />
@@ -1513,7 +1609,7 @@ Finds all Classs in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Class
+* `callback` - Callback function which is called with any error and the list of Classes
 
 
 <a name="findCompanyInfos" />
@@ -1524,7 +1620,7 @@ Finds all CompanyInfos in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of CompanyInfo
+* `callback` - Callback function which is called with any error and the list of CompanyInfos
 
 
 <a name="findCreditMemos" />
@@ -1535,7 +1631,7 @@ Finds all CreditMemos in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of CreditMemo
+* `callback` - Callback function which is called with any error and the list of CreditMemos
 
 
 <a name="findCustomers" />
@@ -1546,7 +1642,7 @@ Finds all Customers in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Customer
+* `callback` - Callback function which is called with any error and the list of Customers
 
 
 <a name="findDepartments" />
@@ -1557,7 +1653,18 @@ Finds all Departments in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Department
+* `callback` - Callback function which is called with any error and the list of Departments
+
+
+<a name="findDeposits" />
+#### findDeposits(criteria, callback)
+
+Finds all Deposits in QuickBooks, optionally matching the specified criteria
+
+__Arguments__
+
+* `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
+* `callback` - Callback function which is called with any error and the list of Deposits
 
 
 <a name="findEmployees" />
@@ -1568,7 +1675,7 @@ Finds all Employees in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Employee
+* `callback` - Callback function which is called with any error and the list of Employees
 
 
 <a name="findEstimates" />
@@ -1579,7 +1686,7 @@ Finds all Estimates in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Estimate
+* `callback` - Callback function which is called with any error and the list of Estimates
 
 
 <a name="findInvoices" />
@@ -1590,7 +1697,7 @@ Finds all Invoices in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Invoice
+* `callback` - Callback function which is called with any error and the list of Invoices
 
 
 <a name="findItems" />
@@ -1601,7 +1708,7 @@ Finds all Items in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Item
+* `callback` - Callback function which is called with any error and the list of Items
 
 
 <a name="findJournalEntries" />
@@ -1612,7 +1719,7 @@ Finds all JournalEntrys in QuickBooks, optionally matching the specified criteri
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of JournalEntry
+* `callback` - Callback function which is called with any error and the list of JournalEntries
 
 
 <a name="findPayments" />
@@ -1623,7 +1730,7 @@ Finds all Payments in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Payment
+* `callback` - Callback function which is called with any error and the list of Payments
 
 
 <a name="findPaymentMethods" />
@@ -1634,7 +1741,7 @@ Finds all PaymentMethods in QuickBooks, optionally matching the specified criter
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of PaymentMethod
+* `callback` - Callback function which is called with any error and the list of PaymentMethods
 
 
 <a name="findPreferenceses" />
@@ -1656,7 +1763,7 @@ Finds all Purchases in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Purchase
+* `callback` - Callback function which is called with any error and the list of Purchases
 
 
 <a name="findPurchaseOrders" />
@@ -1667,7 +1774,7 @@ Finds all PurchaseOrders in QuickBooks, optionally matching the specified criter
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of PurchaseOrder
+* `callback` - Callback function which is called with any error and the list of PurchaseOrders
 
 
 <a name="findRefundReceipts" />
@@ -1678,7 +1785,7 @@ Finds all RefundReceipts in QuickBooks, optionally matching the specified criter
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of RefundReceipt
+* `callback` - Callback function which is called with any error and the list of RefundReceipts
 
 
 <a name="findSalesReceipts" />
@@ -1689,7 +1796,7 @@ Finds all SalesReceipts in QuickBooks, optionally matching the specified criteri
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of SalesReceipt
+* `callback` - Callback function which is called with any error and the list of SalesReceipts
 
 
 <a name="findTaxAgencies" />
@@ -1700,7 +1807,7 @@ Finds all TaxAgencys in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of TaxAgency
+* `callback` - Callback function which is called with any error and the list of TaxAgencies
 
 
 <a name="findTaxCodes" />
@@ -1711,7 +1818,7 @@ Finds all TaxCodes in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of TaxCode
+* `callback` - Callback function which is called with any error and the list of TaxCodes
 
 
 <a name="findTaxRates" />
@@ -1722,7 +1829,7 @@ Finds all TaxRates in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of TaxRate
+* `callback` - Callback function which is called with any error and the list of TaxRates
 
 
 <a name="findTerms" />
@@ -1733,7 +1840,7 @@ Finds all Terms in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Term
+* `callback` - Callback function which is called with any error and the list of Terms
 
 
 <a name="findTimeActivities" />
@@ -1744,7 +1851,7 @@ Finds all TimeActivitys in QuickBooks, optionally matching the specified criteri
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of TimeActivity
+* `callback` - Callback function which is called with any error and the list of TimeActivities
 
 
 <a name="findVendors" />
@@ -1755,7 +1862,7 @@ Finds all Vendors in QuickBooks, optionally matching the specified criteria
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of Vendor
+* `callback` - Callback function which is called with any error and the list of Vendors
 
 
 <a name="findVendorCredits" />
@@ -1766,7 +1873,7 @@ Finds all VendorCredits in QuickBooks, optionally matching the specified criteri
 __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
-* `callback` - Callback function which is called with any error and the list of VendorCredit
+* `callback` - Callback function which is called with any error and the list of VendorCredits
 
 
 <a name="findExchangeRates" />
