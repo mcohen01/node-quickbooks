@@ -202,6 +202,16 @@ QuickBooks.prototype.createDepartment = function(department, callback) {
 }
 
 /**
+ * Creates the Deposit in QuickBooks
+ *
+ * @param  {object} deposit - The unsaved Deposit, to be persisted in QuickBooks
+ * @param  {function} callback - Callback function which is called with any error and the persistent Deposit
+ */
+QuickBooks.prototype.createDeposit = function(deposit, callback) {
+  module.create(this, 'deposit', deposit, callback)
+}
+
+/**
  * Creates the Employee in QuickBooks
  *
  * @param  {object} employee - The unsaved employee, to be persisted in QuickBooks
@@ -352,6 +362,16 @@ QuickBooks.prototype.createTimeActivity = function(timeActivity, callback) {
 }
 
 /**
+ * Creates the Transfer in QuickBooks
+ *
+ * @param  {object} transfer - The unsaved Transfer, to be persisted in QuickBooks
+ * @param  {function} callback - Callback function which is called with any error and the persistent Transfer
+ */
+QuickBooks.prototype.createTransfer = function(transfer, callback) {
+  module.create(this, 'transfer', transfer, callback)
+}
+
+/**
  * Creates the Vendor in QuickBooks
  *
  * @param  {object} vendor - The unsaved vendor, to be persisted in QuickBooks
@@ -461,6 +481,16 @@ QuickBooks.prototype.getCustomer = function(id, callback) {
  */
 QuickBooks.prototype.getDepartment = function(id, callback) {
   module.read(this, 'department', id, callback)
+}
+
+/**
+ * Retrieves the Deposit from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent Deposit
+ * @param  {function} callback - Callback function which is called with any error and the persistent Deposit
+ */
+QuickBooks.prototype.getDeposit = function(id, callback) {
+  module.read(this, 'deposit', id, callback)
 }
 
 /**
@@ -714,6 +744,16 @@ QuickBooks.prototype.getTimeActivity = function(id, callback) {
 }
 
 /**
+ * Retrieves the Transfer from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent Term
+ * @param  {function} callback - Callback function which is called with any error and the persistent Transfer
+ */
+QuickBooks.prototype.getTransfer = function(id, callback) {
+  module.read(this, 'transfer', id, callback)
+}
+
+/**
  * Retrieves the Vendor from QuickBooks
  *
  * @param  {string} Id - The Id of persistent Vendor
@@ -823,6 +863,16 @@ QuickBooks.prototype.updateCustomer = function(customer, callback) {
  */
 QuickBooks.prototype.updateDepartment = function(department, callback) {
   module.update(this, 'department', department, callback)
+}
+
+/**
+ * Updates QuickBooks version of Deposit
+ *
+ * @param  {object} deposit - The persistent Deposit, including Id and SyncToken fields
+ * @param  {function} callback - Callback function which is called with any error and the persistent Deposit
+ */
+QuickBooks.prototype.updateDeposit = function(deposit, callback) {
+  module.update(this, 'deposit', deposit, callback)
 }
 
 /**
@@ -993,6 +1043,16 @@ QuickBooks.prototype.updateTerm = function(term, callback) {
  */
 QuickBooks.prototype.updateTimeActivity = function(timeActivity, callback) {
   module.update(this, 'timeActivity', timeActivity, callback)
+}
+
+/**
+ * Updates QuickBooks version of Transfer
+ *
+ * @param  {object} Transfer - The persistent Transfer, including Id and SyncToken fields
+ * @param  {function} callback - Callback function which is called with any error and the persistent Transfer
+ */
+QuickBooks.prototype.updateTransfer = function(transfer, callback) {
+  module.update(this, 'transfer', transfer, callback)
 }
 
 /**
@@ -1309,6 +1369,20 @@ QuickBooks.prototype.findDepartments = function(criteria, callback) {
 }
 
 /**
+ * Finds all Deposits in QuickBooks, optionally matching the specified criteria
+ *
+ * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
+ * @param  {function} callback - Callback function which is called with any error and the list of Deposit
+ */
+QuickBooks.prototype.findDeposits = function(criteria, callback) {
+  module.query(this, 'deposit', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
+}
+
+/**
  * Finds all Employees in QuickBooks, optionally matching the specified criteria
  *
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -1540,6 +1614,20 @@ QuickBooks.prototype.findTerms = function(criteria, callback) {
  */
 QuickBooks.prototype.findTimeActivities = function(criteria, callback) {
   module.query(this, 'timeActivity', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
+}
+
+/**
+ * Finds all Transfers in QuickBooks, optionally matching the specified criteria
+ *
+ * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
+ * @param  {function} callback - Callback function which is called with any error and the list of Transfer
+ */
+QuickBooks.prototype.findTransfers = function(criteria, callback) {
+  module.query(this, 'transfer', criteria).then(function(data) {
     (callback || criteria)(null, data)
   }).catch(function(err) {
     (callback || criteria)(err, err)
