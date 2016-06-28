@@ -237,6 +237,7 @@ __Arguments__
 * [`getDeposit`](#getDeposit)
 * [`getEmployee`](#getEmployee)
 * [`getEstimate`](#getEstimate)
+* [`getExchangeRate`](#getExchangeRate)
 * [`getInvoice`](#getInvoice)
 * [`getItem`](#getItem)
 * [`getJournalEntry`](#getJournalEntry)
@@ -255,7 +256,6 @@ __Arguments__
 * [`getTimeActivity`](#getTimeActivity)
 * [`getVendor`](#getVendor)
 * [`getVendorCredit`](#getVendorCredit)
-* [`getExchangeRate`](#getExchangeRate)
 
 #### Update
 
