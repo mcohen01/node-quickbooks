@@ -514,6 +514,17 @@ QuickBooks.prototype.getEstimate = function(id, callback) {
 }
 
 /**
+ * Retrieves an ExchangeRate from QuickBooks
+ *
+ * @param  {object} options - An object with options including the required `sourcecurrencycode` parameter and optional `asofdate` parameter.
+ * @param  {function} callback - Callback function which is called with any error and the ExchangeRate
+ */
+QuickBooks.prototype.getExchangeRate = function(options, callback) {
+  var url = "/exchangerate";
+  module.request(this, 'get', {url: url, qs: options}, null, callback)
+}
+
+/**
  * Emails the Estimate PDF from QuickBooks to the address supplied in Estimate.BillEmail.EmailAddress
  * or the specified 'sendTo' address
  *

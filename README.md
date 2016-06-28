@@ -255,6 +255,7 @@ __Arguments__
 * [`getTimeActivity`](#getTimeActivity)
 * [`getVendor`](#getVendor)
 * [`getVendorCredit`](#getVendorCredit)
+* [`getExchangeRate`](#getExchangeRate)
 
 #### Update
 
@@ -812,6 +813,17 @@ __Arguments__
 
 * `id` - The Id of persistent Estimate
 * `callback` - Callback function which is called with any error and the persistent Estimate
+
+
+<a name="getExchangeRate" />
+#### getExchangeRate(options, callback)
+
+Retrieves an ExchangeRate from QuickBooks
+
+__Arguments__
+
+* `options` -  An object with options including the required `sourcecurrencycode` parameter and optional `asofdate` parameter.
+* `callback` - Callback function which is called with any error and the ExchangeRate
 
 
 <a name="getInvoice" />
