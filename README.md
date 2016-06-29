@@ -26,13 +26,13 @@ qbo.createAttachable({Note: 'My File'}, function(err, attachable) {
   else console.log(attachable.Id)
 })
 
-qbo.getBillPayment(42, function(err, billPayment) {
+qbo.getBillPayment('42', function(err, billPayment) {
   console.log(billPayment)
 })
 
 qbo.updateCustomer({
-  Id: 42,
-  SyncToken: 1,
+  Id: '42',
+  SyncToken: '1',
   sparse: true,
   PrimaryEmailAddr: {Address: 'customer@example.com'}
 }, function(err, customer) {
@@ -40,7 +40,7 @@ qbo.updateCustomer({
   else console.log(customer)
 })
 
-qbo.deleteAttachable(42, function(err, attachable) {
+qbo.deleteAttachable('42', function(err, attachable) {
   if (err) console.log(err)
   else console.log(attachable)
 }))
