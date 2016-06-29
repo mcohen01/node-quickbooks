@@ -2014,9 +2014,9 @@ module.read = function(context, entityName, id, callback) {
 
 module.update = function(context, entityName, entity, callback) {
   if (_.isUndefined(entity.Id) ||
-      _.isEmpty(entity.Id) ||
+      _.isEmpty(entity.Id + '') ||
       _.isUndefined(entity.SyncToken) ||
-      _.isEmpty(entity.SyncToken)) {
+      _.isEmpty(entity.SyncToken + '')) {
     if (entityName !== 'exchangerate') {
       throw new Error(entityName + ' must contain Id and SyncToken fields: ' +
           util.inspect(entity, {showHidden: false, depth: null}))
