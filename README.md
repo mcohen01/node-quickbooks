@@ -1,6 +1,6 @@
 # node-quickbooks
 
-Node.js client for [QuickBooks API] [1].
+nodejs client for Intuit's [QuickBooks API] [1]
 
 ## Installation
 
