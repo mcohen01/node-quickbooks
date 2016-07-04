@@ -1,6 +1,6 @@
 # node-quickbooks
 
-Node.js client for [QuickBooks V3 API] [1].
+Node.js client for [QuickBooks API] [1].
 
 ## Installation
 
