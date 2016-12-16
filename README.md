@@ -18,7 +18,7 @@ var qbo = new QuickBooks(consumerKey,
                          oauthToken,
                          oauthTokenSecret,
                          realmId,
-                         false, // don't use the sandbox (i.e. for testing)
+                         false, // use the sandbox (i.e. for testing)
                          true); // turn debugging on
 
 qbo.createAttachable({Note: 'My File'}, function(err, attachable) {
