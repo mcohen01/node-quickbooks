@@ -1963,6 +1963,7 @@ module.request = function(context, verb, options, entity, callback) {
   opts.qs.minorversion = opts.qs.minorversion || 4
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
   opts.headers['Request-Id'] = uuid.v1()
+  opts.qs.format = 'json';
   if (options.url.match(/pdf$/)) {
     opts.headers['accept'] = 'application/pdf'
     opts.encoding = null
