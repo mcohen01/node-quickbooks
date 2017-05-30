@@ -2003,7 +2003,13 @@ QuickBooks.prototype.reconnect = function(callback) {
 
 QuickBooks.prototype.disconnect = function(callback) {
   var url = QuickBooks.DISCONNECT_URL
-  module.request(this, 'get', {url: url}, null, callback)
+  module.request(this, 'get', {url: url}, null, (err, body) => {
+    if(body.indexOf('<ErrorCode>0</ErrorCode>') >= 0) {
+      callback(null, body);
+    } else {
+      callback(err, body);
+    }
+  })
 }
 
 // **********************  CRUD Api **********************
