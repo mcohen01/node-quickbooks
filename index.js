@@ -13,7 +13,8 @@ var request = require('request'),
     moment  = require('moment'),
     _       = require('underscore'),
     Promise = require('bluebird'),
-    version = require('./package.json').version
+    version = require('./package.json').version,
+    jxon    = require('jxon');
 
 module.exports = QuickBooks
 
@@ -1996,20 +1997,19 @@ module.request = function(context, verb, options, entity, callback) {
   })
 }
 
+module.xmlRequest = function(url, rootTag, callback) {
+  module.request(this, 'get', {url:url}, null, (err, body) => {
+    var json = jxon.stringToJs(body)[rootTag];
+    callback(json.ErrorCode === 0 ? null : json, json);
+  })
+}
+
 QuickBooks.prototype.reconnect = function(callback) {
-  var url = QuickBooks.RECONNECT_URL
-  module.request(this, 'get', {url: url}, null, callback)
+  module.xmlRequest(QuickBooks.RECONNECT_URL, 'ReconnectResponse', callback);
 }
 
 QuickBooks.prototype.disconnect = function(callback) {
-  var url = QuickBooks.DISCONNECT_URL
-  module.request(this, 'get', {url: url}, null, (err, body) => {
-    if(body.indexOf('<ErrorCode>0</ErrorCode>') >= 0) {
-      callback(null, body);
-    } else {
-      callback(err, body);
-    }
-  })
+  module.xmlRequest(QuickBooks.DISCONNECT_URL, 'PlatformResponse', callback);
 }
 
 // **********************  CRUD Api **********************

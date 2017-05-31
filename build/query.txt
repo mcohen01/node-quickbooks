@@ -10,7 +10,7 @@ customer
 department
 employee
 estimate
-exchangerate
+exchangeRate
 invoice
 item
 journalEntry
