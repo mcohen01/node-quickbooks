@@ -13,7 +13,8 @@ var request = require('request'),
     moment  = require('moment'),
     _       = require('underscore'),
     Promise = require('bluebird'),
-    version = require('./package.json').version
+    version = require('./package.json').version,
+    jxon    = require('jxon');
 
 module.exports = QuickBooks
 
@@ -22,6 +23,7 @@ QuickBooks.ACCESS_TOKEN_URL           = 'https://oauth.intuit.com/oauth/v1/get_a
 QuickBooks.APP_CENTER_BASE            = 'https://appcenter.intuit.com'
 QuickBooks.APP_CENTER_URL             = QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token='
 QuickBooks.RECONNECT_URL              = QuickBooks.APP_CENTER_BASE + '/api/v1/connection/reconnect'
+QuickBooks.DISCONNECT_URL              = QuickBooks.APP_CENTER_BASE + '/api/v1/connection/disconnect'
 QuickBooks.V3_ENDPOINT_BASE_URL       = 'https://sandbox-quickbooks.api.intuit.com/v3/company/'
 QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
 
@@ -1950,7 +1952,7 @@ QuickBooks.prototype.reportAccountListDetail = function(options, callback) {
 
 module.request = function(context, verb, options, entity, callback) {
   var url = context.endpoint + context.realmId + options.url
-  if (options.url === QuickBooks.RECONNECT_URL) {
+  if (options.url === QuickBooks.RECONNECT_URL || options.url == QuickBooks.DISCONNECT_URL) {
     url = options.url
   }
   var opts = {
@@ -1996,9 +1998,19 @@ module.request = function(context, verb, options, entity, callback) {
   })
 }
 
+module.xmlRequest = function(url, rootTag, callback) {
+  module.request(this, 'get', {url:url}, null, (err, body) => {
+    var json = jxon.stringToJs(body)[rootTag];
+    callback(json.ErrorCode === 0 ? null : json, json);
+  })
+}
+
 QuickBooks.prototype.reconnect = function(callback) {
-  var url = QuickBooks.RECONNECT_URL
-  module.request(this, 'get', {url: url}, null, callback)
+  module.xmlRequest(QuickBooks.RECONNECT_URL, 'ReconnectResponse', callback);
+}
+
+QuickBooks.prototype.disconnect = function(callback) {
+  module.xmlRequest(QuickBooks.DISCONNECT_URL, 'PlatformResponse', callback);
 }
 
 // **********************  CRUD Api **********************
