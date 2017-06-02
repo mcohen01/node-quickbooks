@@ -7,7 +7,7 @@
  */
 
 var request = require('request'),
-    uuid    = require('node-uuid'),
+    uuid    = require('uuid'),
     debug   = require('request-debug'),
     util    = require('util'),
     moment  = require('moment'),
