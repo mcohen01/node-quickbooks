@@ -1998,19 +1998,24 @@ module.request = function(context, verb, options, entity, callback) {
   })
 }
 
-module.xmlRequest = function(url, rootTag, callback) {
-  module.request(this, 'get', {url:url}, null, (err, body) => {
-    var json = jxon.stringToJs(body)[rootTag];
+module.xmlRequest = function(context, url, rootTag, callback) {
+  module.request(context, 'get', {url:url}, null, (err, body) => {
+    var json =
+        body.constructor === {}.constructor ? body :
+            (body.constructor === "".constructor ?
+                (body.indexOf('<') === 0 ? jxon.stringToJs(body)[rootTag] : body) : body);
     callback(json.ErrorCode === 0 ? null : json, json);
   })
 }
 
+
+
 QuickBooks.prototype.reconnect = function(callback) {
-  module.xmlRequest(QuickBooks.RECONNECT_URL, 'ReconnectResponse', callback);
+  module.xmlRequest(this, QuickBooks.RECONNECT_URL, 'ReconnectResponse', callback);
 }
 
 QuickBooks.prototype.disconnect = function(callback) {
-  module.xmlRequest(QuickBooks.DISCONNECT_URL, 'PlatformResponse', callback);
+  module.xmlRequest(this, QuickBooks.DISCONNECT_URL, 'PlatformResponse', callback);
 }
 
 // **********************  CRUD Api **********************
