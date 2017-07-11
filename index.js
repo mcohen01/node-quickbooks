@@ -2000,7 +2000,7 @@ module.request = function(context, verb, options, entity, callback) {
 
 module.xmlRequest = function(context, url, rootTag, callback) {
   module.request(context, 'get', {url:url}, null, (err, body) => {
-    json =
+    var json =
         body.constructor === {}.constructor ? body :
             (body.constructor === "".constructor ?
                 (body.indexOf('<') === 0 ? jxon.stringToJs(body)[rootTag] : body) : body);
