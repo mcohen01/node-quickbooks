@@ -1,6 +1,6 @@
 {
-  "name": "node-quickbooks",
-  "version": "2.0.14",
+  "name": "evo-qbo",
+  "version": "2.0.15",
   "description": "node.js client for Intuit's IPP QuickBooks V3 API.",
   "main": "index.js",
   "scripts": {
@@ -37,10 +37,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mcohen01/node-quickbooks.git"
+    "url": "https://github.com/desmondpnw3dev/evo-qbo.git"
   },
   "bugs": {
-    "url": "https://github.com/mcohen01/node-quickbooks/issues"
+    "url": "https://github.com/desmondpnw3dev/evo-qbo/issues"
   },
-  "homepage": "https://github.com/mcohen01/node-quickbooks"
+  "homepage": "https://github.com/desmondpnw3dev/evo-qbo"
 }
