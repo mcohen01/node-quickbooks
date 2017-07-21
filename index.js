@@ -2052,8 +2052,7 @@ module.update = function(context, entityName, entity, callback) {
   if (entity.voided) {
     if (entity.voided === true || entity.voided === 'true') {
         delete entity.voided;
-        entity.void = true;
-        // opts.qs = { include: 'void' }
+        opts.qs = { include: 'void' }
     }
   }
   module.request(context, 'post', opts, entity, module.unwrap(callback, entityName))
