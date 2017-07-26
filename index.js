@@ -2241,7 +2241,7 @@ module.criteriaToString = function(criteria) {
     }
     sql += criterion.field + ' ' + criterion.operator + ' '
     var quote = function(x) {
-      return _.isString(x) ? "'" + x + "'" : x
+      return _.isString(x) ? "'" + x.replace(/'/g, "\\'") + "'" : x
     }
     if (_.isArray(criterion.value)) {
       sql += '(' + criterion.value.map(quote).join(',') + ')'
