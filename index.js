@@ -38,9 +38,10 @@ QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE'
  * @param realmId - QuickBooks companyId, returned as a request parameter when the user is redirected to the provided callback URL following authentication
  * @param useSandbox - boolean - See https://developer.intuit.com/v2/blog/2014/10/24/intuit-developer-now-offers-quickbooks-sandboxes
  * @param debug - boolean flag to turn on logging of HTTP requests, including headers and body
+ * @param minorversion - integer to set minorversion in request
  * @constructor
  */
-function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, useSandbox, debug) {
+function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, useSandbox, debug, minorversion) {
   var prefix           = _.isObject(consumerKey) ? 'consumerKey.' : ''
   this.consumerKey     = eval(prefix + 'consumerKey')
   this.consumerSecret  = eval(prefix + 'consumerSecret')
@@ -50,6 +51,7 @@ function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, us
   this.useSandbox      = eval(prefix + 'useSandbox')
   this.debug           = eval(prefix + 'debug')
   this.endpoint        = this.useSandbox ? QuickBooks.V3_ENDPOINT_BASE_URL : QuickBooks.V3_ENDPOINT_BASE_URL.replace('sandbox-', '')
+  this.minorversion    = eval(prefix + 'minorversion') || 4;
 }
 
 /**
@@ -1962,7 +1964,7 @@ module.request = function(context, verb, options, entity, callback) {
     oauth:   module.oauth(context),
     json:    true
   }
-  opts.qs.minorversion = opts.qs.minorversion || 4
+  opts.qs.minorversion = opts.qs.minorversion || context.minorversion;
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
   opts.headers['Request-Id'] = uuid.v1()
   opts.qs.format = 'json';
