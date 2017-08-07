@@ -2017,6 +2017,33 @@ QuickBooks.prototype.reconnect = function(callback) {
 QuickBooks.prototype.disconnect = function(callback) {
   module.xmlRequest(this, QuickBooks.DISCONNECT_URL, 'PlatformResponse', callback);
 }
+/**
+ * Voids the Invoice from QuickBooks
+ *
+ * @param  {object} idOrEntity - The persistent Invoice to be voided, or the Id of the Invoice, in which case an extra GET request will be issued to first retrieve the Invoice
+ * @param  {function} callback - Callback function which is called with any error and the status of the persistent Invoice
+ */
+QuickBooks.prototype.voidInvoice = function(idOrEntity, callback) {
+  module.void(this, 'invoice', idOrEntity, callback)
+}
+/**
+ * Voids the Sales Receipts from QuickBooks
+ *
+ * @param  {object} idOrEntity - The persistent SalesReceipt to be voided, or the Id of the SalesReceipt, in which case an extra GET request will be issued to first retrieve the Sales Receipt
+ * @param  {function} callback - Callback function which is called with any error and the status of the persistent Sales Receipt
+ */
+QuickBooks.prototype.voidSalesReceipt = function(idOrEntity, callback) {
+  module.void(this, 'SalesReceipt', idOrEntity, callback)
+}
+/**
+ * Voids the Payment from QuickBooks
+ *
+ * @param  {object} idOrEntity - The persistent Payment to be voided, or the Id of the Payment, in which case an extra GET request will be issued to first retrieve the Payment
+ * @param  {function} callback - Callback function which is called with any error and the status of the persistent Payment
+ */
+QuickBooks.prototype.voidPayment = function(idOrEntity, callback) {
+  module.void(this, 'payment', idOrEntity, callback)
+}
 
 // **********************  CRUD Api **********************
 module.create = function(context, entityName, entity, callback) {
@@ -2069,6 +2096,31 @@ module.delete = function(context, entityName, idOrEntity, callback) {
         callback(err)
       } else {
         module.request(context, 'post', {url: url}, entity, callback)
+      }
+    })
+  }
+}
+
+module.void = function(context,entityName,idOrEntity,callback) {
+  var url;
+  var opts = {};
+  switch(entityName.toLowerCase()) {
+    case 'invoice':
+      url = '/' + entityName.toLowerCase() + '?operation=void';break;
+    case 'salesreceipt':
+    case 'payment':
+    default:
+      url = '/' + entityName.toLowerCase() + '?include=void';
+  }
+  opts.url = url;
+  if (_.isObject(idOrEntity)) {
+    module.request(context, 'post', opts, idOrEntity, callback)
+  } else {
+    module.read(context, entityName, idOrEntity, function(err, entity) {
+      if (err) {
+        callback(err)
+      } else {
+        module.request(context, 'post', opts, entity, callback)
       }
     })
   }
@@ -2303,3 +2355,4 @@ module.unwrap = function(callback, entityName) {
     }
   }
 }
+console.log('EVO-QBO MODULE READY!');
