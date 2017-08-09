@@ -19,7 +19,8 @@ var qbo = new QuickBooks(consumerKey,
                          oauthTokenSecret,
                          realmId,
                          false, // use the sandbox?
-                         true); // enable debugging?
+                         true, // enable debugging?
+                         minorversion); // set minorversion
 
 qbo.createAttachable({Note: 'My File'}, function(err, attachable) {
   if (err) console.log(err)
@@ -2100,9 +2101,9 @@ __Arguments__
 
 <a name="reportTransactionList" />
 #### reportTransactionList(options, callback)
-  
+
 Retrieves the TransactionList Report from QuickBooks
- 
+
 __Arguments__
 
 * `options` - (Optional) Map of key-value pairs passed as options to the Report
