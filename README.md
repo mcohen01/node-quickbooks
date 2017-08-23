@@ -195,197 +195,195 @@ __Arguments__
 
 
 #### Create
-
-* [`createAccount`](#createAccount)
-* [`createAttachable`](#createAttachable)
-* [`createBill`](#createBill)
-* [`createBillPayment`](#createBillPayment)
-* [`createClass`](#createClass)
-* [`createCreditMemo`](#createCreditMemo)
-* [`createCustomer`](#createCustomer)
-* [`createDepartment`](#createDepartment)
-* [`createDeposit`](#createDeposit)
-* [`createEmployee`](#createEmployee)
-* [`createEstimate`](#createEstimate)
-* [`createInvoice`](#createInvoice)
-* [`createItem`](#createItem)
-* [`createJournalEntry`](#createJournalEntry)
-* [`createPayment`](#createPayment)
-* [`createPaymentMethod`](#createPaymentMethod)
-* [`createPurchase`](#createPurchase)
-* [`createPurchaseOrder`](#createPurchaseOrder)
-* [`createRefundReceipt`](#createRefundReceipt)
-* [`createSalesReceipt`](#createSalesReceipt)
-* [`createTaxAgency`](#createTaxAgency)
-* [`createTaxService`](#createTaxService)
-* [`createTerm`](#createTerm)
-* [`createTimeActivity`](#createTimeActivity)
-* [`createTransfer`](#createTransfer)
-* [`createVendor`](#createVendor)
-* [`createVendorCredit`](#createVendorCredit)
+* [`createAccount`](#createaccountobject-callback)
+* [`createAttachable`](#createattachableobject-callback)
+* [`createBill`](#createbillobject-callback)
+* [`createBillPayment`](#createbillpaymentobject-callback)
+* [`createClass`](#createclassobject-callback)
+* [`createCreditMemo`](#createcreditmemoobject-callback)
+* [`createCustomer`](#createcustomerobject-callback)
+* [`createDepartment`](#createdepartmentobject-callback)
+* [`createDeposit`](#createdepositobject-callback)
+* [`createEmployee`](#createemployeeobject-callback)
+* [`createEstimate`](#createestimateobject-callback)
+* [`createInvoice`](#createinvoiceobject-callback)
+* [`createItem`](#createitemobject-callback)
+* [`createJournalEntry`](#createjournalentryobject-callback)
+* [`createPayment`](#createpaymentobject-callback)
+* [`createPaymentMethod`](#createpaymentmethodobject-callback)
+* [`createPurchase`](#createpurchaseobject-callback)
+* [`createPurchaseOrder`](#createpurchaseorderobject-callback)
+* [`createRefundReceipt`](#createrefundreceiptobject-callback)
+* [`createSalesReceipt`](#createsalesreceiptobject-callback)
+* [`createTaxAgency`](#createtaxagencyobject-callback)
+* [`createTaxService`](#createtaxserviceobject-callback)
+* [`createTerm`](#createtermobject-callback)
+* [`createTimeActivity`](#createtimeactivityobject-callback)
+* [`createTransfer`](#createtransferobject-callback)
+* [`createVendor`](#createvendorobject-callback)
+* [`createVendorCredit`](#createvendorcreditobject-callback)
 
 #### Read
 
-* [`getAccount`](#getAccount)
-* [`getAttachable`](#getAttachable)
-* [`getBill`](#getBill)
-* [`getBillPayment`](#getBillPayment)
-* [`getClass`](#getClass)
-* [`getCompanyInfo`](#getCompanyInfo)
-* [`getCreditMemo`](#getCreditMemo)
-* [`getCustomer`](#getCustomer)
-* [`getDepartment`](#getDepartment)
-* [`getDeposit`](#getDeposit)
-* [`getEmployee`](#getEmployee)
-* [`getEstimate`](#getEstimate)
-* [`getExchangeRate`](#getExchangeRate)
-* [`getInvoice`](#getInvoice)
-* [`getItem`](#getItem)
-* [`getJournalEntry`](#getJournalEntry)
-* [`getPayment`](#getPayment)
-* [`getPaymentMethod`](#getPaymentMethod)
-* [`getPreferences`](#getPreferences)
-* [`getPurchase`](#getPurchase)
-* [`getPurchaseOrder`](#getPurchaseOrder)
-* [`getRefundReceipt`](#getRefundReceipt)
-* [`getReports`](#getReports)
-* [`getSalesReceipt`](#getSalesReceipt)
-* [`getTaxAgency`](#getTaxAgency)
-* [`getTaxCode`](#getTaxCode)
-* [`getTaxRate`](#getTaxRate)
-* [`getTerm`](#getTerm)
-* [`getTimeActivity`](#getTimeActivity)
-* [`getVendor`](#getVendor)
-* [`getVendorCredit`](#getVendorCredit)
+* [`getAccount`](#getaccountid-callback)
+* [`getAttachable`](#getattachableid-callback)
+* [`getBill`](#getbillid-callback)
+* [`getBillPayment`](#getbillpaymentid-callback)
+* [`getClass`](#getclassid-callback)
+* [`getCompanyInfo`](#getcompanyinfoid-callback)
+* [`getCreditMemo`](#getcreditmemoid-callback)
+* [`getCustomer`](#getcustomerid-callback)
+* [`getDepartment`](#getdepartmentid-callback)
+* [`getDeposit`](#getdepositid-callback)
+* [`getEmployee`](#getemployeeid-callback)
+* [`getEstimate`](#getestimateid-callback)
+* [`getExchangeRate`](#getexchangerateoptions-callback)
+* [`getInvoice`](#getinvoiceid-callback)
+* [`getItem`](#getitemid-callback)
+* [`getJournalEntry`](#getjournalentryid-callback)
+* [`getPayment`](#getpaymentid-callback)
+* [`getPaymentMethod`](#getpaymentmethodid-callback)
+* [`getPreferences`](#getpreferencesid-callback)
+* [`getPurchase`](#getpurchaseid-callback)
+* [`getPurchaseOrder`](#getpurchaseorderid-callback)
+* [`getRefundReceipt`](#getrefundreceiptid-callback)
+* [`getReports`](#getreportsid-callback)
+* [`getSalesReceipt`](#getsalesreceiptid-callback)
+* [`getTaxAgency`](#gettaxagencyid-callback)
+* [`getTaxCode`](#gettaxcodeid-callback)
+* [`getTaxRate`](#gettaxrateid-callback)
+* [`getTerm`](#gettermid-callback)
+* [`getTimeActivity`](#gettimeactivityid-callback)
+* [`getVendor`](#getvendorid-callback)
+* [`getVendorCredit`](#getvendorcreditid-callback)
 
 #### Update
 
-* [`updateAccount`](#updateAccount)
-* [`updateAttachable`](#updateAttachable)
-* [`updateBill`](#updateBill)
-* [`updateBillPayment`](#updateBillPayment)
-* [`updateClass`](#updateClass)
-* [`updateCompanyInfo`](#updateCompanyInfo)
-* [`updateCreditMemo`](#updateCreditMemo)
-* [`updateCustomer`](#updateCustomer)
-* [`updateDepartment`](#updateDepartment)
-* [`updateDeposit`](#updateDeposit)
-* [`updateEmployee`](#updateEmployee)
-* [`updateEstimate`](#updateEstimate)
-* [`updateInvoice`](#updateInvoice)
-* [`updateItem`](#updateItem)
-* [`updateJournalEntry`](#updateJournalEntry)
-* [`updatePayment`](#updatePayment)
-* [`updatePaymentMethod`](#updatePaymentMethod)
-* [`updatePreferences`](#updatePreferences)
-* [`updatePurchase`](#updatePurchase)
-* [`updatePurchaseOrder`](#updatePurchaseOrder)
-* [`updateRefundReceipt`](#updateRefundReceipt)
-* [`updateSalesReceipt`](#updateSalesReceipt)
-* [`updateTaxAgency`](#updateTaxAgency)
-* [`updateTaxCode`](#updateTaxCode)
-* [`updateTaxRate`](#updateTaxRate)
-* [`updateTerm`](#updateTerm)
-* [`updateTimeActivity`](#updateTimeActivity)
-* [`updateTransfer`](#updateTransfer)
-* [`updateVendor`](#updateVendor)
-* [`updateVendorCredit`](#updateVendorCredit)
-* [`updateExchangeRate`](#updateExchangeRate)
+* [`updateAccount`](#updateaccountobject-callback)
+* [`updateAttachable`](#updateattachableobject-callback)
+* [`updateBill`](#updatebillobject-callback)
+* [`updateBillPayment`](#updatebillpaymentobject-callback)
+* [`updateClass`](#updateclassobject-callback)
+* [`updateCompanyInfo`](#updatecompanyinfoobject-callback)
+* [`updateCreditMemo`](#updatecreditmemoobject-callback)
+* [`updateCustomer`](#updatecustomerobject-callback)
+* [`updateDepartment`](#updatedepartmentobject-callback)
+* [`updateDeposit`](#updatedepositobject-callback)
+* [`updateEmployee`](#updateemployeeobject-callback)
+* [`updateEstimate`](#updateestimateobject-callback)
+* [`updateInvoice`](#updateinvoiceobject-callback)
+* [`updateItem`](#updateitemobject-callback)
+* [`updateJournalEntry`](#updatejournalentryobject-callback)
+* [`updatePayment`](#updatepaymentobject-callback)
+* [`updatePaymentMethod`](#updatepaymentmethodobject-callback)
+* [`updatePreferences`](#updatepreferencesobject-callback)
+* [`updatePurchase`](#updatepurchaseobject-callback)
+* [`updatePurchaseOrder`](#updatepurchaseorderobject-callback)
+* [`updateRefundReceipt`](#updaterefundreceiptobject-callback)
+* [`updateSalesReceipt`](#updatesalesreceiptobject-callback)
+* [`updateTaxAgency`](#updatetaxagencyobject-callback)
+* [`updateTaxCode`](#updatetaxcodeobject-callback)
+* [`updateTaxRate`](#updatetaxrateobject-callback)
+* [`updateTerm`](#updatetermobject-callback)
+* [`updateTimeActivity`](#updatetimeactivityobject-callback)
+* [`updateTransfer`](#updatetransferobject-callback)
+* [`updateVendor`](#updatevendorobject-callback)
+* [`updateVendorCredit`](#updatevendorcreditobject-callback)
+* [`updateExchangeRate`](#updateexchangerateobject-callback)
 
 #### Delete
 
-* [`deleteAttachable`](#deleteAttachable)
-* [`deleteBill`](#deleteBill)
-* [`deleteBillPayment`](#deleteBillPayment)
-* [`deleteCreditMemo`](#deleteCreditMemo)
-* [`deleteDeposit`](#deleteDeposit)
-* [`deleteEstimate`](#deleteEstimate)
-* [`deleteInvoice`](#deleteInvoice)
-* [`deleteJournalEntry`](#deleteJournalEntry)
-* [`deletePayment`](#deletePayment)
-* [`deletePurchase`](#deletePurchase)
-* [`deletePurchaseOrder`](#deletePurchaseOrder)
-* [`deleteRefundReceipt`](#deleteRefundReceipt)
-* [`deleteSalesReceipt`](#deleteSalesReceipt)
-* [`deleteTimeActivity`](#deleteTimeActivity)
-* [`deleteTransfer`](#deleteTransfer)
-* [`deleteVendorCredit`](#deleteVendorCredit)
+* [`deleteAttachable`](#deleteattachableidorentity-callback)
+* [`deleteBill`](#deletebillidorentity-callback)
+* [`deleteBillPayment`](#deletebillpaymentidorentity-callback)
+* [`deleteCreditMemo`](#deletecreditmemoidorentity-callback)
+* [`deleteDeposit`](#deletedepositidorentity-callback)
+* [`deleteEstimate`](#deleteestimateidorentity-callback)
+* [`deleteInvoice`](#deleteinvoiceidorentity-callback)
+* [`deleteJournalEntry`](#deletejournalentryidorentity-callback)
+* [`deletePayment`](#deletepaymentidorentity-callback)
+* [`deletePurchase`](#deletepurchaseidorentity-callback)
+* [`deletePurchaseOrder`](#deletepurchaseorderidorentity-callback)
+* [`deleteRefundReceipt`](#deleterefundreceiptidorentity-callback)
+* [`deleteSalesReceipt`](#deletesalesreceiptidorentity-callback)
+* [`deleteTimeActivity`](#deletetimeactivityidorentity-callback)
+* [`deleteTransfer`](#deletetransferidorentity-callback)
+* [`deleteVendorCredit`](#deletevendorcreditidorentity-callback)
 
 #### Query
 
-* [`findAccounts`](#findAccounts)
-* [`findAttachables`](#findAttachables)
-* [`findBills`](#findBills)
-* [`findBillPayments`](#findBillPayments)
-* [`findBudgets`](#findBudgets)
-* [`findClasses`](#findClasses)
-* [`findCompanyInfos`](#findCompanyInfos)
-* [`findCreditMemos`](#findCreditMemos)
-* [`findCustomers`](#findCustomers)
-* [`findDepartments`](#findDepartments)
-* [`findDeposits`](#findDeposits)
-* [`findEmployees`](#findEmployees)
-* [`findEstimates`](#findEstimates)
-* [`findInvoices`](#findInvoices)
-* [`findItems`](#findItems)
-* [`findJournalEntries`](#findJournalEntries)
-* [`findPayments`](#findPayments)
-* [`findPaymentMethods`](#findPaymentMethods)
-* [`findPreferenceses`](#findPreferenceses)
-* [`findPurchases`](#findPurchases)
-* [`findPurchaseOrders`](#findPurchaseOrders)
-* [`findRefundReceipts`](#findRefundReceipts)
-* [`findSalesReceipts`](#findSalesReceipts)
-* [`findTaxAgencies`](#findTaxAgencies)
-* [`findTaxCodes`](#findTaxCodes)
-* [`findTaxRates`](#findTaxRates)
-* [`findTerms`](#findTerms)
-* [`findTimeActivities`](#findTimeActivities)
-* [`findVendors`](#findVendors)
-* [`findVendorCredits`](#findVendorCredits)
-* [`findExchangeRates`](#findExchangeRates)
+* [`findAccounts`](#findaccountscriteria-callback)
+* [`findAttachables`](#findattachablescriteria-callback)
+* [`findBills`](#findbillscriteria-callback)
+* [`findBillPayments`](#findbillpaymentscriteria-callback)
+* [`findBudgets`](#findbudgetscriteria-callback)
+* [`findClasses`](#findclassescriteria-callback)
+* [`findCompanyInfos`](#findcompanyinfoscriteria-callback)
+* [`findCreditMemos`](#findcreditmemoscriteria-callback)
+* [`findCustomers`](#findcustomerscriteria-callback)
+* [`findDepartments`](#finddepartmentscriteria-callback)
+* [`findDeposits`](#finddepositscriteria-callback)
+* [`findEmployees`](#findemployeescriteria-callback)
+* [`findEstimates`](#findestimatescriteria-callback)
+* [`findInvoices`](#findinvoicescriteria-callback)
+* [`findItems`](#finditemscriteria-callback)
+* [`findJournalEntries`](#findjournalentriescriteria-callback)
+* [`findPayments`](#findpaymentscriteria-callback)
+* [`findPaymentMethods`](#findpaymentmethodscriteria-callback)
+* [`findPreferenceses`](#findpreferencesescriteria-callback)
+* [`findPurchases`](#findpurchasescriteria-callback)
+* [`findPurchaseOrders`](#findpurchaseorderscriteria-callback)
+* [`findRefundReceipts`](#findrefundreceiptscriteria-callback)
+* [`findSalesReceipts`](#findsalesreceiptscriteria-callback)
+* [`findTaxAgencies`](#findtaxagenciescriteria-callback)
+* [`findTaxCodes`](#findtaxcodescriteria-callback)
+* [`findTaxRates`](#findtaxratescriteria-callback)
+* [`findTerms`](#findtermscriteria-callback)
+* [`findTimeActivities`](#findtimeactivitiescriteria-callback)
+* [`findVendors`](#findvendorscriteria-callback)
+* [`findVendorCredits`](#findvendorcreditscriteria-callback)
+* [`findExchangeRates`](#findexchangeratescriteria-callback)
 
 #### Reports
 
-* [`reportBalanceSheet`](#reportBalanceSheet)
-* [`reportProfitAndLoss`](#reportProfitAndLoss)
-* [`reportProfitAndLossDetail`](#reportProfitAndLossDetail)
-* [`reportTrialBalance`](#reportTrialBalance)
-* [`reportCashFlow`](#reportCashFlow)
-* [`reportInventoryValuationSummary`](#reportInventoryValuationSummary)
-* [`reportCustomerSales`](#reportCustomerSales)
-* [`reportItemSales`](#reportItemSales)
-* [`reportCustomerIncome`](#reportCustomerIncome)
-* [`reportCustomerBalance`](#reportCustomerBalance)
-* [`reportCustomerBalanceDetail`](#reportCustomerBalanceDetail)
-* [`reportAgedReceivables`](#reportAgedReceivables)
-* [`reportAgedReceivableDetail`](#reportAgedReceivableDetail)
-* [`reportVendorBalance`](#reportVendorBalance)
-* [`reportVendorBalanceDetail`](#reportVendorBalanceDetail)
-* [`reportAgedPayables`](#reportAgedPayables)
-* [`reportAgedPayableDetail`](#reportAgedPayableDetail)
-* [`reportVendorExpenses`](#reportVendorExpenses)
-* [`reportTransactionList`](#reportTransactionList)
-* [`reportGeneralLedgerDetail`](#reportGeneralLedgerDetail)
-* [`reportDepartmentSales`](#reportDepartmentSales)
-* [`reportClassSales`](#reportClassSales)
+* [`reportBalanceSheet`](#reportbalancesheetoptions-callback)
+* [`reportProfitAndLoss`](#reportprofitandlossoptions-callback)
+* [`reportProfitAndLossDetail`](#reportprofitandlossdetailoptions-callback)
+* [`reportTrialBalance`](#reporttrialbalanceoptions-callback)
+* [`reportCashFlow`](#reportcashflowoptions-callback)
+* [`reportInventoryValuationSummary`](#reportinventoryvaluationsummaryoptions-callback)
+* [`reportCustomerSales`](#reportcustomersalesoptions-callback)
+* [`reportItemSales`](#reportitemsalesoptions-callback)
+* [`reportCustomerIncome`](#reportcustomerincomeoptions-callback)
+* [`reportCustomerBalance`](#reportcustomerbalanceoptions-callback)
+* [`reportCustomerBalanceDetail`](#reportcustomerbalancedetailoptions-callback)
+* [`reportAgedReceivables`](#reportagedreceivablesoptions-callback)
+* [`reportAgedReceivableDetail`](#reportagedreceivabledetailoptions-callback)
+* [`reportVendorBalance`](#reportvendorbalanceoptions-callback)
+* [`reportVendorBalanceDetail`](#reportvendorbalancedetailoptions-callback)
+* [`reportAgedPayables`](#reportagedpayablesoptions-callback)
+* [`reportAgedPayableDetail`](#reportagedpayabledetailoptions-callback)
+* [`reportVendorExpenses`](#reportvendorexpensesoptions-callback)
+* [`reportTransactionList`](#reporttransactionlistoptions-callback)
+* [`reportGeneralLedgerDetail`](#reportgeneralledgerdetailoptions-callback)
+* [`reportDepartmentSales`](#reportdepartmentsalesoptions-callback)
+* [`reportClassSales`](#reportclasssalesoptions-callback)
 
 
 #### SalesReceipt and Invoice PDFs
-* [`getInvoicePdf`](#getInvoicePdf)
-* [`getSalesReceiptPdf`](#getSalesReceiptPdf)
-* [`sendInvoicePdf`](#sendInvoicePdf)
-* [`sendEstimatePdf`](#sendEstimatePdf)
-* [`sendSalesReceiptPdf`](#sendSalesReceiptPdf)
+* [`getInvoicePdf`](#getinvoicepdfid-callback)
+* [`getSalesReceiptPdf`](#getsalesreceiptpdfid-callback)
+* [`sendInvoicePdf`](#sendinvoicepdfid-sendto-callback)
+* [`sendEstimatePdf`](#sendestimatepdfid-sendto-callback)
+* [`sendSalesReceiptPdf`](#sendsalesreceiptpdfid-sendto-callback)
 
 
 #### Miscellaneous
-* [`batch`](#batch)
-* [`changeDataCapture`](#changeDataCapture)
-* [`upload`](#upload)
+* [`batch`](#batchitems-callback)
+* [`changeDataCapture`](#changedatacaptureentities-since-callback)
+* [`upload`](#uploadstream-entitytype-entityid-callback)
 
 
-<a name="createAccount" />
 #### createAccount(object, callback)
 
 Creates the Account in QuickBooks
@@ -396,7 +394,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Account
 
 
-<a name="createAttachable" />
 #### createAttachable(object, callback)
 
 Creates the Attachable in QuickBooks
@@ -407,7 +404,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Attachable
 
 
-<a name="createBill" />
 #### createBill(object, callback)
 
 Creates the Bill in QuickBooks
@@ -418,7 +414,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Bill
 
 
-<a name="createBillPayment" />
 #### createBillPayment(object, callback)
 
 Creates the BillPayment in QuickBooks
@@ -429,7 +424,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent BillPayment
 
 
-<a name="createClass" />
 #### createClass(object, callback)
 
 Creates the Class in QuickBooks
@@ -440,7 +434,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Class
 
 
-<a name="createCreditMemo" />
 #### createCreditMemo(object, callback)
 
 Creates the CreditMemo in QuickBooks
@@ -451,7 +444,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent CreditMemo
 
 
-<a name="createCustomer" />
 #### createCustomer(object, callback)
 
 Creates the Customer in QuickBooks
@@ -462,7 +454,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Customer
 
 
-<a name="createDepartment" />
 #### createDepartment(object, callback)
 
 Creates the Department in QuickBooks
@@ -473,7 +464,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Department
 
 
-<a name="createDeposit" />
 #### createDeposit(object, callback)
 
 Creates the Deposit in QuickBooks
@@ -484,7 +474,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Deposit
 
 
-<a name="createEmployee" />
 #### createEmployee(object, callback)
 
 Creates the Employee in QuickBooks
@@ -495,7 +484,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Employee
 
 
-<a name="createEstimate" />
 #### createEstimate(object, callback)
 
 Creates the Estimate in QuickBooks
@@ -506,7 +494,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Estimate
 
 
-<a name="createInvoice" />
 #### createInvoice(object, callback)
 
 Creates the Invoice in QuickBooks
@@ -517,7 +504,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Invoice
 
 
-<a name="createItem" />
 #### createItem(object, callback)
 
 Creates the Item in QuickBooks
@@ -528,7 +514,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Item
 
 
-<a name="createJournalEntry" />
 #### createJournalEntry(object, callback)
 
 Creates the JournalEntry in QuickBooks
@@ -539,7 +524,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent JournalEntry
 
 
-<a name="createPayment" />
 #### createPayment(object, callback)
 
 Creates the Payment in QuickBooks
@@ -550,7 +534,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Payment
 
 
-<a name="createPaymentMethod" />
 #### createPaymentMethod(object, callback)
 
 Creates the PaymentMethod in QuickBooks
@@ -561,7 +544,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent PaymentMethod
 
 
-<a name="createPurchase" />
 #### createPurchase(object, callback)
 
 Creates the Purchase in QuickBooks
@@ -572,7 +554,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Purchase
 
 
-<a name="createPurchaseOrder" />
 #### createPurchaseOrder(object, callback)
 
 Creates the PurchaseOrder in QuickBooks
@@ -583,7 +564,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent PurchaseOrder
 
 
-<a name="createRefundReceipt" />
 #### createRefundReceipt(object, callback)
 
 Creates the RefundReceipt in QuickBooks
@@ -594,7 +574,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent RefundReceipt
 
 
-<a name="createSalesReceipt" />
 #### createSalesReceipt(object, callback)
 
 Creates the SalesReceipt in QuickBooks
@@ -605,7 +584,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent SalesReceipt
 
 
-<a name="createTaxAgency" />
 #### createTaxAgency(object, callback)
 
 Creates the TaxAgency in QuickBooks
@@ -616,7 +594,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent TaxAgency
 
 
-<a name="createTaxService" />
 #### createTaxService(object, callback)
 
 Creates the TaxService in QuickBooks
@@ -627,7 +604,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent TaxService
 
 
-<a name="createTerm" />
 #### createTerm(object, callback)
 
 Creates the Term in QuickBooks
@@ -638,7 +614,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Term
 
 
-<a name="createTimeActivity" />
 #### createTimeActivity(object, callback)
 
 Creates the TimeActivity in QuickBooks
@@ -649,7 +624,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent TimeActivity
 
 
-<a name="createTransfer" />
 #### createTransfer(object, callback)
 
 Creates the Transfer in QuickBooks
@@ -660,7 +634,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Transfer
 
 
-<a name="createVendor" />
 #### createVendor(object, callback)
 
 Creates the Vendor in QuickBooks
@@ -671,7 +644,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Vendor
 
 
-<a name="createVendorCredit" />
 #### createVendorCredit(object, callback)
 
 Creates the VendorCredit in QuickBooks
@@ -684,7 +656,6 @@ __Arguments__
 
 
 
-<a name="getAccount" />
 #### getAccount(id, callback)
 
 Retrieves the Account from QuickBooks
@@ -695,7 +666,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Account
 
 
-<a name="getAttachable" />
 #### getAttachable(id, callback)
 
 Retrieves the Attachable from QuickBooks
@@ -706,7 +676,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Attachable
 
 
-<a name="getBill" />
 #### getBill(id, callback)
 
 Retrieves the Bill from QuickBooks
@@ -717,7 +686,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Bill
 
 
-<a name="getBillPayment" />
 #### getBillPayment(id, callback)
 
 Retrieves the BillPayment from QuickBooks
@@ -728,7 +696,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent BillPayment
 
 
-<a name="getClass" />
 #### getClass(id, callback)
 
 Retrieves the Class from QuickBooks
@@ -739,7 +706,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Class
 
 
-<a name="getCompanyInfo" />
 #### getCompanyInfo(id, callback)
 
 Retrieves the CompanyInfo from QuickBooks
@@ -750,7 +716,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent CompanyInfo
 
 
-<a name="getCreditMemo" />
 #### getCreditMemo(id, callback)
 
 Retrieves the CreditMemo from QuickBooks
@@ -761,7 +726,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent CreditMemo
 
 
-<a name="getCustomer" />
 #### getCustomer(id, callback)
 
 Retrieves the Customer from QuickBooks
@@ -772,7 +736,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Customer
 
 
-<a name="getDepartment" />
 #### getDepartment(id, callback)
 
 Retrieves the Department from QuickBooks
@@ -783,7 +746,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Department
 
 
-<a name="getDeposit" />
 #### getDeposit(id, callback)
 
 Retrieves the Deposit from QuickBooks
@@ -794,7 +756,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Deposit
 
 
-<a name="getEmployee" />
 #### getEmployee(id, callback)
 
 Retrieves the Employee from QuickBooks
@@ -805,7 +766,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Employee
 
 
-<a name="getEstimate" />
 #### getEstimate(id, callback)
 
 Retrieves the Estimate from QuickBooks
@@ -816,7 +776,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Estimate
 
 
-<a name="getExchangeRate" />
 #### getExchangeRate(options, callback)
 
 Retrieves an ExchangeRate from QuickBooks
@@ -827,7 +786,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the ExchangeRate
 
 
-<a name="getInvoice" />
 #### getInvoice(id, callback)
 
 Retrieves the Invoice from QuickBooks
@@ -838,7 +796,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Invoice
 
 
-<a name="getItem" />
 #### getItem(id, callback)
 
 Retrieves the Item from QuickBooks
@@ -849,7 +806,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Item
 
 
-<a name="getJournalEntry" />
 #### getJournalEntry(id, callback)
 
 Retrieves the JournalEntry from QuickBooks
@@ -860,7 +816,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent JournalEntry
 
 
-<a name="getPayment" />
 #### getPayment(id, callback)
 
 Retrieves the Payment from QuickBooks
@@ -871,7 +826,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Payment
 
 
-<a name="getPaymentMethod" />
 #### getPaymentMethod(id, callback)
 
 Retrieves the PaymentMethod from QuickBooks
@@ -882,7 +836,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent PaymentMethod
 
 
-<a name="getPreferences" />
 #### getPreferences(id, callback)
 
 Retrieves the Preferences from QuickBooks
@@ -893,7 +846,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Preferences
 
 
-<a name="getPurchase" />
 #### getPurchase(id, callback)
 
 Retrieves the Purchase from QuickBooks
@@ -904,7 +856,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Purchase
 
 
-<a name="getPurchaseOrder" />
 #### getPurchaseOrder(id, callback)
 
 Retrieves the PurchaseOrder from QuickBooks
@@ -915,7 +866,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent PurchaseOrder
 
 
-<a name="getRefundReceipt" />
 #### getRefundReceipt(id, callback)
 
 Retrieves the RefundReceipt from QuickBooks
@@ -926,7 +876,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent RefundReceipt
 
 
-<a name="getReports" />
 #### getReports(id, callback)
 
 Retrieves the Reports from QuickBooks
@@ -937,7 +886,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Reports
 
 
-<a name="getSalesReceipt" />
 #### getSalesReceipt(id, callback)
 
 Retrieves the SalesReceipt from QuickBooks
@@ -948,7 +896,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent SalesReceipt
 
 
-<a name="getTaxAgency" />
 #### getTaxAgency(id, callback)
 
 Retrieves the TaxAgency from QuickBooks
@@ -959,7 +906,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent TaxAgency
 
 
-<a name="getTaxCode" />
 #### getTaxCode(id, callback)
 
 Retrieves the TaxCode from QuickBooks
@@ -970,7 +916,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent TaxCode
 
 
-<a name="getTaxRate" />
 #### getTaxRate(id, callback)
 
 Retrieves the TaxRate from QuickBooks
@@ -981,7 +926,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent TaxRate
 
 
-<a name="getTerm" />
 #### getTerm(id, callback)
 
 Retrieves the Term from QuickBooks
@@ -992,7 +936,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Term
 
 
-<a name="getTimeActivity" />
 #### getTimeActivity(id, callback)
 
 Retrieves the TimeActivity from QuickBooks
@@ -1003,7 +946,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent TimeActivity
 
 
-<a name="getTransfer" />
 #### getTransfer(id, callback)
 
 Retrieves the Transfer from QuickBooks
@@ -1014,7 +956,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Transfer
 
 
-<a name="getVendor" />
 #### getVendor(id, callback)
 
 Retrieves the Vendor from QuickBooks
@@ -1025,7 +966,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent Vendor
 
 
-<a name="getVendorCredit" />
 #### getVendorCredit(id, callback)
 
 Retrieves the VendorCredit from QuickBooks
@@ -1038,7 +978,6 @@ __Arguments__
 
 
 
-<a name="updateAccount" />
 #### updateAccount(object, callback)
 
 Updates QuickBooks version of Account
@@ -1049,7 +988,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Account
 
 
-<a name="updateAttachable" />
 #### updateAttachable(object, callback)
 
 Updates QuickBooks version of Attachable
@@ -1060,7 +998,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Attachable
 
 
-<a name="updateBill" />
 #### updateBill(object, callback)
 
 Updates QuickBooks version of Bill
@@ -1071,7 +1008,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Bill
 
 
-<a name="updateBillPayment" />
 #### updateBillPayment(object, callback)
 
 Updates QuickBooks version of BillPayment
@@ -1082,7 +1018,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated BillPayment
 
 
-<a name="updateClass" />
 #### updateClass(object, callback)
 
 Updates QuickBooks version of Class
@@ -1093,7 +1028,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Class
 
 
-<a name="updateCompanyInfo" />
 #### updateCompanyInfo(object, callback)
 
 Updates QuickBooks version of CompanyInfo
@@ -1104,7 +1038,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated CompanyInfo
 
 
-<a name="updateCreditMemo" />
 #### updateCreditMemo(object, callback)
 
 Updates QuickBooks version of CreditMemo
@@ -1115,7 +1048,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated CreditMemo
 
 
-<a name="updateCustomer" />
 #### updateCustomer(object, callback)
 
 Updates QuickBooks version of Customer
@@ -1126,7 +1058,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Customer
 
 
-<a name="updateDepartment" />
 #### updateDepartment(object, callback)
 
 Updates QuickBooks version of Department
@@ -1137,7 +1068,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Department
 
 
-<a name="updateDeposit" />
 #### updateDeposit(object, callback)
 
 Updates QuickBooks version of Deposit
@@ -1148,7 +1078,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Deposit
 
 
-<a name="updateEmployee" />
 #### updateEmployee(object, callback)
 
 Updates QuickBooks version of Employee
@@ -1159,7 +1088,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Employee
 
 
-<a name="updateEstimate" />
 #### updateEstimate(object, callback)
 
 Updates QuickBooks version of Estimate
@@ -1170,7 +1098,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Estimate
 
 
-<a name="updateInvoice" />
 #### updateInvoice(object, callback)
 
 Updates QuickBooks version of Invoice
@@ -1181,7 +1108,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Invoice
 
 
-<a name="updateItem" />
 #### updateItem(object, callback)
 
 Updates QuickBooks version of Item
@@ -1192,7 +1118,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Item
 
 
-<a name="updateJournalEntry" />
 #### updateJournalEntry(object, callback)
 
 Updates QuickBooks version of JournalEntry
@@ -1203,7 +1128,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated JournalEntry
 
 
-<a name="updatePayment" />
 #### updatePayment(object, callback)
 
 Updates QuickBooks version of Payment
@@ -1214,7 +1138,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Payment
 
 
-<a name="updatePaymentMethod" />
 #### updatePaymentMethod(object, callback)
 
 Updates QuickBooks version of PaymentMethod
@@ -1225,7 +1148,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated PaymentMethod
 
 
-<a name="updatePreferences" />
 #### updatePreferences(object, callback)
 
 Updates QuickBooks version of Preferences
@@ -1236,7 +1158,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Preferences
 
 
-<a name="updatePurchase" />
 #### updatePurchase(object, callback)
 
 Updates QuickBooks version of Purchase
@@ -1247,7 +1168,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Purchase
 
 
-<a name="updatePurchaseOrder" />
 #### updatePurchaseOrder(object, callback)
 
 Updates QuickBooks version of PurchaseOrder
@@ -1258,7 +1178,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated PurchaseOrder
 
 
-<a name="updateRefundReceipt" />
 #### updateRefundReceipt(object, callback)
 
 Updates QuickBooks version of RefundReceipt
@@ -1269,7 +1188,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated RefundReceipt
 
 
-<a name="updateSalesReceipt" />
 #### updateSalesReceipt(object, callback)
 
 Updates QuickBooks version of SalesReceipt
@@ -1280,7 +1198,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated SalesReceipt
 
 
-<a name="updateTaxAgency" />
 #### updateTaxAgency(object, callback)
 
 Updates QuickBooks version of TaxAgency
@@ -1291,7 +1208,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated TaxAgency
 
 
-<a name="updateTaxCode" />
 #### updateTaxCode(object, callback)
 
 Updates QuickBooks version of TaxCode
@@ -1302,7 +1218,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated TaxCode
 
 
-<a name="updateTaxRate" />
 #### updateTaxRate(object, callback)
 
 Updates QuickBooks version of TaxRate
@@ -1313,7 +1228,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated TaxRate
 
 
-<a name="updateTerm" />
 #### updateTerm(object, callback)
 
 Updates QuickBooks version of Term
@@ -1324,7 +1238,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Term
 
 
-<a name="updateTimeActivity" />
 #### updateTimeActivity(object, callback)
 
 Updates QuickBooks version of TimeActivity
@@ -1335,7 +1248,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated TimeActivity
 
 
-<a name="updateTransfer" />
 #### updateTransfer(object, callback)
 
 Updates QuickBooks version of Transfer
@@ -1346,7 +1258,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Transfer
 
 
-<a name="updateVendor" />
 #### updateVendor(object, callback)
 
 Updates QuickBooks version of Vendor
@@ -1357,7 +1268,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Vendor
 
 
-<a name="updateVendorCredit" />
 #### updateVendorCredit(object, callback)
 
 Updates QuickBooks version of VendorCredit
@@ -1368,7 +1278,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated VendorCredit
 
 
-<a name="updateExchangeRate" />
 #### updateExchangeRate(object, callback)
 
 Updates QuickBooks version of ExchangeRate
@@ -1381,7 +1290,6 @@ __Arguments__
 
 
 
-<a name="deleteAttachable" />
 #### deleteAttachable(idOrEntity, callback)
 
 Deletes the Attachable from QuickBooks
@@ -1392,7 +1300,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent Attachable
 
 
-<a name="deleteBill" />
 #### deleteBill(idOrEntity, callback)
 
 Deletes the Bill from QuickBooks
@@ -1403,7 +1310,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent Bill
 
 
-<a name="deleteBillPayment" />
 #### deleteBillPayment(idOrEntity, callback)
 
 Deletes the BillPayment from QuickBooks
@@ -1414,7 +1320,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent BillPayment
 
 
-<a name="deleteCreditMemo" />
 #### deleteCreditMemo(idOrEntity, callback)
 
 Deletes the CreditMemo from QuickBooks
@@ -1425,7 +1330,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent CreditMemo
 
 
-<a name="deleteDeposit" />
 #### deleteDeposit(idOrEntity, callback)
 
 Deletes the Deposit from QuickBooks
@@ -1436,7 +1340,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent Deposit
 
 
-<a name="deleteEstimate" />
 #### deleteEstimate(idOrEntity, callback)
 
 Deletes the Estimate from QuickBooks
@@ -1447,7 +1350,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent Estimate
 
 
-<a name="deleteInvoice" />
 #### deleteInvoice(idOrEntity, callback)
 
 Deletes the Invoice from QuickBooks
@@ -1458,7 +1360,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent Invoice
 
 
-<a name="deleteJournalEntry" />
 #### deleteJournalEntry(idOrEntity, callback)
 
 Deletes the JournalEntry from QuickBooks
@@ -1469,7 +1370,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent JournalEntry
 
 
-<a name="deletePayment" />
 #### deletePayment(idOrEntity, callback)
 
 Deletes the Payment from QuickBooks
@@ -1480,7 +1380,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent Payment
 
 
-<a name="deletePurchase" />
 #### deletePurchase(idOrEntity, callback)
 
 Deletes the Purchase from QuickBooks
@@ -1491,7 +1390,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent Purchase
 
 
-<a name="deletePurchaseOrder" />
 #### deletePurchaseOrder(idOrEntity, callback)
 
 Deletes the PurchaseOrder from QuickBooks
@@ -1502,7 +1400,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent PurchaseOrder
 
 
-<a name="deleteRefundReceipt" />
 #### deleteRefundReceipt(idOrEntity, callback)
 
 Deletes the RefundReceipt from QuickBooks
@@ -1513,7 +1410,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent RefundReceipt
 
 
-<a name="deleteSalesReceipt" />
 #### deleteSalesReceipt(idOrEntity, callback)
 
 Deletes the SalesReceipt from QuickBooks
@@ -1524,7 +1420,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent SalesReceipt
 
 
-<a name="deleteTimeActivity" />
 #### deleteTimeActivity(idOrEntity, callback)
 
 Deletes the TimeActivity from QuickBooks
@@ -1535,7 +1430,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent TimeActivity
 
 
-<a name="deleteTransfer" />
 #### deleteTransfer(idOrEntity, callback)
 
 Deletes the Transfer from QuickBooks
@@ -1546,7 +1440,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent Transfer
 
 
-<a name="deleteVendorCredit" />
 #### deleteVendorCredit(idOrEntity, callback)
 
 Deletes the VendorCredit from QuickBooks
@@ -1559,7 +1452,6 @@ __Arguments__
 
 
 
-<a name="findAccounts" />
 #### findAccounts(criteria, callback)
 
 Finds all Accounts in QuickBooks, optionally matching the specified criteria
@@ -1570,7 +1462,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Accounts
 
 
-<a name="findAttachables" />
 #### findAttachables(criteria, callback)
 
 Finds all Attachables in QuickBooks, optionally matching the specified criteria
@@ -1581,7 +1472,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Attachables
 
 
-<a name="findBills" />
 #### findBills(criteria, callback)
 
 Finds all Bills in QuickBooks, optionally matching the specified criteria
@@ -1592,7 +1482,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Bills
 
 
-<a name="findBillPayments" />
 #### findBillPayments(criteria, callback)
 
 Finds all BillPayments in QuickBooks, optionally matching the specified criteria
@@ -1603,7 +1492,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of BillPayments
 
 
-<a name="findBudgets" />
 #### findBudgets(criteria, callback)
 
 Finds all Budgets in QuickBooks, optionally matching the specified criteria
@@ -1614,7 +1502,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Budgets
 
 
-<a name="findClasses" />
 #### findClasses(criteria, callback)
 
 Finds all Classs in QuickBooks, optionally matching the specified criteria
@@ -1625,7 +1512,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Classes
 
 
-<a name="findCompanyInfos" />
 #### findCompanyInfos(criteria, callback)
 
 Finds all CompanyInfos in QuickBooks, optionally matching the specified criteria
@@ -1636,7 +1522,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of CompanyInfos
 
 
-<a name="findCreditMemos" />
 #### findCreditMemos(criteria, callback)
 
 Finds all CreditMemos in QuickBooks, optionally matching the specified criteria
@@ -1647,7 +1532,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of CreditMemos
 
 
-<a name="findCustomers" />
 #### findCustomers(criteria, callback)
 
 Finds all Customers in QuickBooks, optionally matching the specified criteria
@@ -1658,7 +1542,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Customers
 
 
-<a name="findDepartments" />
 #### findDepartments(criteria, callback)
 
 Finds all Departments in QuickBooks, optionally matching the specified criteria
@@ -1669,7 +1552,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Departments
 
 
-<a name="findDeposits" />
 #### findDeposits(criteria, callback)
 
 Finds all Deposits in QuickBooks, optionally matching the specified criteria
@@ -1680,7 +1562,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Deposits
 
 
-<a name="findEmployees" />
 #### findEmployees(criteria, callback)
 
 Finds all Employees in QuickBooks, optionally matching the specified criteria
@@ -1691,7 +1572,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Employees
 
 
-<a name="findEstimates" />
 #### findEstimates(criteria, callback)
 
 Finds all Estimates in QuickBooks, optionally matching the specified criteria
@@ -1702,7 +1582,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Estimates
 
 
-<a name="findInvoices" />
 #### findInvoices(criteria, callback)
 
 Finds all Invoices in QuickBooks, optionally matching the specified criteria
@@ -1713,7 +1592,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Invoices
 
 
-<a name="findItems" />
 #### findItems(criteria, callback)
 
 Finds all Items in QuickBooks, optionally matching the specified criteria
@@ -1724,7 +1602,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Items
 
 
-<a name="findJournalEntries" />
 #### findJournalEntries(criteria, callback)
 
 Finds all JournalEntrys in QuickBooks, optionally matching the specified criteria
@@ -1735,7 +1612,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of JournalEntries
 
 
-<a name="findPayments" />
 #### findPayments(criteria, callback)
 
 Finds all Payments in QuickBooks, optionally matching the specified criteria
@@ -1746,7 +1622,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Payments
 
 
-<a name="findPaymentMethods" />
 #### findPaymentMethods(criteria, callback)
 
 Finds all PaymentMethods in QuickBooks, optionally matching the specified criteria
@@ -1757,7 +1632,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of PaymentMethods
 
 
-<a name="findPreferenceses" />
 #### findPreferenceses(criteria, callback)
 
 Finds all Preferencess in QuickBooks, optionally matching the specified criteria
@@ -1768,7 +1642,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Preferences
 
 
-<a name="findPurchases" />
 #### findPurchases(criteria, callback)
 
 Finds all Purchases in QuickBooks, optionally matching the specified criteria
@@ -1779,7 +1652,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Purchases
 
 
-<a name="findPurchaseOrders" />
 #### findPurchaseOrders(criteria, callback)
 
 Finds all PurchaseOrders in QuickBooks, optionally matching the specified criteria
@@ -1790,7 +1662,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of PurchaseOrders
 
 
-<a name="findRefundReceipts" />
 #### findRefundReceipts(criteria, callback)
 
 Finds all RefundReceipts in QuickBooks, optionally matching the specified criteria
@@ -1801,7 +1672,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of RefundReceipts
 
 
-<a name="findSalesReceipts" />
 #### findSalesReceipts(criteria, callback)
 
 Finds all SalesReceipts in QuickBooks, optionally matching the specified criteria
@@ -1812,7 +1682,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of SalesReceipts
 
 
-<a name="findTaxAgencies" />
 #### findTaxAgencies(criteria, callback)
 
 Finds all TaxAgencys in QuickBooks, optionally matching the specified criteria
@@ -1823,7 +1692,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of TaxAgencies
 
 
-<a name="findTaxCodes" />
 #### findTaxCodes(criteria, callback)
 
 Finds all TaxCodes in QuickBooks, optionally matching the specified criteria
@@ -1834,7 +1702,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of TaxCodes
 
 
-<a name="findTaxRates" />
 #### findTaxRates(criteria, callback)
 
 Finds all TaxRates in QuickBooks, optionally matching the specified criteria
@@ -1845,7 +1712,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of TaxRates
 
 
-<a name="findTerms" />
 #### findTerms(criteria, callback)
 
 Finds all Terms in QuickBooks, optionally matching the specified criteria
@@ -1856,7 +1722,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Terms
 
 
-<a name="findTimeActivities" />
 #### findTimeActivities(criteria, callback)
 
 Finds all TimeActivitys in QuickBooks, optionally matching the specified criteria
@@ -1867,7 +1732,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of TimeActivities
 
 
-<a name="findVendors" />
 #### findVendors(criteria, callback)
 
 Finds all Vendors in QuickBooks, optionally matching the specified criteria
@@ -1878,7 +1742,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of Vendors
 
 
-<a name="findVendorCredits" />
 #### findVendorCredits(criteria, callback)
 
 Finds all VendorCredits in QuickBooks, optionally matching the specified criteria
@@ -1889,7 +1752,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the list of VendorCredits
 
 
-<a name="findExchangeRates" />
 #### findExchangeRates(criteria, callback)
 
 Finds all ExchangeRates in QuickBooks, optionally matching the specified criteria
@@ -1901,7 +1763,6 @@ __Arguments__
 
 
 
-<a name="reportBalanceSheet" />
 #### reportBalanceSheet(options, callback)
 
 Retrieves the BalanceSheet Report from QuickBooks
@@ -1912,7 +1773,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the BalanceSheet Report
 
 
-<a name="reportProfitAndLoss" />
 #### reportProfitAndLoss(options, callback)
 
 Retrieves the ProfitAndLoss Report from QuickBooks
@@ -1923,7 +1783,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the ProfitAndLoss Report
 
 
-<a name="reportProfitAndLossDetail" />
 #### reportProfitAndLossDetail(options, callback)
 
 Retrieves the ProfitAndLossDetail Report from QuickBooks
@@ -1934,7 +1793,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the ProfitAndLossDetail Report
 
 
-<a name="reportTrialBalance" />
 #### reportTrialBalance(options, callback)
 
 Retrieves the TrialBalance Report from QuickBooks
@@ -1945,7 +1803,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the TrialBalance Report
 
 
-<a name="reportCashFlow" />
 #### reportCashFlow(options, callback)
 
 Retrieves the CashFlow Report from QuickBooks
@@ -1956,7 +1813,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the CashFlow Report
 
 
-<a name="reportInventoryValuationSummary" />
 #### reportInventoryValuationSummary(options, callback)
 
 Retrieves the InventoryValuationSummary Report from QuickBooks
@@ -1967,7 +1823,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the InventoryValuationSummary Report
 
 
-<a name="reportCustomerSales" />
 #### reportCustomerSales(options, callback)
 
 Retrieves the CustomerSales Report from QuickBooks
@@ -1978,7 +1833,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the CustomerSales Report
 
 
-<a name="reportItemSales" />
 #### reportItemSales(options, callback)
 
 Retrieves the ItemSales Report from QuickBooks
@@ -1989,7 +1843,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the ItemSales Report
 
 
-<a name="reportCustomerIncome" />
 #### reportCustomerIncome(options, callback)
 
 Retrieves the CustomerIncome Report from QuickBooks
@@ -2000,7 +1853,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the CustomerIncome Report
 
 
-<a name="reportCustomerBalance" />
 #### reportCustomerBalance(options, callback)
 
 Retrieves the CustomerBalance Report from QuickBooks
@@ -2011,7 +1863,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the CustomerBalance Report
 
 
-<a name="reportCustomerBalanceDetail" />
 #### reportCustomerBalanceDetail(options, callback)
 
 Retrieves the CustomerBalanceDetail Report from QuickBooks
@@ -2022,7 +1873,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the CustomerBalanceDetail Report
 
 
-<a name="reportAgedReceivables" />
 #### reportAgedReceivables(options, callback)
 
 Retrieves the AgedReceivables Report from QuickBooks
@@ -2033,7 +1883,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the AgedReceivables Report
 
 
-<a name="reportAgedReceivableDetail" />
 #### reportAgedReceivableDetail(options, callback)
 
 Retrieves the AgedReceivableDetail Report from QuickBooks
@@ -2044,7 +1893,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the AgedReceivableDetail Report
 
 
-<a name="reportVendorBalance" />
 #### reportVendorBalance(options, callback)
 
 Retrieves the VendorBalance Report from QuickBooks
@@ -2055,7 +1903,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the VendorBalance Report
 
 
-<a name="reportVendorBalanceDetail" />
 #### reportVendorBalanceDetail(options, callback)
 
 Retrieves the VendorBalanceDetail Report from QuickBooks
@@ -2066,7 +1913,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the VendorBalanceDetail Report
 
 
-<a name="reportAgedPayables" />
 #### reportAgedPayables(options, callback)
 
 Retrieves the AgedPayables Report from QuickBooks
@@ -2077,7 +1923,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the AgedPayables Report
 
 
-<a name="reportAgedPayableDetail" />
 #### reportAgedPayableDetail(options, callback)
 
 Retrieves the AgedPayableDetail Report from QuickBooks
@@ -2088,7 +1933,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the AgedPayableDetail Report
 
 
-<a name="reportVendorExpenses" />
 #### reportVendorExpenses(options, callback)
 
 Retrieves the VendorExpenses Report from QuickBooks
@@ -2099,7 +1943,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the VendorExpenses Report
 
 
-<a name="reportTransactionList" />
 #### reportTransactionList(options, callback)
 
 Retrieves the TransactionList Report from QuickBooks
@@ -2110,7 +1953,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the TransactionList Report
 
 
-<a name="reportGeneralLedgerDetail" />
 #### reportGeneralLedgerDetail(options, callback)
 
 Retrieves the GeneralLedgerDetail Report from QuickBooks
@@ -2121,7 +1963,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the GeneralLedgerDetail Report
 
 
-<a name="reportDepartmentSales" />
 #### reportDepartmentSales(options, callback)
 
 Retrieves the DepartmentSales Report from QuickBooks
@@ -2132,7 +1973,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the DepartmentSales Report
 
 
-<a name="reportClassSales" />
 #### reportClassSales(options, callback)
 
 Retrieves the ClassSales Report from QuickBooks
@@ -2143,7 +1983,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the ClassSales Report
 
 
-<a name="getInvoicePdf" />
 #### getInvoicePdf(id, callback)
 
 Retrieves the Invoice PDF from QuickBooks
@@ -2154,7 +1993,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the Invoice PDF
 
 
-<a name="getSalesReceiptPdf" />
 #### getSalesReceiptPdf(id, callback)
 
 Retrieves the SalesReceipt PDF from QuickBooks
@@ -2165,7 +2003,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent SalesReceipt PDF
 
 
-<a name="sendInvoicePdf" />
 #### sendInvoicePdf(id, sendTo, callback)
 
 Emails the Invoice PDF from QuickBooks to the address supplied in Invoice.BillEmail.EmailAddress or the specified 'sendTo' address
@@ -2177,7 +2014,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the Invoice PDF
 
 
-<a name="sendEstimatePdf" />
 #### sendEstimatePdf(id, sendTo, callback)
 
 Emails the Estimate PDF from QuickBooks to the address supplied in Estimate.BillEmail.EmailAddress or the specified 'sendTo' address
@@ -2189,7 +2025,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the Estimate PDF
 
 
-<a name="sendSalesReceiptPdf" />
 #### sendSalesReceiptPdf(id, sendTo, callback)
 
 Emails the SalesReceipt PDF from QuickBooks to the address supplied in SalesReceipt.BillEmail.EmailAddress or the specified 'sendTo' address
@@ -2201,7 +2036,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the SalesReceipt PDF
 
 
-<a name="batch" />
 #### batch(items, callback)
 
 Batch operation to enable an application to perform multiple operations in a single request. The following batch items are supported:
@@ -2218,7 +2052,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and list of BatchItemResponses
 
 
-<a name="changeDataCapture" />
 #### changeDataCapture(entities, since, callback)
 
 The change data capture (CDC) operation returns a list of entities that have changed since a specified time.
@@ -2230,7 +2063,6 @@ __Arguments__
 * `callback` - Callback function which is called with any error and list of changes
 
 
-<a name="upload" />
 #### upload(stream, entityType, entityId, callback)
 
 Uploads a file as an Attachable in QBO, optionally linking it to the specified QBO Entity.
