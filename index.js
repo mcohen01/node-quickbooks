@@ -18,14 +18,55 @@ var request = require('request'),
 
 module.exports = QuickBooks
 
-QuickBooks.REQUEST_TOKEN_URL          = 'https://oauth.intuit.com/oauth/v1/get_request_token'
-QuickBooks.ACCESS_TOKEN_URL           = 'https://oauth.intuit.com/oauth/v1/get_access_token'
-QuickBooks.APP_CENTER_BASE            = 'https://appcenter.intuit.com'
-QuickBooks.APP_CENTER_URL             = QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token='
-QuickBooks.RECONNECT_URL              = QuickBooks.APP_CENTER_BASE + '/api/v1/connection/reconnect'
-QuickBooks.DISCONNECT_URL              = QuickBooks.APP_CENTER_BASE + '/api/v1/connection/disconnect'
-QuickBooks.V3_ENDPOINT_BASE_URL       = 'https://sandbox-quickbooks.api.intuit.com/v3/company/'
-QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
+QuickBooks.APP_CENTER_BASE = 'https://appcenter.intuit.com';
+QuickBooks.V3_ENDPOINT_BASE_URL = 'https://sandbox-quickbooks.api.intuit.com/v3/company/';
+QuickBooks.QUERY_OPERATORS = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE'];
+
+var OAUTH_ENDPOINTS = {
+  '1.0a': function (callback) {
+    callback({
+      REQUEST_TOKEN_URL: 'https://oauth.intuit.com/oauth/v1/get_request_token',
+      ACCESS_TOKEN_URL: 'https://oauth.intuit.com/oauth/v1/get_access_token',
+      APP_CENTER_URL: QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token=',
+      RECONNECT_URL: QuickBooks.APP_CENTER_BASE + '/api/v1/connection/reconnect',
+      DISCONNECT_URL: QuickBooks.APP_CENTER_BASE + '/api/v1/connection/disconnect'
+    });
+  },
+
+  '2.0': function (callback) {
+    var NEW_ENDPOINT_CONFIGURATION = {};
+    request({
+      url: 'https://developer.api.intuit.com/.well-known/openid_configuration/',
+      headers: {
+        Accept: 'application/json'
+      }
+    }, function (err, res) {
+      if (err) {
+        console.log(err);
+        return err;
+      }
+
+      var json = JSON.parse(res.body);
+      NEW_ENDPOINT_CONFIGURATION.AUTHORIZATION_URL = json.authorization_endpoint;;
+      NEW_ENDPOINT_CONFIGURATION.TOKEN_URL = json.token_endpoint;
+      callback(NEW_ENDPOINT_CONFIGURATION);
+    });
+  }
+};
+
+OAUTH_ENDPOINTS['1.0'] = OAUTH_ENDPOINTS['1.0a'];
+
+QuickBooks.setOauthVersion = function (version) {
+  version = (typeof version === 'number') ? version.toFixed(1) : version;
+  QuickBooks.version = version;
+  OAUTH_ENDPOINTS[version](function (endpoints) {
+    for (var k in endpoints) {
+      QuickBooks[k] = endpoints[k];
+    };
+  });
+};
+
+QuickBooks.setOauthVersion('1.0');
 
 /**
  * Node.js client encapsulating access to the QuickBooks V3 Rest API. An instance
@@ -41,17 +82,20 @@ QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE'
  * @param minorversion - integer to set minorversion in request
  * @constructor
  */
-function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, useSandbox, debug, minorversion) {
-  var prefix           = _.isObject(consumerKey) ? 'consumerKey.' : ''
-  this.consumerKey     = eval(prefix + 'consumerKey')
-  this.consumerSecret  = eval(prefix + 'consumerSecret')
-  this.token           = eval(prefix + 'token')
-  this.tokenSecret     = eval(prefix + 'tokenSecret')
-  this.realmId         = eval(prefix + 'realmId')
-  this.useSandbox      = eval(prefix + 'useSandbox')
-  this.debug           = eval(prefix + 'debug')
-  this.endpoint        = this.useSandbox ? QuickBooks.V3_ENDPOINT_BASE_URL : QuickBooks.V3_ENDPOINT_BASE_URL.replace('sandbox-', '')
-  this.minorversion    = eval(prefix + 'minorversion') || 4;
+function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, useSandbox, debug, minorversion, oauthversion, refreshToken) {
+  var prefix = _.isObject(consumerKey) ? 'consumerKey.' : '';
+  this.consumerKey = eval(prefix + 'consumerKey');
+  this.consumerSecret = eval(prefix + 'consumerSecret');
+  this.token = eval(prefix + 'token');
+  this.tokenSecret = eval(prefix + 'tokenSecret');
+  this.realmId = eval(prefix + 'realmId');
+  this.useSandbox = eval(prefix + 'useSandbox');
+  this.debug = eval(prefix + 'debug');
+  this.endpoint = this.useSandbox ? QuickBooks.V3_ENDPOINT_BASE_URL : QuickBooks.V3_ENDPOINT_BASE_URL.replace('sandbox-', '');
+  this.minorversion = eval(prefix + 'minorversion') || 4;
+  this.oauthversion = oauthversion || '1.0a';
+  this.refreshToken = refreshToken || null;
+  if (!tokenSecret && this.oauthversion !== '2.0') throw new Error('tokenSecret not defined');
 }
 
 /**
@@ -1961,13 +2005,17 @@ module.request = function(context, verb, options, entity, callback) {
     url:     url,
     qs:      options.qs || {},
     headers: options.headers || {},
-    oauth:   module.oauth(context),
     json:    true
   }
   opts.qs.minorversion = opts.qs.minorversion || context.minorversion;
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
   opts.headers['Request-Id'] = uuid.v1()
   opts.qs.format = 'json';
+  if (context.oauthversion == '2.0'){
+      opts.headers['Authorization'] =  'Bearer ' + context.token
+  } else {
+        opts.oauth = module.oauth(context);
+  };
   if (options.url.match(/pdf$/)) {
     opts.headers['accept'] = 'application/pdf'
     opts.encoding = null
