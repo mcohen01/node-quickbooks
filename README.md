@@ -208,6 +208,7 @@ __Arguments__
 * [`createEstimate`](#createestimateobject-callback)
 * [`createInvoice`](#createinvoiceobject-callback)
 * [`createItem`](#createitemobject-callback)
+* [`createJournalCode`](#createjournalcodeobject-callback)
 * [`createJournalEntry`](#createjournalentryobject-callback)
 * [`createPayment`](#createpaymentobject-callback)
 * [`createPaymentMethod`](#createpaymentmethodobject-callback)
@@ -240,6 +241,7 @@ __Arguments__
 * [`getExchangeRate`](#getexchangerateoptions-callback)
 * [`getInvoice`](#getinvoiceid-callback)
 * [`getItem`](#getitemid-callback)
+* [`getJournalCode`](#getjournalcodeid-callback)
 * [`getJournalEntry`](#getjournalentryid-callback)
 * [`getPayment`](#getpaymentid-callback)
 * [`getPaymentMethod`](#getpaymentmethodid-callback)
@@ -273,6 +275,7 @@ __Arguments__
 * [`updateEstimate`](#updateestimateobject-callback)
 * [`updateInvoice`](#updateinvoiceobject-callback)
 * [`updateItem`](#updateitemobject-callback)
+* [`updateJournalCode`](#updatejournalcodeobject-callback)
 * [`updateJournalEntry`](#updatejournalentryobject-callback)
 * [`updatePayment`](#updatepaymentobject-callback)
 * [`updatePaymentMethod`](#updatepaymentmethodobject-callback)
@@ -300,6 +303,7 @@ __Arguments__
 * [`deleteDeposit`](#deletedepositidorentity-callback)
 * [`deleteEstimate`](#deleteestimateidorentity-callback)
 * [`deleteInvoice`](#deleteinvoiceidorentity-callback)
+* [`deleteJournalCode`](#deletejournalcodeidorentity-callback)
 * [`deleteJournalEntry`](#deletejournalentryidorentity-callback)
 * [`deletePayment`](#deletepaymentidorentity-callback)
 * [`deletePurchase`](#deletepurchaseidorentity-callback)
@@ -327,6 +331,7 @@ __Arguments__
 * [`findEstimates`](#findestimatescriteria-callback)
 * [`findInvoices`](#findinvoicescriteria-callback)
 * [`findItems`](#finditemscriteria-callback)
+* [`findJournalCodes`](#findjournalcodescriteria-callback)
 * [`findJournalEntries`](#findjournalentriescriteria-callback)
 * [`findPayments`](#findpaymentscriteria-callback)
 * [`findPaymentMethods`](#findpaymentmethodscriteria-callback)
@@ -512,6 +517,16 @@ __Arguments__
 
 * `object` - The unsaved item, to be persisted in QuickBooks
 * `callback` - Callback function which is called with any error and the persistent Item
+
+
+#### createJournalCode(object, callback)
+
+Creates the JournalCode in QuickBooks
+
+__Arguments__
+
+* `object` - The unsaved journalCode, to be persisted in QuickBooks
+* `callback` - Callback function which is called with any error and the persistent JournalCode
 
 
 #### createJournalEntry(object, callback)
@@ -804,6 +819,16 @@ __Arguments__
 
 * `id` - The Id of persistent Item
 * `callback` - Callback function which is called with any error and the persistent Item
+
+
+#### getJournalCode(id, callback)
+
+Retrieves the JournalCode from QuickBooks
+
+__Arguments__
+
+* `id` - The Id of persistent JournalCode
+* `callback` - Callback function which is called with any error and the persistent JournalCode
 
 
 #### getJournalEntry(id, callback)
@@ -1118,6 +1143,16 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the updated Item
 
 
+#### updateJournalCode(object, callback)
+
+Updates QuickBooks version of JournalCode
+
+__Arguments__
+
+* `object` - The persistent JournalCode, including Id and SyncToken fields
+* `callback` - Callback function which is called with any error and the updated JournalCode
+
+
 #### updateJournalEntry(object, callback)
 
 Updates QuickBooks version of JournalEntry
@@ -1360,6 +1395,16 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the status of the persistent Invoice
 
 
+#### deleteJournalCode(idOrEntity, callback)
+
+Deletes the JournalCode from QuickBooks
+
+__Arguments__
+
+* `idOrEntity` - The persistent JournalCode to be deleted, or the Id of the JournalCode, in which case an extra GET request will be issued to first retrieve the JournalCode
+* `callback` - Callback function which is called with any error and the status of the persistent JournalCode
+
+
 #### deleteJournalEntry(idOrEntity, callback)
 
 Deletes the JournalEntry from QuickBooks
@@ -1600,6 +1645,16 @@ __Arguments__
 
 * `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
 * `callback` - Callback function which is called with any error and the list of Items
+
+
+#### findJournalCodes(criteria, callback)
+
+Finds all JournalCodes in QuickBooks, optionally matching the specified criteria
+
+__Arguments__
+
+* `criteria` - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
+* `callback` - Callback function which is called with any error and the list of JournalCodes
 
 
 #### findJournalEntries(criteria, callback)

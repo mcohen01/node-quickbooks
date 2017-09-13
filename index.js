@@ -300,6 +300,16 @@ QuickBooks.prototype.createItem = function(item, callback) {
 }
 
 /**
+ * Creates the JournalCode in QuickBooks
+ *
+ * @param  {object} journalCode - The unsaved journalCode, to be persisted in QuickBooks
+ * @param  {function} callback - Callback function which is called with any error and the persistent JournalCode
+ */
+QuickBooks.prototype.createJournalCode = function(journalCode, callback) {
+  module.create(this, 'journalCode', journalCode, callback)
+}
+
+/**
  * Creates the JournalEntry in QuickBooks
  *
  * @param  {object} journalEntry - The unsaved journalEntry, to be persisted in QuickBooks
@@ -634,6 +644,16 @@ QuickBooks.prototype.sendInvoicePdf = function(id, sendTo, callback) {
  */
 QuickBooks.prototype.getItem = function(id, callback) {
   module.read(this, 'item', id, callback)
+}
+
+/**
+ * Retrieves the JournalCode from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent JournalCode
+ * @param  {function} callback - Callback function which is called with any error and the persistent JournalCode
+ */
+QuickBooks.prototype.getJournalCode = function(id, callback) {
+  module.read(this, 'journalCode', id, callback)
 }
 
 /**
@@ -975,6 +995,16 @@ QuickBooks.prototype.updateItem = function(item, callback) {
 }
 
 /**
+ * Updates QuickBooks version of JournalCode
+ *
+ * @param  {object} journalCode - The persistent JournalCode, including Id and SyncToken fields
+ * @param  {function} callback - Callback function which is called with any error and the persistent JournalCode
+ */
+QuickBooks.prototype.updateJournalCode = function(journalCode, callback) {
+  module.update(this, 'journalCode', journalCode, callback)
+}
+
+/**
  * Updates QuickBooks version of JournalEntry
  *
  * @param  {object} journalEntry - The persistent JournalEntry, including Id and SyncToken fields
@@ -1213,6 +1243,16 @@ QuickBooks.prototype.deleteEstimate = function(idOrEntity, callback) {
  */
 QuickBooks.prototype.deleteInvoice = function(idOrEntity, callback) {
   module.delete(this, 'invoice', idOrEntity, callback)
+}
+
+/**
+ * Deletes the JournalCode from QuickBooks
+ *
+ * @param  {object} idOrEntity - The persistent JournalCode to be deleted, or the Id of the JournalCode, in which case an extra GET request will be issued to first retrieve the JournalCode
+ * @param  {function} callback - Callback function which is called with any error and the status of the persistent JournalCode
+ */
+QuickBooks.prototype.deleteJournalCode = function(idOrEntity, callback) {
+  module.delete(this, 'journalCode', idOrEntity, callback)
 }
 
 /**
@@ -1511,6 +1551,20 @@ QuickBooks.prototype.findInvoices = function(criteria, callback) {
  */
 QuickBooks.prototype.findItems = function(criteria, callback) {
   module.query(this, 'item', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
+}
+
+/**
+ * Finds all JournalCodes in QuickBooks, optionally matching the specified criteria
+ *
+ * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
+ * @param  {function} callback - Callback function which is called with any error and the list of JournalCode
+ */
+QuickBooks.prototype.findJournalCodes = function(criteria, callback) {
+  module.query(this, 'journalCode', criteria).then(function(data) {
     (callback || criteria)(null, data)
   }).catch(function(err) {
     (callback || criteria)(err, err)
