@@ -14,15 +14,15 @@
   "author": "Michael Cohen",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "2.9.25",
+    "bluebird": "3.3.4",
     "jxon": "^2.0.0-beta.5",
-    "moment": "^2.8.2",
+    "moment": "^2.18.1",
     "querystring": "0.2.0",
-    "request": "2.74.0",
-    "request-debug": "0.0.1",
+    "request": "2.83.1",
+    "request-debug": "0.2.0",
     "underscore": "1.6.0",
     "util": "0.10.3",
-    "uuid": "^3.0.0"
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "mocha": "2.2.5",
