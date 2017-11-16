@@ -18,14 +18,55 @@ var request = require('request'),
 
 module.exports = QuickBooks
 
-QuickBooks.REQUEST_TOKEN_URL          = 'https://oauth.intuit.com/oauth/v1/get_request_token'
-QuickBooks.ACCESS_TOKEN_URL           = 'https://oauth.intuit.com/oauth/v1/get_access_token'
-QuickBooks.APP_CENTER_BASE            = 'https://appcenter.intuit.com'
-QuickBooks.APP_CENTER_URL             = QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token='
-QuickBooks.RECONNECT_URL              = QuickBooks.APP_CENTER_BASE + '/api/v1/connection/reconnect'
-QuickBooks.DISCONNECT_URL              = QuickBooks.APP_CENTER_BASE + '/api/v1/connection/disconnect'
-QuickBooks.V3_ENDPOINT_BASE_URL       = 'https://sandbox-quickbooks.api.intuit.com/v3/company/'
-QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE']
+QuickBooks.APP_CENTER_BASE = 'https://appcenter.intuit.com';
+QuickBooks.V3_ENDPOINT_BASE_URL = 'https://sandbox-quickbooks.api.intuit.com/v3/company/';
+QuickBooks.QUERY_OPERATORS = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE'];
+
+var OAUTH_ENDPOINTS = {
+  '1.0a': function (callback) {
+    callback({
+      REQUEST_TOKEN_URL: 'https://oauth.intuit.com/oauth/v1/get_request_token',
+      ACCESS_TOKEN_URL: 'https://oauth.intuit.com/oauth/v1/get_access_token',
+      APP_CENTER_URL: QuickBooks.APP_CENTER_BASE + '/Connect/Begin?oauth_token=',
+      RECONNECT_URL: QuickBooks.APP_CENTER_BASE + '/api/v1/connection/reconnect',
+      DISCONNECT_URL: QuickBooks.APP_CENTER_BASE + '/api/v1/connection/disconnect'
+    });
+  },
+
+  '2.0': function (callback) {
+    var NEW_ENDPOINT_CONFIGURATION = {};
+    request({
+      url: 'https://developer.api.intuit.com/.well-known/openid_configuration/',
+      headers: {
+        Accept: 'application/json'
+      }
+    }, function (err, res) {
+      if (err) {
+        console.log(err);
+        return err;
+      }
+
+      var json = JSON.parse(res.body);
+      NEW_ENDPOINT_CONFIGURATION.AUTHORIZATION_URL = json.authorization_endpoint;;
+      NEW_ENDPOINT_CONFIGURATION.TOKEN_URL = json.token_endpoint;
+      callback(NEW_ENDPOINT_CONFIGURATION);
+    });
+  }
+};
+
+OAUTH_ENDPOINTS['1.0'] = OAUTH_ENDPOINTS['1.0a'];
+
+QuickBooks.setOauthVersion = function (version) {
+  version = (typeof version === 'number') ? version.toFixed(1) : version;
+  QuickBooks.version = version;
+  OAUTH_ENDPOINTS[version](function (endpoints) {
+    for (var k in endpoints) {
+      QuickBooks[k] = endpoints[k];
+    };
+  });
+};
+
+QuickBooks.setOauthVersion('1.0');
 
 /**
  * Node.js client encapsulating access to the QuickBooks V3 Rest API. An instance
@@ -38,18 +79,23 @@ QuickBooks.QUERY_OPERATORS            = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE'
  * @param realmId - QuickBooks companyId, returned as a request parameter when the user is redirected to the provided callback URL following authentication
  * @param useSandbox - boolean - See https://developer.intuit.com/v2/blog/2014/10/24/intuit-developer-now-offers-quickbooks-sandboxes
  * @param debug - boolean flag to turn on logging of HTTP requests, including headers and body
+ * @param minorversion - integer to set minorversion in request
  * @constructor
  */
-function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, useSandbox, debug) {
-  var prefix           = _.isObject(consumerKey) ? 'consumerKey.' : ''
-  this.consumerKey     = eval(prefix + 'consumerKey')
-  this.consumerSecret  = eval(prefix + 'consumerSecret')
-  this.token           = eval(prefix + 'token')
-  this.tokenSecret     = eval(prefix + 'tokenSecret')
-  this.realmId         = eval(prefix + 'realmId')
-  this.useSandbox      = eval(prefix + 'useSandbox')
-  this.debug           = eval(prefix + 'debug')
-  this.endpoint        = this.useSandbox ? QuickBooks.V3_ENDPOINT_BASE_URL : QuickBooks.V3_ENDPOINT_BASE_URL.replace('sandbox-', '')
+function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, useSandbox, debug, minorversion, oauthversion, refreshToken) {
+  var prefix = _.isObject(consumerKey) ? 'consumerKey.' : '';
+  this.consumerKey = eval(prefix + 'consumerKey');
+  this.consumerSecret = eval(prefix + 'consumerSecret');
+  this.token = eval(prefix + 'token');
+  this.tokenSecret = eval(prefix + 'tokenSecret');
+  this.realmId = eval(prefix + 'realmId');
+  this.useSandbox = eval(prefix + 'useSandbox');
+  this.debug = eval(prefix + 'debug');
+  this.endpoint = this.useSandbox ? QuickBooks.V3_ENDPOINT_BASE_URL : QuickBooks.V3_ENDPOINT_BASE_URL.replace('sandbox-', '');
+  this.minorversion = eval(prefix + 'minorversion') || 4;
+  this.oauthversion = oauthversion || '1.0a';
+  this.refreshToken = refreshToken || null;
+  if (!tokenSecret && this.oauthversion !== '2.0') throw new Error('tokenSecret not defined');
 }
 
 /**
@@ -251,6 +297,16 @@ QuickBooks.prototype.createInvoice = function(invoice, callback) {
  */
 QuickBooks.prototype.createItem = function(item, callback) {
   module.create(this, 'item', item, callback)
+}
+
+/**
+ * Creates the JournalCode in QuickBooks
+ *
+ * @param  {object} journalCode - The unsaved journalCode, to be persisted in QuickBooks
+ * @param  {function} callback - Callback function which is called with any error and the persistent JournalCode
+ */
+QuickBooks.prototype.createJournalCode = function(journalCode, callback) {
+  module.create(this, 'journalCode', journalCode, callback)
 }
 
 /**
@@ -588,6 +644,16 @@ QuickBooks.prototype.sendInvoicePdf = function(id, sendTo, callback) {
  */
 QuickBooks.prototype.getItem = function(id, callback) {
   module.read(this, 'item', id, callback)
+}
+
+/**
+ * Retrieves the JournalCode from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent JournalCode
+ * @param  {function} callback - Callback function which is called with any error and the persistent JournalCode
+ */
+QuickBooks.prototype.getJournalCode = function(id, callback) {
+  module.read(this, 'journalCode', id, callback)
 }
 
 /**
@@ -929,6 +995,16 @@ QuickBooks.prototype.updateItem = function(item, callback) {
 }
 
 /**
+ * Updates QuickBooks version of JournalCode
+ *
+ * @param  {object} journalCode - The persistent JournalCode, including Id and SyncToken fields
+ * @param  {function} callback - Callback function which is called with any error and the persistent JournalCode
+ */
+QuickBooks.prototype.updateJournalCode = function(journalCode, callback) {
+  module.update(this, 'journalCode', journalCode, callback)
+}
+
+/**
  * Updates QuickBooks version of JournalEntry
  *
  * @param  {object} journalEntry - The persistent JournalEntry, including Id and SyncToken fields
@@ -1167,6 +1243,16 @@ QuickBooks.prototype.deleteEstimate = function(idOrEntity, callback) {
  */
 QuickBooks.prototype.deleteInvoice = function(idOrEntity, callback) {
   module.delete(this, 'invoice', idOrEntity, callback)
+}
+
+/**
+ * Deletes the JournalCode from QuickBooks
+ *
+ * @param  {object} idOrEntity - The persistent JournalCode to be deleted, or the Id of the JournalCode, in which case an extra GET request will be issued to first retrieve the JournalCode
+ * @param  {function} callback - Callback function which is called with any error and the status of the persistent JournalCode
+ */
+QuickBooks.prototype.deleteJournalCode = function(idOrEntity, callback) {
+  module.delete(this, 'journalCode', idOrEntity, callback)
 }
 
 /**
@@ -1465,6 +1551,20 @@ QuickBooks.prototype.findInvoices = function(criteria, callback) {
  */
 QuickBooks.prototype.findItems = function(criteria, callback) {
   module.query(this, 'item', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
+}
+
+/**
+ * Finds all JournalCodes in QuickBooks, optionally matching the specified criteria
+ *
+ * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
+ * @param  {function} callback - Callback function which is called with any error and the list of JournalCode
+ */
+QuickBooks.prototype.findJournalCodes = function(criteria, callback) {
+  module.query(this, 'journalCode', criteria).then(function(data) {
     (callback || criteria)(null, data)
   }).catch(function(err) {
     (callback || criteria)(err, err)
@@ -1959,13 +2059,17 @@ module.request = function(context, verb, options, entity, callback) {
     url:     url,
     qs:      options.qs || {},
     headers: options.headers || {},
-    oauth:   module.oauth(context),
     json:    true
   }
-  opts.qs.minorversion = opts.qs.minorversion || 4
+  opts.qs.minorversion = opts.qs.minorversion || context.minorversion;
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
   opts.headers['Request-Id'] = uuid.v1()
   opts.qs.format = 'json';
+  if (context.oauthversion == '2.0'){
+      opts.headers['Authorization'] =  'Bearer ' + context.token
+  } else {
+        opts.oauth = module.oauth(context);
+  };
   if (options.url.match(/pdf$/)) {
     opts.headers['accept'] = 'application/pdf'
     opts.encoding = null
@@ -2299,7 +2403,7 @@ module.criteriaToString = function(criteria) {
     }
     sql += criterion.field + ' ' + criterion.operator + ' '
     var quote = function(x) {
-      return _.isString(x) ? "'" + x + "'" : x
+      return _.isString(x) ? "'" + x.replace(/'/g, "\\'") + "'" : x
     }
     if (_.isArray(criterion.value)) {
       sql += '(' + criterion.value.map(quote).join(',') + ')'
