@@ -38,7 +38,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/start', function (req, res) {
-  res.render('intuit.ejs', { locals: { port: port, appCenter: QuickBooks.APP_CENTER_BASE } });
+  res.render('intuit.ejs', { port: port, appCenter: QuickBooks.APP_CENTER_BASE });
 });
 
 // OAUTH 2 makes use of redirect requests
