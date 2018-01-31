@@ -99,6 +99,39 @@ function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, us
 }
 
 /**
+ *
+ * Use the refresh token to obtain a new access token.
+ *
+ *
+ */
+
+QuickBooks.prototype.refreshAccessToken = function(callback) {
+    var auth = (new Buffer(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
+
+    var postBody = {
+        url: 'https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: 'Basic ' + auth,
+        },
+        form: {
+            grant_type: 'refresh_token',
+            refresh_token: this.refreshToken
+        }
+    };
+
+    request.post(postBody, function (e, r, data) {
+        var refreshResponse = JSON.parse(r.body);
+        console.log(refreshResponse);
+        this.refreshToken = refreshResponse.refresh_token;
+        this.token = refreshResponse.access_token;
+        callback(refreshResponse, e);
+    });
+};
+
+
+/**
  * Batch operation to enable an application to perform multiple operations in a single request.
  * The following batch items are supported:
      create
