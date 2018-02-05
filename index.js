@@ -123,7 +123,6 @@ QuickBooks.prototype.refreshAccessToken = function(callback) {
 
     request.post(postBody, function (e, r, data) {
         var refreshResponse = JSON.parse(r.body);
-        console.log(refreshResponse);
         this.refreshToken = refreshResponse.refresh_token;
         this.token = refreshResponse.access_token;
         callback(refreshResponse, e);
