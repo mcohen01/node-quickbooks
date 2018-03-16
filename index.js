@@ -178,8 +178,8 @@ QuickBooks.prototype.upload = function(stream, entityType, entityId, callback) {
     }
   }
   module.request(this, 'post', opts, null, module.unwrap(function(err, data) {
-    if (err) {
-      (callback || entityType)(err, null)
+    if (err || data[0].Fault) {
+      (callback || entityType)(err || data[0], null)
     } else if (_.isFunction(entityType)) {
       entityType(null, data[0].Attachable)
     } else {
