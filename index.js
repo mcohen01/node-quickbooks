@@ -49,6 +49,9 @@ var OAUTH_ENDPOINTS = {
       var json = JSON.parse(res.body);
       NEW_ENDPOINT_CONFIGURATION.AUTHORIZATION_URL = json.authorization_endpoint;;
       NEW_ENDPOINT_CONFIGURATION.TOKEN_URL = json.token_endpoint;
+      NEW_ENDPOINT_CONFIGURATION.USER_INFO_URL = json.userinfo_endpoint;
+      NEW_ENDPOINT_CONFIGURATION.REVOKE_URL = json.revocation_endpoint;
+      NEW_ENDPOINT_CONFIGURATION.JWKS_URL = json.jwks_url;
       callback(NEW_ENDPOINT_CONFIGURATION);
     });
   }
@@ -129,6 +132,33 @@ QuickBooks.prototype.refreshAccessToken = function(callback) {
     });
 };
 
+/**
+ *
+ * Use either refresh token or bearer token to revoke access. 
+ *
+ * @param useRefresh - boolean - Indicates which token to use: true to use the refresh token or false to use the bearer token
+ * @param {function} callback - Callback function to call with error/response/data results
+ */
+QuickBooks.prototype.revokeAccess = function(useRefresh, callback) {
+    var auth = (new Buffer(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
+    var revokeToken = useRefresh ? this.refreshToken : this.token;
+    var postBody = {
+        url: QuickBooks.REVOKE_URL,
+        method: 'POST',
+        headers: {
+            'Authorization': 'Basic ' + auth,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'token': revokeToken
+        })
+    };
+
+    request.post(postBody, function(e, r, data) {
+        callback(e, r, data);
+    });
+};
 /**
  * Batch operation to enable an application to perform multiple operations in a single request.
  * The following batch items are supported:
