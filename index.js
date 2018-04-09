@@ -151,7 +151,7 @@ QuickBooks.prototype.revokeAccess = function(useRefresh, callback) {
             Authorization: 'Basic ' + auth,
         },
         body: JSON.stringify({
-            'token': revokeToken
+            token: revokeToken
         })
     };
 
