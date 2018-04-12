@@ -49,6 +49,7 @@ var OAUTH_ENDPOINTS = {
       var json = JSON.parse(res.body);
       NEW_ENDPOINT_CONFIGURATION.AUTHORIZATION_URL = json.authorization_endpoint;;
       NEW_ENDPOINT_CONFIGURATION.TOKEN_URL = json.token_endpoint;
+      NEW_ENDPOINT_CONFIGURATION.REVOKE_URL = json.revocation_endpoint;
       callback(NEW_ENDPOINT_CONFIGURATION);
     });
   }
@@ -126,6 +127,32 @@ QuickBooks.prototype.refreshAccessToken = function(callback) {
         this.refreshToken = refreshResponse.refresh_token;
         this.token = refreshResponse.access_token;
         callback(e, refreshResponse );
+    });
+};
+
+/**
+ * Use either refresh token or access token to revoke access (OAuth2).
+ *
+ * @param useRefresh - boolean - Indicates which token to use: true to use the refresh token, false to use the access token.
+ * @param {function} callback - Callback function to call with error/response/data results.
+ */
+QuickBooks.prototype.revokeAccess = function(useRefresh, callback) {
+    var auth = (new Buffer(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
+    var revokeToken = useRefresh ? this.refreshToken : this.token;
+    var postBody = {
+        url: QuickBooks.REVOKE_URL,
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: 'Basic ' + auth,
+        },
+        form: {
+            token: revokeToken
+        }
+    };
+
+    request.post(postBody, function(e, r, data) {
+        callback(e, r, data);
     });
 };
 
@@ -2083,7 +2110,7 @@ QuickBooks.prototype.reportAccountListDetail = function(options, callback) {
 
 module.request = function(context, verb, options, entity, callback) {
   var url = context.endpoint + context.realmId + options.url
-  if (options.url === QuickBooks.RECONNECT_URL || options.url == QuickBooks.DISCONNECT_URL) {
+  if (options.url === QuickBooks.RECONNECT_URL || options.url == QuickBooks.DISCONNECT_URL || options.url == QuickBooks.REVOKE_URL) {
     url = options.url
   }
   var opts = {
