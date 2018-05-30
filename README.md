@@ -861,14 +861,13 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent PaymentMethod
 
 
-#### getPreferences(id, callback)
+#### getPreferences(callback)
 
 Retrieves the Preferences from QuickBooks
 
 __Arguments__
 
-* `id` - The Id of persistent Preferences
-* `callback` - Callback function which is called with any error and the persistent Preferences
+* `callback` - Callback function which is called with any error and the Preferences of the authorised realm
 
 
 #### getPurchase(id, callback)
