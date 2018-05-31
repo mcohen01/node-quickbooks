@@ -130,12 +130,16 @@ QuickBooks.prototype.refreshAccessToken = function(callback) {
         }
     };
 
-    request.post(postBody, function (e, r, data) {
-        var refreshResponse = JSON.parse(r.body);
-        this.refreshToken = refreshResponse.refresh_token;
-        this.token = refreshResponse.access_token;
-        callback(e, refreshResponse );
-    });
+    request.post(postBody, (function (e, r, data) {
+        if (r && r.body) {
+            var refreshResponse = JSON.parse(r.body);
+            this.refreshToken = refreshResponse.refresh_token;
+            this.token = refreshResponse.access_token;
+            if (callback) callback(e, refreshResponse);
+        } else {
+            if (callback) callback(e, r, data);
+        }
+    }).bind(this));
 };
 
 /**
@@ -159,9 +163,14 @@ QuickBooks.prototype.revokeAccess = function(useRefresh, callback) {
         }
     };
 
-    request.post(postBody, function(e, r, data) {
-        callback(e, r, data);
-    });
+    request.post(postBody, (function(e, r, data) {
+        if (r && r.statusCode === 200) {
+            this.refreshToken = null;
+            this.token = null;
+            this.realmId = null;
+        }
+        if (callback) callback(e, r, data);
+    }).bind(this));
 };
 
 /**
