@@ -121,12 +121,14 @@ QuickBooks.prototype.refreshAccessToken = function(callback) {
         }
     };
 
-    request.post(postBody, function (e, r, data) {
+    request.post(postBody, (function (e, r, data) {
         var refreshResponse = JSON.parse(r.body);
+        
         this.refreshToken = refreshResponse.refresh_token;
         this.token = refreshResponse.access_token;
-        callback(e, refreshResponse );
-    });
+        
+        if (callback) callback(e, refreshResponse);
+    }).bind(this));
 };
 
 /**
