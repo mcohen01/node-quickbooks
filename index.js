@@ -46,7 +46,13 @@ var OAUTH_ENDPOINTS = {
         return err;
       }
 
-      var json = JSON.parse(res.body);
+      var json;
+      try {
+          json = JSON.parse(res.body);
+      } catch (error) {
+          console.log(error);
+          return error;
+      }
       NEW_ENDPOINT_CONFIGURATION.AUTHORIZATION_URL = json.authorization_endpoint;;
       NEW_ENDPOINT_CONFIGURATION.TOKEN_URL = json.token_endpoint;
       callback(NEW_ENDPOINT_CONFIGURATION);
