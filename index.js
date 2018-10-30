@@ -130,6 +130,37 @@ QuickBooks.prototype.refreshAccessToken = function(callback) {
 };
 
 /**
+ *
+ * Revokes the current token.
+ *
+ *
+ */
+
+QuickBooks.prototype.revokeAccessToken = function(callback) {
+  var auth = (new Buffer(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
+
+  var postBody = {
+      url: 'https://developer.api.intuit.com/v2/oauth2/tokens/revoke',
+      headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: 'Basic ' + auth,
+      },
+      form: {
+          token: this.refreshToken
+      }
+  };
+
+  request.post(postBody, function (e) {
+      if (!e) {
+        this.refreshToken = null;
+        this.token = null;
+      }
+      callback(e);
+  });
+};
+
+/**
  * Batch operation to enable an application to perform multiple operations in a single request.
  * The following batch items are supported:
      create
