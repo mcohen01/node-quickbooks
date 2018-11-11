@@ -46,7 +46,13 @@ var OAUTH_ENDPOINTS = {
         return err;
       }
 
-      var json = JSON.parse(res.body);
+      var json;
+      try {
+          json = JSON.parse(res.body);
+      } catch (error) {
+          console.log(error);
+          return error;
+      }
       NEW_ENDPOINT_CONFIGURATION.AUTHORIZATION_URL = json.authorization_endpoint;;
       NEW_ENDPOINT_CONFIGURATION.TOKEN_URL = json.token_endpoint;
       callback(NEW_ENDPOINT_CONFIGURATION);
@@ -164,22 +170,30 @@ QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
  * Uploads a file as an Attachable in QBO, optionally linking it to the specified
  * QBO Entity.
  *
+ * @param  {string} filename - the name of the file
+ * @param  {string} contentType - the mime type of the file
  * @param  {object} stream - ReadableStream of file contents
  * @param  {object} entityType - optional string name of the QBO entity the Attachable will be linked to (e.g. Invoice)
  * @param  {object} entityId - optional Id of the QBO entity the Attachable will be linked to
  * @param  {function} callback - callback which receives the newly created Attachable
  */
-QuickBooks.prototype.upload = function(stream, entityType, entityId, callback) {
+QuickBooks.prototype.upload = function(filename, contentType, stream, entityType, entityId, callback) {
   var that = this
   var opts = {
     url: '/upload',
     formData: {
-      file_content_01: stream
+      file_content_01: {
+        value: stream,
+        options: {
+          filename: filename,
+          contentType: contentType
+        }
+      }
     }
   }
   module.request(this, 'post', opts, null, module.unwrap(function(err, data) {
-    if (err) {
-      (callback || entityType)(err, null)
+    if (err || data[0].Fault) {
+      (callback || entityType)(err || data[0], null)
     } else if (_.isFunction(entityType)) {
       entityType(null, data[0].Attachable)
     } else {
