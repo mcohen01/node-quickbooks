@@ -33,10 +33,10 @@ var OAUTH_ENDPOINTS = {
     });
   },
 
-  '2.0': function (callback) {
+  '2.0': function (callback, discoveryUrl) {
     var NEW_ENDPOINT_CONFIGURATION = {};
     request({
-      url: 'https://developer.api.intuit.com/.well-known/openid_configuration/',
+      url: discoveryUrl,
       headers: {
         Accept: 'application/json'
       }
@@ -55,6 +55,7 @@ var OAUTH_ENDPOINTS = {
       }
       NEW_ENDPOINT_CONFIGURATION.AUTHORIZATION_URL = json.authorization_endpoint;;
       NEW_ENDPOINT_CONFIGURATION.TOKEN_URL = json.token_endpoint;
+      NEW_ENDPOINT_CONFIGURATION.USER_INFO_URL = json.userinfo_endpoint;
       NEW_ENDPOINT_CONFIGURATION.REVOKE_URL = json.revocation_endpoint;
       callback(NEW_ENDPOINT_CONFIGURATION);
     });
@@ -63,14 +64,21 @@ var OAUTH_ENDPOINTS = {
 
 OAUTH_ENDPOINTS['1.0'] = OAUTH_ENDPOINTS['1.0a'];
 
-QuickBooks.setOauthVersion = function (version) {
+/**
+ * Sets endpoints per OAuth version
+ *
+ * @param version - 1.0 for OAuth 1.0a, 2.0 for OAuth 2.0
+ * @param useSandbox - true to use the OAuth 2.0 sandbox discovery document, false (or unspecified, for backward compatibility) to use the prod discovery document.
+ */
+QuickBooks.setOauthVersion = function (version, useSandbox) {
   version = (typeof version === 'number') ? version.toFixed(1) : version;
   QuickBooks.version = version;
+  var discoveryUrl = useSandbox ? 'https://developer.intuit.com/.well-known/openid_sandbox_configuration/' : 'https://developer.api.intuit.com/.well-known/openid_configuration/';
   OAUTH_ENDPOINTS[version](function (endpoints) {
     for (var k in endpoints) {
       QuickBooks[k] = endpoints[k];
-    };
-  });
+    }
+  }, discoveryUrl);
 };
 
 QuickBooks.setOauthVersion('1.0');
@@ -116,7 +124,7 @@ QuickBooks.prototype.refreshAccessToken = function(callback) {
     var auth = (new Buffer(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
 
     var postBody = {
-        url: 'https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer',
+        url: QuickBooks.TOKEN_URL,
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -160,6 +168,15 @@ QuickBooks.prototype.revokeAccess = function(useRefresh, callback) {
     request.post(postBody, function(e, r, data) {
         callback(e, r, data);
     });
+};
+
+/**
+ * Get user info (OAuth2).
+ *
+ * @param {function} callback - Callback function to call with error/response/data results.
+ */
+QuickBooks.prototype.getUserInfo = function(callback) {
+  module.request(this, 'get', {url: QuickBooks.USER_INFO_URL}, null, callback);
 };
 
 /**
@@ -2124,7 +2141,7 @@ QuickBooks.prototype.reportAccountListDetail = function(options, callback) {
 
 module.request = function(context, verb, options, entity, callback) {
   var url = context.endpoint + context.realmId + options.url
-  if (options.url === QuickBooks.RECONNECT_URL || options.url == QuickBooks.DISCONNECT_URL || options.url == QuickBooks.REVOKE_URL) {
+  if (options.url === QuickBooks.RECONNECT_URL || options.url == QuickBooks.DISCONNECT_URL || options.url === QuickBooks.REVOKE_URL || options.url === QuickBooks.USER_INFO_URL) {
     url = options.url
   }
   var opts = {
