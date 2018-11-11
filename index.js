@@ -673,6 +673,17 @@ QuickBooks.prototype.getExchangeRate = function(options, callback) {
   module.request(this, 'get', {url: url, qs: options}, null, callback)
 }
 
+
+/**
+ * Retrieves the Estimate PDF from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent Estimate
+ * @param  {function} callback - Callback function which is called with any error and the Estimate PDF
+ */
+QuickBooks.prototype.getEstimatePdf = function(id, callback) {
+    module.read(this, 'Estimate', id + '/pdf', callback)
+};
+
 /**
  * Emails the Estimate PDF from QuickBooks to the address supplied in Estimate.BillEmail.EmailAddress
  * or the specified 'sendTo' address
