@@ -62,6 +62,8 @@ qbo.reportBalanceSheet({department: '1,4,7'}, function(err, balanceSheet) {
 })
 
 qbo.upload(
+  'contractor.jpg',
+  'image/jpeg',
   fs.createReadStream('contractor.jpg'),
   'Invoice',
   40,
@@ -861,14 +863,13 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent PaymentMethod
 
 
-#### getPreferences(id, callback)
+#### getPreferences(callback)
 
 Retrieves the Preferences from QuickBooks
 
 __Arguments__
 
-* `id` - The Id of persistent Preferences
-* `callback` - Callback function which is called with any error and the persistent Preferences
+* `callback` - Callback function which is called with any error and the Preferences of the authorised realm
 
 
 #### getPurchase(id, callback)
@@ -2118,12 +2119,14 @@ __Arguments__
 * `callback` - Callback function which is called with any error and list of changes
 
 
-#### upload(stream, entityType, entityId, callback)
+#### upload(filename, contentType, stream, entityType, entityId, callback)
 
 Uploads a file as an Attachable in QBO, optionally linking it to the specified QBO Entity.
 
 __Arguments__
 
+* `filename` - the name of the file
+* `contentType` - the mime type of the file
 * `stream` - ReadableStream of file contents
 * `entityType` - optional string name of the QBO entity the Attachable will be linked to (e.g. Invoice)
 * `entityId` - optional Id of the QBO entity the Attachable will be linked to
