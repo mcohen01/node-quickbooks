@@ -292,9 +292,10 @@ QuickBooks.prototype.createAttachable = function(attachable, callback) {
  *
  * @param  {object} bill - The unsaved bill, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Bill
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createBill = function(bill, callback) {
-  module.create(this, 'bill', bill, callback)
+QuickBooks.prototype.createBill = function(bill, callback, requestId) {
+  module.create(this, 'bill', bill, callback, requestId)
 }
 
 /**
@@ -302,9 +303,10 @@ QuickBooks.prototype.createBill = function(bill, callback) {
  *
  * @param  {object} billPayment - The unsaved billPayment, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent BillPayment
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createBillPayment = function(billPayment, callback) {
-  module.create(this, 'billPayment', billPayment, callback)
+QuickBooks.prototype.createBillPayment = function(billPayment, callback, requestId) {
+  module.create(this, 'billPayment', billPayment, callback, requestId)
 }
 
 /**
@@ -323,8 +325,8 @@ QuickBooks.prototype.createClass = function(klass, callback) {
  * @param  {object} creditMemo - The unsaved creditMemo, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent CreditMemo
  */
-QuickBooks.prototype.createCreditMemo = function(creditMemo, callback) {
-  module.create(this, 'creditMemo', creditMemo, callback)
+QuickBooks.prototype.createCreditMemo = function(creditMemo, callback, requestId) {
+  module.create(this, 'creditMemo', creditMemo, callback, requestId)
 }
 
 /**
@@ -352,9 +354,10 @@ QuickBooks.prototype.createDepartment = function(department, callback) {
  *
  * @param  {object} deposit - The unsaved Deposit, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Deposit
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createDeposit = function(deposit, callback) {
-  module.create(this, 'deposit', deposit, callback)
+QuickBooks.prototype.createDeposit = function(deposit, callback, requestId) {
+  module.create(this, 'deposit', deposit, callback, requestId)
 }
 
 /**
@@ -372,9 +375,10 @@ QuickBooks.prototype.createEmployee = function(employee, callback) {
  *
  * @param  {object} estimate - The unsaved estimate, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Estimate
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createEstimate = function(estimate, callback) {
-  module.create(this, 'estimate', estimate, callback)
+QuickBooks.prototype.createEstimate = function(estimate, callback, requestId) {
+  module.create(this, 'estimate', estimate, callback, requestId)
 }
 
 /**
@@ -382,9 +386,10 @@ QuickBooks.prototype.createEstimate = function(estimate, callback) {
  *
  * @param  {object} invoice - The unsaved invoice, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Invoice
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createInvoice = function(invoice, callback) {
-  module.create(this, 'invoice', invoice, callback)
+QuickBooks.prototype.createInvoice = function(invoice, callback, requestId) {
+  module.create(this, 'invoice', invoice, callback, requestId)
 }
 
 /**
@@ -393,8 +398,8 @@ QuickBooks.prototype.createInvoice = function(invoice, callback) {
  * @param  {object} item - The unsaved item, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Item
  */
-QuickBooks.prototype.createItem = function(item, callback) {
-  module.create(this, 'item', item, callback)
+QuickBooks.prototype.createItem = function(item, callback, requestId) {
+  module.create(this, 'item', item, callback, requestId)
 }
 
 /**
@@ -413,8 +418,8 @@ QuickBooks.prototype.createJournalCode = function(journalCode, callback) {
  * @param  {object} journalEntry - The unsaved journalEntry, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent JournalEntry
  */
-QuickBooks.prototype.createJournalEntry = function(journalEntry, callback) {
-  module.create(this, 'journalEntry', journalEntry, callback)
+QuickBooks.prototype.createJournalEntry = function(journalEntry, callback, requestId) {
+  module.create(this, 'journalEntry', journalEntry, callback, requestId)
 }
 
 /**
@@ -422,9 +427,10 @@ QuickBooks.prototype.createJournalEntry = function(journalEntry, callback) {
  *
  * @param  {object} payment - The unsaved payment, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Payment
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createPayment = function(payment, callback) {
-  module.create(this, 'payment', payment, callback)
+QuickBooks.prototype.createPayment = function(payment, callback, requestId) {
+  module.create(this, 'payment', payment, callback, requestId)
 }
 
 /**
@@ -442,9 +448,10 @@ QuickBooks.prototype.createPaymentMethod = function(paymentMethod, callback) {
  *
  * @param  {object} purchase - The unsaved purchase, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Purchase
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createPurchase = function(purchase, callback) {
-  module.create(this, 'purchase', purchase, callback)
+QuickBooks.prototype.createPurchase = function(purchase, callback, requestId) {
+  module.create(this, 'purchase', purchase, callback, requestId)
 }
 
 /**
@@ -452,9 +459,10 @@ QuickBooks.prototype.createPurchase = function(purchase, callback) {
  *
  * @param  {object} purchaseOrder - The unsaved purchaseOrder, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent PurchaseOrder
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createPurchaseOrder = function(purchaseOrder, callback) {
-  module.create(this, 'purchaseOrder', purchaseOrder, callback)
+QuickBooks.prototype.createPurchaseOrder = function(purchaseOrder, callback, requestId) {
+  module.create(this, 'purchaseOrder', purchaseOrder, callback, requestId)
 }
 
 /**
@@ -462,9 +470,10 @@ QuickBooks.prototype.createPurchaseOrder = function(purchaseOrder, callback) {
  *
  * @param  {object} refundReceipt - The unsaved refundReceipt, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent RefundReceipt
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createRefundReceipt = function(refundReceipt, callback) {
-  module.create(this, 'refundReceipt', refundReceipt, callback)
+QuickBooks.prototype.createRefundReceipt = function(refundReceipt, callback, requestId) {
+  module.create(this, 'refundReceipt', refundReceipt, callback, requestId)
 }
 
 /**
@@ -472,9 +481,10 @@ QuickBooks.prototype.createRefundReceipt = function(refundReceipt, callback) {
  *
  * @param  {object} salesReceipt - The unsaved salesReceipt, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent SalesReceipt
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createSalesReceipt = function(salesReceipt, callback) {
-  module.create(this, 'salesReceipt', salesReceipt, callback)
+QuickBooks.prototype.createSalesReceipt = function(salesReceipt, callback, requestId) {
+  module.create(this, 'salesReceipt', salesReceipt, callback, requestId)
 }
 
 /**
@@ -512,9 +522,10 @@ QuickBooks.prototype.createTerm = function(term, callback) {
  *
  * @param  {object} timeActivity - The unsaved timeActivity, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent TimeActivity
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createTimeActivity = function(timeActivity, callback) {
-  module.create(this, 'timeActivity', timeActivity, callback)
+QuickBooks.prototype.createTimeActivity = function(timeActivity, callback, requestId) {
+  module.create(this, 'timeActivity', timeActivity, callback, requestId)
 }
 
 /**
@@ -522,9 +533,10 @@ QuickBooks.prototype.createTimeActivity = function(timeActivity, callback) {
  *
  * @param  {object} transfer - The unsaved Transfer, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Transfer
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createTransfer = function(transfer, callback) {
-  module.create(this, 'transfer', transfer, callback)
+QuickBooks.prototype.createTransfer = function(transfer, callback, requestId) {
+  module.create(this, 'transfer', transfer, callback, requestId)
 }
 
 /**
@@ -542,9 +554,10 @@ QuickBooks.prototype.createVendor = function(vendor, callback) {
  *
  * @param  {object} vendorCredit - The unsaved vendorCredit, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent VendorCredit
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.createVendorCredit = function(vendorCredit, callback) {
-  module.create(this, 'vendorCredit', vendorCredit, callback)
+QuickBooks.prototype.createVendorCredit = function(vendorCredit, callback, requestId) {
+  module.create(this, 'vendorCredit', vendorCredit, callback, requestId)
 }
 
 
@@ -988,9 +1001,10 @@ QuickBooks.prototype.updateAttachable = function(attachable, callback) {
  *
  * @param  {object} bill - The persistent Bill, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Bill
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateBill = function(bill, callback) {
-  module.update(this, 'bill', bill, callback)
+QuickBooks.prototype.updateBill = function(bill, callback, requestId) {
+  module.update(this, 'bill', bill, callback, requestId)
 }
 
 /**
@@ -998,9 +1012,10 @@ QuickBooks.prototype.updateBill = function(bill, callback) {
  *
  * @param  {object} billPayment - The persistent BillPayment, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent BillPayment
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateBillPayment = function(billPayment, callback) {
-  module.update(this, 'billPayment', billPayment, callback)
+QuickBooks.prototype.updateBillPayment = function(billPayment, callback, requestId) {
+  module.update(this, 'billPayment', billPayment, callback, requestId)
 }
 
 /**
@@ -1018,9 +1033,10 @@ QuickBooks.prototype.updateClass = function(klass, callback) {
  *
  * @param  {object} companyInfo - The persistent CompanyInfo, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent CompanyInfo
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateCompanyInfo = function(companyInfo, callback) {
-  module.update(this, 'companyInfo', companyInfo, callback)
+QuickBooks.prototype.updateCompanyInfo = function(companyInfo, callback, requestId) {
+  module.update(this, 'companyInfo', companyInfo, callback, requestId)
 }
 
 /**
@@ -1028,9 +1044,10 @@ QuickBooks.prototype.updateCompanyInfo = function(companyInfo, callback) {
  *
  * @param  {object} creditMemo - The persistent CreditMemo, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent CreditMemo
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateCreditMemo = function(creditMemo, callback) {
-  module.update(this, 'creditMemo', creditMemo, callback)
+QuickBooks.prototype.updateCreditMemo = function(creditMemo, callback, requestId) {
+  module.update(this, 'creditMemo', creditMemo, callback, requestId)
 }
 
 /**
@@ -1058,9 +1075,10 @@ QuickBooks.prototype.updateDepartment = function(department, callback) {
  *
  * @param  {object} deposit - The persistent Deposit, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Deposit
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateDeposit = function(deposit, callback) {
-  module.update(this, 'deposit', deposit, callback)
+QuickBooks.prototype.updateDeposit = function(deposit, callback, requestId) {
+  module.update(this, 'deposit', deposit, callback, requestId)
 }
 
 /**
@@ -1078,9 +1096,10 @@ QuickBooks.prototype.updateEmployee = function(employee, callback) {
  *
  * @param  {object} estimate - The persistent Estimate, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Estimate
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateEstimate = function(estimate, callback) {
-  module.update(this, 'estimate', estimate, callback)
+QuickBooks.prototype.updateEstimate = function(estimate, callback, requestId) {
+  module.update(this, 'estimate', estimate, callback, requestId)
 }
 
 /**
@@ -1088,9 +1107,10 @@ QuickBooks.prototype.updateEstimate = function(estimate, callback) {
  *
  * @param  {object} invoice - The persistent Invoice, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Invoice
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateInvoice = function(invoice, callback) {
-  module.update(this, 'invoice', invoice, callback)
+QuickBooks.prototype.updateInvoice = function(invoice, callback, requestId) {
+  module.update(this, 'invoice', invoice, callback, requestId)
 }
 
 /**
@@ -1118,9 +1138,10 @@ QuickBooks.prototype.updateJournalCode = function(journalCode, callback) {
  *
  * @param  {object} journalEntry - The persistent JournalEntry, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent JournalEntry
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateJournalEntry = function(journalEntry, callback) {
-  module.update(this, 'journalEntry', journalEntry, callback)
+QuickBooks.prototype.updateJournalEntry = function(journalEntry, callback, requestId) {
+  module.update(this, 'journalEntry', journalEntry, callback, requestId)
 }
 
 /**
@@ -1128,9 +1149,10 @@ QuickBooks.prototype.updateJournalEntry = function(journalEntry, callback) {
  *
  * @param  {object} payment - The persistent Payment, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Payment
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updatePayment = function(payment, callback) {
-  module.update(this, 'payment', payment, callback)
+QuickBooks.prototype.updatePayment = function(payment, callback, requestId) {
+  module.update(this, 'payment', payment, callback, requestId)
 }
 
 /**
@@ -1148,9 +1170,10 @@ QuickBooks.prototype.updatePaymentMethod = function(paymentMethod, callback) {
  *
  * @param  {object} preferences - The persistent Preferences, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Preferences
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updatePreferences = function(preferences, callback) {
-  module.update(this, 'preferences', preferences, callback)
+QuickBooks.prototype.updatePreferences = function(preferences, callback, requestId) {
+  module.update(this, 'preferences', preferences, callback, requestId)
 }
 
 /**
@@ -1158,9 +1181,10 @@ QuickBooks.prototype.updatePreferences = function(preferences, callback) {
  *
  * @param  {object} purchase - The persistent Purchase, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Purchase
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updatePurchase = function(purchase, callback) {
-  module.update(this, 'purchase', purchase, callback)
+QuickBooks.prototype.updatePurchase = function(purchase, callback, requestId) {
+  module.update(this, 'purchase', purchase, callback, requestId)
 }
 
 /**
@@ -1168,9 +1192,10 @@ QuickBooks.prototype.updatePurchase = function(purchase, callback) {
  *
  * @param  {object} purchaseOrder - The persistent PurchaseOrder, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent PurchaseOrder
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updatePurchaseOrder = function(purchaseOrder, callback) {
-  module.update(this, 'purchaseOrder', purchaseOrder, callback)
+QuickBooks.prototype.updatePurchaseOrder = function(purchaseOrder, callback, requestId) {
+  module.update(this, 'purchaseOrder', purchaseOrder, callback, requestId)
 }
 
 /**
@@ -1178,9 +1203,10 @@ QuickBooks.prototype.updatePurchaseOrder = function(purchaseOrder, callback) {
  *
  * @param  {object} refundReceipt - The persistent RefundReceipt, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent RefundReceipt
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateRefundReceipt = function(refundReceipt, callback) {
-  module.update(this, 'refundReceipt', refundReceipt, callback)
+QuickBooks.prototype.updateRefundReceipt = function(refundReceipt, callback, requestId) {
+  module.update(this, 'refundReceipt', refundReceipt, callback, requestId)
 }
 
 /**
@@ -1188,9 +1214,10 @@ QuickBooks.prototype.updateRefundReceipt = function(refundReceipt, callback) {
  *
  * @param  {object} salesReceipt - The persistent SalesReceipt, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent SalesReceipt
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateSalesReceipt = function(salesReceipt, callback) {
-  module.update(this, 'salesReceipt', salesReceipt, callback)
+QuickBooks.prototype.updateSalesReceipt = function(salesReceipt, callback, requestId) {
+  module.update(this, 'salesReceipt', salesReceipt, callback, requestId)
 }
 
 /**
@@ -1238,9 +1265,10 @@ QuickBooks.prototype.updateTerm = function(term, callback) {
  *
  * @param  {object} timeActivity - The persistent TimeActivity, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent TimeActivity
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateTimeActivity = function(timeActivity, callback) {
-  module.update(this, 'timeActivity', timeActivity, callback)
+QuickBooks.prototype.updateTimeActivity = function(timeActivity, callback, requestId) {
+  module.update(this, 'timeActivity', timeActivity, callback, requestId)
 }
 
 /**
@@ -1248,9 +1276,10 @@ QuickBooks.prototype.updateTimeActivity = function(timeActivity, callback) {
  *
  * @param  {object} Transfer - The persistent Transfer, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Transfer
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateTransfer = function(transfer, callback) {
-  module.update(this, 'transfer', transfer, callback)
+QuickBooks.prototype.updateTransfer = function(transfer, callback, requestId) {
+  module.update(this, 'transfer', transfer, callback, requestId)
 }
 
 /**
@@ -1268,9 +1297,10 @@ QuickBooks.prototype.updateVendor = function(vendor, callback) {
  *
  * @param  {object} vendorCredit - The persistent VendorCredit, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent VendorCredit
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.updateVendorCredit = function(vendorCredit, callback) {
-  module.update(this, 'vendorCredit', vendorCredit, callback)
+QuickBooks.prototype.updateVendorCredit = function(vendorCredit, callback, requestId) {
+  module.update(this, 'vendorCredit', vendorCredit, callback, requestId)
 }
 
 /**
@@ -1299,9 +1329,10 @@ QuickBooks.prototype.deleteAttachable = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent Bill to be deleted, or the Id of the Bill, in which case an extra GET request will be issued to first retrieve the Bill
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Bill
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteBill = function(idOrEntity, callback) {
-  module.delete(this, 'bill', idOrEntity, callback)
+QuickBooks.prototype.deleteBill = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'bill', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1309,9 +1340,10 @@ QuickBooks.prototype.deleteBill = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent BillPayment to be deleted, or the Id of the BillPayment, in which case an extra GET request will be issued to first retrieve the BillPayment
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent BillPayment
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteBillPayment = function(idOrEntity, callback) {
-  module.delete(this, 'billPayment', idOrEntity, callback)
+QuickBooks.prototype.deleteBillPayment = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'billPayment', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1319,9 +1351,10 @@ QuickBooks.prototype.deleteBillPayment = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent CreditMemo to be deleted, or the Id of the CreditMemo, in which case an extra GET request will be issued to first retrieve the CreditMemo
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent CreditMemo
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteCreditMemo = function(idOrEntity, callback) {
-  module.delete(this, 'creditMemo', idOrEntity, callback)
+QuickBooks.prototype.deleteCreditMemo = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'creditMemo', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1329,9 +1362,10 @@ QuickBooks.prototype.deleteCreditMemo = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent Deposit to be deleted, or the Id of the Deposit, in which case an extra GET request will be issued to first retrieve the Deposit
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Deposit
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteDeposit = function(idOrEntity, callback) {
-  module.delete(this, 'deposit', idOrEntity, callback)
+QuickBooks.prototype.deleteDeposit = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'deposit', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1339,9 +1373,10 @@ QuickBooks.prototype.deleteDeposit = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent Estimate to be deleted, or the Id of the Estimate, in which case an extra GET request will be issued to first retrieve the Estimate
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Estimate
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteEstimate = function(idOrEntity, callback) {
-  module.delete(this, 'estimate', idOrEntity, callback)
+QuickBooks.prototype.deleteEstimate = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'estimate', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1349,9 +1384,10 @@ QuickBooks.prototype.deleteEstimate = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent Invoice to be deleted, or the Id of the Invoice, in which case an extra GET request will be issued to first retrieve the Invoice
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Invoice
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteInvoice = function(idOrEntity, callback) {
-  module.delete(this, 'invoice', idOrEntity, callback)
+QuickBooks.prototype.deleteInvoice = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'invoice', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1369,9 +1405,10 @@ QuickBooks.prototype.deleteJournalCode = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent JournalEntry to be deleted, or the Id of the JournalEntry, in which case an extra GET request will be issued to first retrieve the JournalEntry
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent JournalEntry
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteJournalEntry = function(idOrEntity, callback) {
-  module.delete(this, 'journalEntry', idOrEntity, callback)
+QuickBooks.prototype.deleteJournalEntry = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'journalEntry', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1379,9 +1416,10 @@ QuickBooks.prototype.deleteJournalEntry = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent Payment to be deleted, or the Id of the Payment, in which case an extra GET request will be issued to first retrieve the Payment
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Payment
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deletePayment = function(idOrEntity, callback) {
-  module.delete(this, 'payment', idOrEntity, callback)
+QuickBooks.prototype.deletePayment = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'payment', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1389,9 +1427,10 @@ QuickBooks.prototype.deletePayment = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent Purchase to be deleted, or the Id of the Purchase, in which case an extra GET request will be issued to first retrieve the Purchase
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Purchase
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deletePurchase = function(idOrEntity, callback) {
-  module.delete(this, 'purchase', idOrEntity, callback)
+QuickBooks.prototype.deletePurchase = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'purchase', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1399,9 +1438,10 @@ QuickBooks.prototype.deletePurchase = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent PurchaseOrder to be deleted, or the Id of the PurchaseOrder, in which case an extra GET request will be issued to first retrieve the PurchaseOrder
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent PurchaseOrder
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deletePurchaseOrder = function(idOrEntity, callback) {
-  module.delete(this, 'purchaseOrder', idOrEntity, callback)
+QuickBooks.prototype.deletePurchaseOrder = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'purchaseOrder', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1409,9 +1449,10 @@ QuickBooks.prototype.deletePurchaseOrder = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent RefundReceipt to be deleted, or the Id of the RefundReceipt, in which case an extra GET request will be issued to first retrieve the RefundReceipt
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent RefundReceipt
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteRefundReceipt = function(idOrEntity, callback) {
-  module.delete(this, 'refundReceipt', idOrEntity, callback)
+QuickBooks.prototype.deleteRefundReceipt = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'refundReceipt', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1419,9 +1460,10 @@ QuickBooks.prototype.deleteRefundReceipt = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent SalesReceipt to be deleted, or the Id of the SalesReceipt, in which case an extra GET request will be issued to first retrieve the SalesReceipt
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent SalesReceipt
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteSalesReceipt = function(idOrEntity, callback) {
-  module.delete(this, 'salesReceipt', idOrEntity, callback)
+QuickBooks.prototype.deleteSalesReceipt = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'salesReceipt', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1429,9 +1471,10 @@ QuickBooks.prototype.deleteSalesReceipt = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent TimeActivity to be deleted, or the Id of the TimeActivity, in which case an extra GET request will be issued to first retrieve the TimeActivity
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent TimeActivity
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteTimeActivity = function(idOrEntity, callback) {
-  module.delete(this, 'timeActivity', idOrEntity, callback)
+QuickBooks.prototype.deleteTimeActivity = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'timeActivity', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1439,9 +1482,10 @@ QuickBooks.prototype.deleteTimeActivity = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent Transfer to be deleted, or the Id of the Transfer, in which case an extra GET request will be issued to first retrieve the Transfer
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Transfer
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteTransfer = function(idOrEntity, callback) {
-  module.delete(this, 'transfer', idOrEntity, callback)
+QuickBooks.prototype.deleteTransfer = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'transfer', idOrEntity, callback, requestId)
 }
 
 /**
@@ -1449,9 +1493,10 @@ QuickBooks.prototype.deleteTransfer = function(idOrEntity, callback) {
  *
  * @param  {object} idOrEntity - The persistent VendorCredit to be deleted, or the Id of the VendorCredit, in which case an extra GET request will be issued to first retrieve the VendorCredit
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent VendorCredit
+ * @param  {string} requestId - Unique identifier for this request to be used for idempotence in case of a retry
  */
-QuickBooks.prototype.deleteVendorCredit = function(idOrEntity, callback) {
-  module.delete(this, 'vendorCredit', idOrEntity, callback)
+QuickBooks.prototype.deleteVendorCredit = function(idOrEntity, callback, requestId) {
+  module.delete(this, 'vendorCredit', idOrEntity, callback, requestId)
 }
 
 
@@ -2232,9 +2277,9 @@ QuickBooks.prototype.disconnect = function(callback) {
 }
 
 // **********************  CRUD Api **********************
-module.create = function(context, entityName, entity, callback) {
+module.create = function(context, entityName, entity, callback, requestId) {
   var url = '/' + entityName.toLowerCase()
-  module.request(context, 'post', {url: url}, entity, module.unwrap(callback, entityName))
+  module.request(context, 'post', {url: url, qs: { requestid: requestId }}, entity, module.unwrap(callback, entityName))
 }
 
 module.read = function(context, entityName, id, callback) {
@@ -2243,7 +2288,7 @@ module.read = function(context, entityName, id, callback) {
   module.request(context, 'get', {url: url}, null, module.unwrap(callback, entityName))
 }
 
-module.update = function(context, entityName, entity, callback) {
+module.update = function(context, entityName, entity, callback, requestId) {
   if (_.isUndefined(entity.Id) ||
       _.isEmpty(entity.Id + '') ||
       _.isUndefined(entity.SyncToken) ||
@@ -2257,7 +2302,7 @@ module.update = function(context, entityName, entity, callback) {
     entity.sparse = true
   }
   var url = '/' + entityName.toLowerCase() + '?operation=update'
-  var opts = {url: url}
+  var opts = {url: url, requestid: requestId}
   if (entity.void && entity.void.toString() === 'true') {
     opts.qs = { include: 'void' }
     delete entity.void
@@ -2265,17 +2310,17 @@ module.update = function(context, entityName, entity, callback) {
   module.request(context, 'post', opts, entity, module.unwrap(callback, entityName))
 }
 
-module.delete = function(context, entityName, idOrEntity, callback) {
+module.delete = function(context, entityName, idOrEntity, callback, requestId) {
   var url = '/' + entityName.toLowerCase() + '?operation=delete'
   callback = callback || function() {}
   if (_.isObject(idOrEntity)) {
-    module.request(context, 'post', {url: url}, idOrEntity, callback)
+    module.request(context, 'post', {url: url, qs: { requestid: requestId }}, idOrEntity, callback)
   } else {
     module.read(context, entityName, idOrEntity, function(err, entity) {
       if (err) {
         callback(err)
       } else {
-        module.request(context, 'post', {url: url}, entity, callback)
+        module.request(context, 'post', {url: url, qs: { requestid: requestId }}, entity, callback)
       }
     })
   }
