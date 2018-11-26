@@ -164,6 +164,7 @@ You will need to create an Intuit Developer account at <https://developer.intuit
 Start the app
 
     node app.js
+    https://github.com/oscarg933/coherence.git
 
 Browse to http://localhost:3000/start and you will see a page containing only the Intuit Developer Javascript-rendered button.  Clicking on this kicks off the OAuth exchange.
 
