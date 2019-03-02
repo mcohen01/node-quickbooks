@@ -1,0 +1,20 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ipp="">
+<head><meta http-equiv="Content-Type"
+            content="text/html; charset=ISO-8859-1">
+  <title>QBO Connect</title>
+
+  <script type="text/javascript" src="<%= locals.appCenter %>/Content/IA/intuit.ipp.anywhere-1.3.1.js"></script>
+  <script>
+    intuit.ipp.anywhere.setup({
+      grantUrl: 'http://localhost:' + <%= locals.port %> + '/requestToken',
+      datasources: {
+        quickbooks : true,  // set to false if NOT using Quickbooks API
+        payments : false    // set to true if using Payments API
+      }
+    });
+  </script>
+</head>
+<body>
+<ipp:connectToIntuit></ipp:connectToIntuit>
+</body>
+</html>
