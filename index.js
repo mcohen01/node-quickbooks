@@ -2171,6 +2171,12 @@ module.request = function(context, verb, options, entity, callback) {
     headers: options.headers || {},
     json:    true
   }
+
+  if (entity && entity.allowDuplicateDocNum) {
+    delete entity.allowDuplicateDocNum;
+    opts.qs.include = 'allowduplicatedocnum';
+  }
+
   opts.qs.minorversion = opts.qs.minorversion || context.minorversion;
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
   opts.headers['Request-Id'] = uuid.v1()
