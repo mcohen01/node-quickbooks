@@ -113,8 +113,9 @@ function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, us
   this.minorversion = eval(prefix + 'minorversion') || 4;
   this.oauthversion = eval(prefix + 'oauthversion') || '1.0a';
   this.refreshToken = eval(prefix + 'refreshToken') || null;
-  if (!eval(prefix + 'refreshToken') && this.oauthversion !== '2.0')
+  if (!eval(prefix + 'tokenSecret') && this.oauthversion !== '2.0') {
     throw new Error('tokenSecret not defined');
+  }
 }
 
 /**
