@@ -1462,6 +1462,29 @@ QuickBooks.prototype.deleteVendorCredit = function(idOrEntity, callback) {
 
 
 /**
+ * Voids the Invoice from QuickBooks
+ *
+ * @param  {object} idOrEntity - The persistent Invoice to be voided, or the Id of the Invoice, in which case an extra GET request will be issued to first retrieve the Invoice
+ * @param  {function} callback - Callback function which is called with any error and the persistent Invoice
+ */
+QuickBooks.prototype.voidInvoice = function (idOrEntity, callback) {
+    module.void(this, 'invoice', idOrEntity, callback)
+}
+
+/**
+ * Voids QuickBooks version of Payment
+ *
+ * @param  {object} payment - The persistent Payment, including Id and SyncToken fields
+ * @param  {function} callback - Callback function which is called with any error and the persistent Payment
+ */
+QuickBooks.prototype.voidPayment = function (payment, callback) {
+    payment.void = true;
+    payment.sparse = true;
+    module.update(this, 'payment', payment, callback)
+}
+
+
+/**
  * Finds all Accounts in QuickBooks, optionally matching the specified criteria
  *
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -2292,6 +2315,22 @@ module.delete = function(context, entityName, idOrEntity, callback) {
         callback(err)
       } else {
         module.request(context, 'post', {url: url}, entity, callback)
+      }
+    })
+  }
+}
+
+module.void = function (context, entityName, idOrEntity, callback) {
+  var url = '/' + entityName.toLowerCase() + '?operation=void'
+  callback = callback || function () { }
+  if (_.isObject(idOrEntity)) {
+    module.request(context, 'post', { url: url }, idOrEntity, callback)
+  } else {
+    module.read(context, entityName, idOrEntity, function (err, entity) {
+      if (err) {
+        callback(err)
+      } else {
+        module.request(context, 'post', { url: url }, entity, callback)
       }
     })
   }
