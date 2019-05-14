@@ -17,6 +17,7 @@
     "ejs": "2.5.5",
     "express": "^4.13.3",
     "express-session": "^1.11.3",
+    "intuit-oauth": "^1.2.0",
     "node-quickbooks": "2.0.0"
   }
 }
