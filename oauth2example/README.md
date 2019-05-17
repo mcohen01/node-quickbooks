@@ -1,50 +1,19 @@
-'use strict'
+# node-quickbooks-oauth2.0-sample
 
-var http = require('http');
-var port = process.env.PORT || 3000;
-var request = require('request');
-var qs = require('querystring');
-var util = require('util');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var express = require('express');
-var app = express();
-var QuickBooks = require('../index');
-var Tokens = require('csrf');
-var csrf = new Tokens();
-var config = require('./config');
-var OAuthClient = require('intuit-oauth');
+Sample demonstrating Intuit's [QuickBooks API][1] using [intuit-oauth][2] 
 
-QuickBooks.setOauthVersion('2.0');
+## Installation
 
-// Generic Express config
-app.set('port', port);
-app.set('views', 'views');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser('brad'));
-app.use(session({ resave: false, saveUninitialized: false, secret: 'smith' }));
+```bash
+$ npm install
+$ npm start
+```
 
-app.listen(app.get('port'), function () {
-  console.log('Express server listening on port ' + app.get('port'));
-});
+## Documentation
 
-/**
- * Instantiate new Client
- * @type {OAuthClient}
- */
+1. You can authenticate and authorize using the instance of `intuit-oauth` library as shown in [app.js][3] :
 
-var oauthClient,companyId;
-
-app.get('/', function (req, res) {
-  res.redirect('/start');
-});
-
-app.get('/start', function (req, res) {
-  res.render('intuit.ejs', { port: port, appCenter: QuickBooks.APP_CENTER_BASE });
-});
-
+```javascript
 
 app.get('/requestToken', function (req, res) {
 
@@ -59,6 +28,12 @@ app.get('/requestToken', function (req, res) {
   res.redirect(authUri);
 
 });
+
+```
+
+2. You can make API calls by instantiating `Quickbooks` class as shown in [app.js][3] once you get the tokens from step 1 :
+
+```javascript
 
 app.get('/callback', function (req, res) {
 
@@ -98,5 +73,14 @@ app.get('/callback', function (req, res) {
   res.send('<!DOCTYPE html><html lang="en"><head></head><body><script>window.opener.location.reload(); window.close();</script></body></html>');
 
 });
+ 
+
+```
+
+**Note :** You can find the clientId and clientSecret for your app [here][4] 
 
 
+[1]: https://developer.intuit.com/docs/api/accounting
+[2]: https://github.com/intuit/oauth-jsclient
+[3]: https://github.com/mcohen01/node-quickbooks/blob/master/oauth2example/app.js
+[4]: https://developer.intuit.com/app/developer/qbo/docs/get-started#create-an-app
