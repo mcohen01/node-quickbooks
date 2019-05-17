@@ -1,6 +1,6 @@
 # node-quickbooks-oauth2.0-sample
 
-Sample demonstrating nodejs client for Intuit's [QuickBooks API] [1] using [intuit-oauth] [2] 
+Sample demonstrating nodejs client for Intuit's [QuickBooks API][1] using [intuit-oauth][2] 
 
 ## Installation
 
@@ -11,7 +11,7 @@ $ npm start
 
 ## Documentation
 
-1. You can manage the tokens using the instance of `intuit-oauth` library as shown in [app.js] [3] :
+1. You can authenticate and authorize using the instance of `intuit-oauth` library as shown in [app.js] [3] :
 
 ```javascript
 
@@ -31,7 +31,7 @@ app.get('/requestToken', function (req, res) {
 
 ```
 
-2. You can make API calls by instantiating `Quickbooks` as shown in [app.js] [3] once you get the tokens from step 1 :
+2. You can make API calls by instantiating `Quickbooks` class as shown in [app.js] [3] once you get the tokens from step 1 :
 
 ```javascript
 
@@ -73,10 +73,14 @@ app.get('/callback', function (req, res) {
   res.send('<!DOCTYPE html><html lang="en"><head></head><body><script>window.opener.location.reload(); window.close();</script></body></html>');
 
 });
+ 
 
 ```
+
+**Note :** You can find the clientId and clientSecret for your app [here][4] 
 
 
 [1]: https://developer.intuit.com/docs/api/accounting
 [2]: https://github.com/intuit/oauth-jsclient
 [3]: https://github.com/mcohen01/node-quickbooks/blob/master/oauth2example/app.js
+[4]: https://developer.intuit.com/app/developer/qbo/docs/get-started#create-an-app
