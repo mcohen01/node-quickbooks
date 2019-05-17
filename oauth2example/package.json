@@ -8,6 +8,9 @@
     "QuickBooks",
     "Intuit Developer"
   ],
+  "scripts": {
+    "start": "node app"
+  },
   "author": "Michael Cohen",
   "license": "ISC",
   "dependencies": {
@@ -15,7 +18,7 @@
     "cookie-parser": "^1.3.5",
     "csrf": "^3.0.6",
     "ejs": "2.5.5",
-    "express": "^4.13.3",
+    "express": "^4.17.0",
     "express-session": "^1.11.3",
     "intuit-oauth": "^1.2.0",
     "node-quickbooks": "2.0.0"
