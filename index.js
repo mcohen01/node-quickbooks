@@ -2242,9 +2242,9 @@ module.request = function(context, verb, options, entity, callback) {
           res.statusCode >= 300 ||
           (_.isObject(body) && body.Fault && body.Fault.Error && body.Fault.Error.length) ||
           (_.isString(body) && !_.isEmpty(body) && body.indexOf('<') === 0)) {
-        callback(err || body, body)
+        callback(err || body, body, res)
       } else {
-        callback(null, body)
+        callback(null, body, res)
       }
     }
   })
