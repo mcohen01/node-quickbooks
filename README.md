@@ -16,11 +16,13 @@ var QuickBooks = require('node-quickbooks')
 var qbo = new QuickBooks(consumerKey,
                          consumerSecret,
                          oauthToken,
-                         oauthTokenSecret,
+                         false, // no token secret for oAuth 2.0
                          realmId,
                          false, // use the sandbox?
                          true, // enable debugging?
-                         minorversion); // set minorversion
+                         null, // set minorversion, or null for the latest version
+                         '2.0', //oAuth version
+                         refreshToken);
 
 qbo.createAttachable({Note: 'My File'}, function(err, attachable) {
   if (err) console.log(err)
@@ -183,17 +185,20 @@ First you'll need to fill in the missing values in config.js. The consumerKey an
 
 ## Public Api
 
-QuickBooks(consumerKey, consumerSecret, oauth_token, oauth_token_secret, realmId, debug)
+QuickBooks(consumerKey, consumerSecret, oauth_token, oauth_token_secret, realmId, debug, minorVer, oAuthVer, refresh_token)
 
 __Arguments__
 
 * `consumerKey` - The application's consumer key
 * `consumerSecret` - The application's consumer secret
 * `oauth_token` - The user's generated token
-* `oauth_token_secret` - The user's generated secret
+* `oauth_token_secret` - The user's generated secret.  Set this to false for oAuth 2.
 * `realmId` - The company ID
 * `useSandbox` - boolean flag to indicate whether to use Sandbox (i.e. for testing)
 * `debug` - boolean flag to log http requests, headers, and response bodies to the console
+* `minorVer` - Minor version for Intuit's API. Use null if you do not want to specify a version, to use the latest
+* `oAuthVer` - Use string '2.0' for oAuth 2
+* `refresh_token` - The user's generated refresh token.  This is the code query parameter in the oAuth 2.0 callback
 
 
 #### Create
