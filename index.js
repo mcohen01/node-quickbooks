@@ -2187,6 +2187,16 @@ QuickBooks.prototype.reportAccountListDetail = function(options, callback) {
   module.report(this, 'AccountList', options, callback)
 }
 
+/**
+ * Retrieves the JournalReport Report from QuickBooks
+ *
+ * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
+ * @param  {function} callback - Callback function which is called with any error and the JournalReport Report
+ */
+QuickBooks.prototype.reportJournalReport = function(options, callback) {
+  module.report(this, 'JournalReport', options, callback)
+}
+
 module.request = function(context, verb, options, entity, callback) {
   var url = context.endpoint + context.realmId + options.url
   if (options.url === QuickBooks.RECONNECT_URL || options.url == QuickBooks.DISCONNECT_URL || options.url === QuickBooks.REVOKE_URL || options.url === QuickBooks.USER_INFO_URL) {
