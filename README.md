@@ -2105,7 +2105,7 @@ Batch operation to enable an application to perform multiple operations in a sin
 - delete
 - query
 
-* The maximum number of batch items in a single request is 25.
+* The maximum number of batch items in a single request is 30.
 
 __Arguments__
 
