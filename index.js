@@ -200,7 +200,7 @@ QuickBooks.prototype.getUserInfo = function(callback) {
      update
      delete
      query
- * The maximum number of batch items in a single request is 25.
+ * The maximum number of batch items in a single request is 30.
  *
  * @param  {object} items - JavaScript array of batch items
  * @param  {function} callback - Callback function which is called with any error and list of BatchItemResponses
