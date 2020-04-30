@@ -22,6 +22,7 @@ QuickBooks.APP_CENTER_BASE = 'https://appcenter.intuit.com';
 QuickBooks.V3_ENDPOINT_BASE_URL = 'https://sandbox-quickbooks.api.intuit.com/v3/company/';
 QuickBooks.QUERY_OPERATORS = ['=', 'IN', '<', '>', '<=', '>=', 'LIKE'];
 QuickBooks.TOKEN_URL = 'https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer';
+QuickBooks.REVOKE_URL = 'https://developer.api.intuit.com/v2/oauth2/tokens/revoke';
 
 var OAUTH_ENDPOINTS = {
   '1.0a': function (callback) {
