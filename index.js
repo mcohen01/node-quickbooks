@@ -750,6 +750,15 @@ QuickBooks.prototype.sendInvoicePdf = function(id, sendTo, callback) {
   module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'Invoice'))
 }
 
+QuickBooks.prototype.sendPurchaseOrder = function(id, sendTo, callback) {
+  var path = '/purchaseorder/' + id + '/send'
+  callback = _.isFunction(sendTo) ? sendTo : callback
+  if (sendTo && ! _.isFunction(sendTo)) {
+    path += '?sendTo=' + sendTo
+  }
+  module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'PurchaseOrder'))
+}
+
 /**
  * Retrieves the Item from QuickBooks
  *
