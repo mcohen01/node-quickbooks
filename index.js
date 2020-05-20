@@ -635,6 +635,16 @@ QuickBooks.prototype.getCustomer = function(id, callback) {
 }
 
 /**
+ * Retrieves the CustomerType from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent CustomerType
+ * @param  {function} callback - Callback function which is called with any error and the persistent CustomerType
+ */
+QuickBooks.prototype.getCustomerType = function(id, callback) {
+  module.read(this, 'customerType', id, callback)
+}
+
+/**
  * Retrieves the Department from QuickBooks
  *
  * @param  {string} Id - The Id of persistent Department
@@ -1611,6 +1621,20 @@ QuickBooks.prototype.findCustomers = function(criteria, callback) {
 }
 
 /**
+ * Finds all CustomerTypes in QuickBooks, optionally matching the specified criteria
+ *
+ * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
+ * @param  {function} callback - Callback function which is called with any error and the list of CustomerType
+ */
+QuickBooks.prototype.findCustomerTypes = function(criteria, callback) {
+  module.query(this, 'customerType', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
+}
+
+/**
  * Finds all Departments in QuickBooks, optionally matching the specified criteria
  *
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
@@ -2217,7 +2241,7 @@ module.request = function(context, verb, options, entity, callback) {
   if (entity && entity.requestId) {
     opts.qs.requestid = entity.requestId;
     delete entity.requestId;
-  } 
+  }
 
   opts.qs.minorversion = opts.qs.minorversion || context.minorversion;
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
