@@ -6,15 +6,15 @@
  * @copyright 2014 Michael Cohen
  */
 
-var request = require('request'),
-    uuid    = require('uuid'),
-    debug   = require('request-debug'),
-    util    = require('util'),
-    moment  = require('moment'),
-    _       = require('underscore'),
-    Promise = require('bluebird'),
-    version = require('./package.json').version,
-    jxon    = require('jxon');
+var request   = require('request'),
+    uuid      = require('uuid'),
+    debug     = require('request-debug'),
+    util      = require('util'),
+    formatISO = require('date-fns/fp/formatISO'),
+    _         = require('underscore'),
+    Promise   = require('bluebird'),
+    version   = require('./package.json').version,
+    jxon      = require('jxon');
 
 module.exports = QuickBooks
 
@@ -220,7 +220,7 @@ QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
   var url = '/cdc?entities='
   url += typeof entities === 'string' ? entities : entities.join(',')
   url += '&changedSince='
-  url += typeof since === 'string' ? since : moment(since).format()
+  url += typeof since === 'string' ? since : formatISO(since)
   module.request(this, 'get', {url: url}, null, callback)
 }
 
