@@ -762,6 +762,23 @@ QuickBooks.prototype.sendInvoicePdf = function(id, sendTo, callback) {
 }
 
 /**
+ * Emails the Purchase Order from QuickBooks to the address supplied in PurchaseOrder.POEmail.Address
+ * or the specified 'sendTo' address
+ *
+ * @param  {string} Id - The Id of persistent Purchase Order
+ * @param  {string} sendTo - optional email address to send the PDF to. If not provided, address supplied in PurchaseOrder.POEmail.Address will be used
+ * @param  {function} callback - Callback function which is called with any error and the Invoice PDF
+ */
+QuickBooks.prototype.sendPurchaseOrder = function(id, sendTo, callback) {
+  var path = '/purchaseorder/' + id + '/send'
+  callback = _.isFunction(sendTo) ? sendTo : callback
+  if (sendTo && ! _.isFunction(sendTo)) {
+    path += '?sendTo=' + sendTo
+  }
+  module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'PurchaseOrder'))
+}
+
+/**
  * Retrieves the Item from QuickBooks
  *
  * @param  {string} Id - The Id of persistent Item

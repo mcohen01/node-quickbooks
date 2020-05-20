@@ -389,6 +389,9 @@ __Arguments__
 * [`sendEstimatePdf`](#sendestimatepdfid-sendto-callback)
 * [`sendSalesReceiptPdf`](#sendsalesreceiptpdfid-sendto-callback)
 
+### Purchase Order Email
+* [`sendPurchaseOrder`](#sendpurchaseorderid-sendto-callback)
+
 
 #### Miscellaneous
 * [`batch`](#batchitems-callback)
@@ -2096,6 +2099,15 @@ __Arguments__
 * `sendTo` - (Optional) optional email address to send the PDF to. If not provided, address supplied in SalesReceipt.BillEmail.EmailAddress will be used
 * `callback` - Callback function which is called with any error and the SalesReceipt PDF
 
+#### sendPurchaseOrder(id, sendTo, callback)
+
+Emails the Purchase Order from QuickBooks to the address supplied in PurchaseOrder.POEmail.Address or the specified 'sendTo' address
+
+__Arguments__
+
+* `Id` - The Id of persistent Purchase Order
+* `sendTo` - (Optional) optional email address to send the email to. If not provided, address supplied in PurchaseOrder.POEmail.Address will be used
+* `callback` - Callback function which is called with any error and the PurchaseOrder PDF
 
 #### batch(items, callback)
 
