@@ -1988,6 +1988,16 @@ QuickBooks.prototype.reportTrialBalance = function(options, callback) {
 }
 
 /**
+ * Retrieves the TrialBalanceFR Report from QuickBooks
+ *
+ * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
+ * @param  {function} callback - Callback function which is called with any error and the TrialBalance Report
+ */
+QuickBooks.prototype.reportTrialBalanceFR = function(options, callback) {
+  module.report(this, 'TrialBalanceFR', options, callback)
+}
+
+/**
  * Retrieves the CashFlow Report from QuickBooks
  *
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
