@@ -2402,6 +2402,12 @@ module.void = function (context, entityName, idOrEntity, callback) {
 module.requestPromise = Promise.promisify(module.request)
 
 module.query = function(context, entity, criteria) {
+
+  // criteria is potentially mutated within this function -
+  // so make a copy of it first
+  // 
+  criteria = JSON.parse(JSON.stringify(criteria));
+
   var url = '/query?query@@select * from ' + entity
   var count = function(obj) {
     for (var p in obj) {
