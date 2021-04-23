@@ -621,7 +621,7 @@ QuickBooks.prototype.getCompanyInfo = function(id, callback) {
  * @param  {string} Id - The Id of persistent CompanyCurrency
  * @param  {function} callback - Callback function which is called with any error and the persistent CompanyCurrency
  */
- QuickBooks.prototype.getCompanyInfo = function(id, callback) {
+ QuickBooks.prototype.getCompanyCurrency = function(id, callback) {
   module.read(this, 'companyCurrency', id, callback)
 }
 
