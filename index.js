@@ -616,6 +616,16 @@ QuickBooks.prototype.getCompanyInfo = function(id, callback) {
 }
 
 /**
+ * Retrieves the CompanyCurrency from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent CompanyCurrency
+ * @param  {function} callback - Callback function which is called with any error and the persistent CompanyCurrency
+ */
+ QuickBooks.prototype.getCompanyCurrency = function(id, callback) {
+  module.read(this, 'companyCurrency', id, callback)
+}
+
+/**
  * Retrieves the CreditMemo from QuickBooks
  *
  * @param  {string} Id - The Id of persistent CreditMemo
@@ -1604,6 +1614,20 @@ QuickBooks.prototype.findClasses = function(criteria, callback) {
  */
 QuickBooks.prototype.findCompanyInfos = function(criteria, callback) {
   module.query(this, 'companyInfo', criteria).then(function(data) {
+    (callback || criteria)(null, data)
+  }).catch(function(err) {
+    (callback || criteria)(err, err)
+  })
+}
+
+/**
+ * Finds all CompanyCurrencies in QuickBooks, optionally matching the specified criteria
+ *
+ * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
+ * @param  {function} callback - Callback function which is called with any error and the list of CompanyCurrencies
+ */
+ QuickBooks.prototype.findCompanyCurrencies = function(criteria, callback) {
+  module.query(this, 'companyCurrency', criteria).then(function(data) {
     (callback || criteria)(null, data)
   }).catch(function(err) {
     (callback || criteria)(err, err)
