@@ -20,7 +20,7 @@
     "querystring": "0.2.0",
     "request": "2.88.0",
     "request-debug": "0.2.0",
-    "underscore": "1.6.0",
+    "underscore": "1.12.1",
     "util": "0.10.3",
     "uuid": "^3.1.0"
   },
