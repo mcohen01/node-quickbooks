@@ -256,7 +256,7 @@ __Arguments__
 * [`getPurchase`](#getpurchaseid-callback)
 * [`getPurchaseOrder`](#getpurchaseorderid-callback)
 * [`getRefundReceipt`](#getrefundreceiptid-callback)
-* [`getReports`](#getreportsid-callback)
+* [`getReports`](#getreportsid-params-callback)
 * [`getSalesReceipt`](#getsalesreceiptid-callback)
 * [`getTaxAgency`](#gettaxagencyid-callback)
 * [`getTaxCode`](#gettaxcodeid-callback)
@@ -910,14 +910,14 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent RefundReceipt
 
 
-#### getReports(id, options, callback)
+#### getReports(id, params, callback)
 
 Retrieves the Reports from QuickBooks
 
 __Arguments__
 
 * `id` - The id of persistent Reports
-* `options` - Options that will be passed to the request 
+* `params` - Parameters that will be passed to the request as query parameters
 * `callback` - Callback function which is called with any error and the persistent Reports
 
 
