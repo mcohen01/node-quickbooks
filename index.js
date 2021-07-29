@@ -889,7 +889,7 @@ QuickBooks.prototype.getRefundReceipt = function(id, callback) {
 /**
  * Retrieves the Reports from QuickBooks
  *
- * @param  {string} id - The id of persistent Reports
+ * @param  {string} id - The Id of persistent Reports
  * @param  {object} params - Parameters that will be passed to the request as query parameters
  * @param  {function} callback - Callback function which is called with any error and the persistent reports
  * @example

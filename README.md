@@ -916,7 +916,7 @@ Retrieves the Reports from QuickBooks
 
 __Arguments__
 
-* `id` - The id of persistent Reports
+* `id` - The Id of persistent Reports
 * `params` - Parameters that will be passed to the request as query parameters
 * `callback` - Callback function which is called with any error and the persistent Reports
 
