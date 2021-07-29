@@ -890,19 +890,17 @@ QuickBooks.prototype.getRefundReceipt = function(id, callback) {
  * Retrieves the Reports from QuickBooks
  *
  * @param  {string} id - The id of persistent Reports
- * @param  {object} options - Options that will be passed to the request
+ * @param  {object} params - Parameters that will be passed to the request as query parameters
  * @param  {function} callback - Callback function which is called with any error and the persistent reports
  * @example
  * getReports('BalanceSheet', {
- *   qs: {
- *     start_date: '01-01-1977',
- *     end_date: '01-01-1977'}
- *   },
+ *   start_date: '01-01-1977',
+ *   end_date: '01-01-1977'
  * },
  * (reportName) => {console.log(`successfully downloaded the ${reportName} report`)})
  */
-QuickBooks.prototype.getReports = function(id, options, callback) {
-  module.read(this, 'reports', options, callback)
+QuickBooks.prototype.getReports = function(id, params, callback) {
+  module.read(this, 'reports', { qs: params }, callback)
 }
 
 /**

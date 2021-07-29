@@ -910,13 +910,14 @@ __Arguments__
 * `callback` - Callback function which is called with any error and the persistent RefundReceipt
 
 
-#### getReports(id, callback)
+#### getReports(id, options, callback)
 
 Retrieves the Reports from QuickBooks
 
 __Arguments__
 
-* `id` - The Id of persistent Reports
+* `id` - The id of persistent Reports
+* `options` - Options that will be passed to the request 
 * `callback` - Callback function which is called with any error and the persistent Reports
 
 
