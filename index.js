@@ -2648,13 +2648,13 @@ module.pluralize = function(s) {
 QuickBooks.prototype.pluralize = module.pluralize
 
 module.unwrap = function(callback, entityName) {
-  if (! callback) return function(err, data) {}
-  return function(err, data) {
+  if (! callback) return function(err, data, res) {}
+  return function(err, data, res) {
     if (err) {
-      if (callback) callback(err)
+      if (callback) callback(err, null, res)
     } else {
       var name = module.capitalize(entityName)
-      if (callback) callback(err, (data || {})[name] || data)
+      if (callback) callback(err, (data || {})[name] || data, res)
     }
   }
 }
