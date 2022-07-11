@@ -772,6 +772,33 @@ QuickBooks.prototype.sendInvoicePdf = function(id, sendTo, callback) {
 }
 
 /**
+ * Retrieves the Credit Memo PDF from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent Credit Memo
+ * @param  {function} callback - Callback function which is called with any error and the Credit Memo PDF
+ */
+ QuickBooks.prototype.getCreditMemoPdf = function(id, callback) {
+    module.read(this, 'CreditMemo', id + '/pdf', callback)
+  }
+
+/**
+ * Emails the Credit Memo PDF from QuickBooks to the address supplied in CreditMemo.BillEmail.EmailAddress
+ * or the specified 'sendTo' address
+ *
+ * @param  {string} Id - The Id of persistent Credit Memo
+ * @param  {string} sendTo - optional email address to send the PDF to. If not provided, address supplied in CreditMemo.BillEmail.EmailAddress will be used
+ * @param  {function} callback - Callback function which is called with any error and the Credit Memo PDF
+ */
+ QuickBooks.prototype.sendCreditMemoPdf = function(id, sendTo, callback) {
+    var path = '/creditmemo/' + id + '/send'
+    callback = _.isFunction(sendTo) ? sendTo : callback
+    if (sendTo && ! _.isFunction(sendTo)) {
+      path += '?sendTo=' + sendTo
+    }
+    module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'CreditMemo'))
+  }
+
+/**
  * Emails the Purchase Order from QuickBooks to the address supplied in PurchaseOrder.POEmail.Address
  * or the specified 'sendTo' address
  *

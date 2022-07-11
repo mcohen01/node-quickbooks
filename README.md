@@ -384,8 +384,10 @@ __Arguments__
 
 #### SalesReceipt and Invoice PDFs
 * [`getInvoicePdf`](#getinvoicepdfid-callback)
+* [`getCreditMemoPdf`](#getinvoicepdfid-callback)
 * [`getSalesReceiptPdf`](#getsalesreceiptpdfid-callback)
 * [`sendInvoicePdf`](#sendinvoicepdfid-sendto-callback)
+* [`sendCreditMemoPdf`](#sendcreditmemopdfid-sendto-callback)
 * [`sendEstimatePdf`](#sendestimatepdfid-sendto-callback)
 * [`sendSalesReceiptPdf`](#sendsalesreceiptpdfid-sendto-callback)
 
@@ -2056,6 +2058,14 @@ __Arguments__
 * `id` - The Id of persistent Invoice
 * `callback` - Callback function which is called with any error and the Invoice PDF
 
+#### getCreditMemoPdf(id, callback)
+
+Retrieves the Credit Memo PDF from QuickBooks
+
+__Arguments__
+
+* `id` - The Id of persistent Credit Memo
+* `callback` - Callback function which is called with any error and the Credit Memo PDF
 
 #### getSalesReceiptPdf(id, callback)
 
@@ -2065,7 +2075,6 @@ __Arguments__
 
 * `id` - The Id of persistent SalesReceipt
 * `callback` - Callback function which is called with any error and the persistent SalesReceipt PDF
-
 
 #### sendInvoicePdf(id, sendTo, callback)
 
@@ -2077,6 +2086,15 @@ __Arguments__
 * `sendTo` - (Optional) optional email address to send the PDF to. If not provided, address supplied in Invoice.BillEmail.EmailAddress will be used
 * `callback` - Callback function which is called with any error and the Invoice PDF
 
+#### sendCreditMemoPdf(id, sendTo, callback)
+
+Emails the Credit Memo PDF from QuickBooks to the address supplied in CreditMemo.BillEmail.EmailAddress or the specified 'sendTo' address
+
+__Arguments__
+
+* `Id` - The Id of persistent Credit Memo
+* `sendTo` - (Optional) optional email address to send the PDF to. If not provided, address supplied in Credit Memo.BillEmail.EmailAddress will be used
+* `callback` - Callback function which is called with any error and the Credit Memo PDF
 
 #### sendEstimatePdf(id, sendTo, callback)
 
