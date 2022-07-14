@@ -143,7 +143,7 @@ QuickBooks.prototype.refreshAccessToken = function(callback) {
     };
 
     request.post(postBody, (function (e, r, data) {
-        if (r && r.body) {
+        if (r && r.body && r.error!=="invalid_grant") {
             var refreshResponse = JSON.parse(r.body);
             this.refreshToken = refreshResponse.refresh_token;
             this.token = refreshResponse.access_token;
