@@ -59,7 +59,7 @@ app.get('/requestToken', function (req, res) {
 });
 
 app.get('/callback', function (req, res) {
-  var auth = (new Buffer(consumerKey + ':' + consumerSecret).toString('base64'));
+  var auth = (Buffer.from(consumerKey + ':' + consumerSecret).toString('base64'));
 
   var postBody = {
     url: 'https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer',
