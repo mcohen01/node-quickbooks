@@ -127,7 +127,7 @@ function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, us
  */
 
 QuickBooks.prototype.refreshAccessToken = function(callback) {
-    var auth = (new Buffer(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
+    var auth = (Buffer.from(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
 
     var postBody = {
         url: QuickBooks.TOKEN_URL,
@@ -161,7 +161,7 @@ QuickBooks.prototype.refreshAccessToken = function(callback) {
  * @param {function} callback - Callback function to call with error/response/data results.
  */
 QuickBooks.prototype.revokeAccess = function(useRefresh, callback) {
-    var auth = (new Buffer(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
+    var auth = (Buffer.from(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
     var revokeToken = useRefresh ? this.refreshToken : this.token;
     var postBody = {
         url: QuickBooks.REVOKE_URL,
