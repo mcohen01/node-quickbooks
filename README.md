@@ -1140,7 +1140,7 @@ Updates QuickBooks version of Invoice
 
 __Arguments__
 
-* `object` - The persistent Invoice, including Id and SyncToken fields
+* `object` - The persistent Invoice, including Id and SyncToken fields. To void invoice set `void:true` in the object.
 * `callback` - Callback function which is called with any error and the updated Invoice
 
 
@@ -1180,7 +1180,7 @@ Updates QuickBooks version of Payment
 
 __Arguments__
 
-* `object` - The persistent Payment, including Id and SyncToken fields
+* `object` - The persistent Payment, including Id and SyncToken fields. To void payment set `void:true` in the object.
 * `callback` - Callback function which is called with any error and the updated Payment
 
 
@@ -1240,7 +1240,7 @@ Updates QuickBooks version of SalesReceipt
 
 __Arguments__
 
-* `object` - The persistent SalesReceipt, including Id and SyncToken fields
+* `object` - The persistent SalesReceipt, including Id and SyncToken fields. To void sales receipt set `void:true` in the object.
 * `callback` - Callback function which is called with any error and the updated SalesReceipt
 
 
