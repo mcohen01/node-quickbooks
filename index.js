@@ -2241,6 +2241,36 @@ QuickBooks.prototype.reportTransactionList = function(options, callback) {
 }
 
 /**
+ * Retrieves the TransactionListWithSplits Report from QuickBooks
+ *
+ * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
+ * @param  {function} callback - Callback function which is called with any error and the TransactionListWithSplits Report
+ */
+QuickBooks.prototype.reportTransactionListWithSplits = function(options, callback) {
+  module.report(this, 'TransactionListWithSplits', options, callback)
+}
+
+/**
+ * Retrieves the TransactionListByCustomer Report from QuickBooks
+ *
+ * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
+ * @param  {function} callback - Callback function which is called with any error and the TransactionListByCustomer Report
+ */
+QuickBooks.prototype.reportTransactionListByCustomer = function(options, callback) {
+  module.report(this, 'TransactionListByCustomer', options, callback)
+}
+
+/**
+ * Retrieves the TransactionListByVendor Report from QuickBooks
+ *
+ * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
+ * @param  {function} callback - Callback function which is called with any error and the TransactionListByVendor Report
+ */
+QuickBooks.prototype.reportTransactionListByVendor = function(options, callback) {
+  module.report(this, 'TransactionListByVendor', options, callback)
+}
+
+/**
  * Retrieves the GeneralLedgerDetail Report from QuickBooks
  *
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
