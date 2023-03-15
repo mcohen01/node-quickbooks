@@ -1,6 +1,6 @@
 # node-quickbooks
 
-nodejs client for Intuit's [QuickBooks API] [1]
+nodejs client for Intuit's [QuickBooks API](https://developer.intuit.com/app/developer/qbo/docs/develop)
 
 ## Installation
 
@@ -2166,6 +2166,3 @@ __Arguments__
 * `entityType` - optional string name of the QBO entity the Attachable will be linked to (e.g. Invoice)
 * `entityId` - optional Id of the QBO entity the Attachable will be linked to
 * `callback` - callback which receives the newly created Attachable
-
-
-[1]: https://developer.intuit.com/docs/api/accounting
