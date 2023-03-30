@@ -29,7 +29,7 @@
     "expect": "29.5.0",
     "async": "0.9.0",
     "bluebird": "2.9.25",
-    "ramda": "0.17.1"
+    "ramda": "0.28.0"
   },
   "directories": {
     "example": "example",
