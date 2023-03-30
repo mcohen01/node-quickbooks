@@ -15,19 +15,19 @@
   "license": "ISC",
   "dependencies": {
     "@xmldom/xmldom": "^0.8.6",
-    "bluebird": "3.3.4",
-    "date-fns": "^2.9.0",
+    "bluebird": "3.7.2",
+    "date-fns": "^2.29.3",
     "jxon": "^2.0.0-beta.5",
-    "querystring": "0.2.0",
+    "querystring": "0.2.1",
     "request": "2.88.2",
     "request-debug": "0.2.0",
-    "underscore": "1.12.1",
-    "util": "0.10.3",
-    "uuid": "^3.1.0"
+    "underscore": "1.13.6",
+    "util": "0.12.5",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "async": "0.9.0",
-    "bluebird": "2.9.25",
+    "async": "3.2.4",
+    "bluebird": "3.7.2",
     "expect": "29.5.0",
     "mocha": "10.2.0",
     "ramda": "0.28.0"
