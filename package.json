@@ -17,6 +17,7 @@
     "@xmldom/xmldom": "^0.8.6",
     "bluebird": "3.7.2",
     "date-fns": "^2.29.3",
+    "eslint": "^8.37.0",
     "jxon": "^2.0.0-beta.5",
     "querystring": "0.2.1",
     "request": "2.88.2",
