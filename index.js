@@ -1170,7 +1170,12 @@ QuickBooks.prototype.updateInvoice = function(invoice, callback) {
  * @param  {function} callback - Callback function which is called with any error and the persistent Item
  */
 QuickBooks.prototype.updateItem = function(item, callback) {
-  module.update(this, 'item', item, callback)
+  var opts = {};
+  if (entity.doNotUpdateAccountOnTxns && entity.doNotUpdateAccountOnTxns.toString() === 'true') {
+    opts.qs = { include: 'donotupdateaccountontxns' }
+    delete entity.doNotUpdateAccountOnTxns
+  }
+  module.update(this, 'item', item, callback, opts)
 }
 
 /**
@@ -2425,7 +2430,7 @@ module.read = function(context, entityName, id, callback) {
   module.request(context, 'get', {url: url}, null, module.unwrap(callback, entityName))
 }
 
-module.update = function(context, entityName, entity, callback) {
+module.update = function(context, entityName, entity, callback, opts = {}) {
   if (_.isUndefined(entity.Id) ||
       _.isEmpty(entity.Id + '') ||
       _.isUndefined(entity.SyncToken) ||
@@ -2438,8 +2443,9 @@ module.update = function(context, entityName, entity, callback) {
   if (! entity.hasOwnProperty('sparse')) {
     entity.sparse = true
   }
-  var url = '/' + entityName.toLowerCase() + '?operation=update'
-  var opts = {url: url}
+
+  opts.url = '/' + entityName.toLowerCase() + '?operation=update'
+
   if (entity.void && entity.void.toString() === 'true') {
     opts.qs = { include: 'void' }
     delete entity.void
