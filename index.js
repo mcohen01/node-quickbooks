@@ -1171,9 +1171,9 @@ QuickBooks.prototype.updateInvoice = function(invoice, callback) {
  */
 QuickBooks.prototype.updateItem = function(item, callback) {
   var opts = {};
-  if (entity.doNotUpdateAccountOnTxns && entity.doNotUpdateAccountOnTxns.toString() === 'true') {
+  if (item.doNotUpdateAccountOnTxns && item.doNotUpdateAccountOnTxns.toString() === 'true') {
     opts.qs = { include: 'donotupdateaccountontxns' }
-    delete entity.doNotUpdateAccountOnTxns
+    delete item.doNotUpdateAccountOnTxns
   }
   module.update(this, 'item', item, callback, opts)
 }
