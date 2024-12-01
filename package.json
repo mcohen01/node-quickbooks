@@ -1,7 +1,7 @@
 {
   "name": "node-quickbooks",
-  "version": "2.0.45",
-  "description": "node.js client for Intuit's IPP QuickBooks V3 API.",
+  "version": "2.0.45-HZ-1",
+  "description": "Houzz fork of node.js client for Intuit's IPP QuickBooks V3 API.",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
@@ -37,10 +37,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mcohen01/node-quickbooks.git"
+    "url": "https://github.com/Houzz/node-quickbooks.git"
   },
   "bugs": {
-    "url": "https://github.com/mcohen01/node-quickbooks/issues"
+    "url": "https://github.com/Houzz/node-quickbooks.git/issues"
   },
-  "homepage": "https://github.com/mcohen01/node-quickbooks"
+  "homepage": "https://github.com/Houzz/node-quickbooks"
 }

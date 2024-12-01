@@ -2340,6 +2340,21 @@ module.request = function(context, verb, options, entity, callback) {
   if (options.url === QuickBooks.RECONNECT_URL || options.url == QuickBooks.DISCONNECT_URL || options.url === QuickBooks.REVOKE_URL || options.url === QuickBooks.USER_INFO_URL) {
     url = options.url
   }
+
+  var urlParams = (entity || {})['addUrlParams'];
+
+  if (urlParams) {
+    const urlObj = new URL(url);
+    const sp = urlObj.searchParams;
+
+    _.forEach(urlParams, (value, key) => {
+      sp.append(key, value);
+    });
+
+    url = urlObj.toString();
+    delete entity.addUrlParams;
+  }
+  
   var opts = {
     url:     url,
     qs:      options.qs || {},
