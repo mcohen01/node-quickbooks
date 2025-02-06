@@ -14,7 +14,10 @@ var request   = require('request'),
     _         = require('underscore'),
     Promise   = require('bluebird'),
     version   = require('./package.json').version,
-    xmlParser = new (require('fast-xml-parser').XMLParser)();
+    xmlParser = new (require('fast-xml-parser').XMLParser)(),
+    util = require('util'),
+    logOpts = { showHidden: false, depth: null, colors: true };
+
 
 module.exports = QuickBooks
 
@@ -207,7 +210,30 @@ QuickBooks.prototype.getUserInfo = function(callback) {
  * @param  {function} callback - Callback function which is called with any error and list of BatchItemResponses
  */
 QuickBooks.prototype.batch = function(items, callback) {
-  module.request(this, 'post', {url: '/batch'}, {BatchItemRequest: items}, callback)
+  var url = '/batch';
+  // not assuming all items have url params, if we find one, we'll add them
+  var urlParams = items.find(i => i.Item && i.Item.addUrlParams);
+
+  if (urlParams) {
+    const urlObj = new URL(url, 'http://www.example.com'); // dummy base url
+    const sp = urlObj.searchParams;
+
+    _.forEach(urlParams, (value, key) => {
+      sp.append(key, value);
+    });
+
+    url = urlObj.pathname + urlObj.search;
+
+    items.forEach(i => {
+      try {
+        delete i.Item.addUrlParams  
+      } catch (error) {
+        // do nothing, just ignore
+      }
+    });
+  }
+
+  module.request(this, 'post', {url: url}, {BatchItemRequest: items}, callback)
 }
 
 /**
