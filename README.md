@@ -1151,6 +1151,7 @@ Updates QuickBooks version of Item
 __Arguments__
 
 * `object` - The persistent Item, including Id and SyncToken fields
+  * `doNotUpdateAccountOnTxns` - _(bool)_ Optional property on the Item object that supresses updating the income or expense account on any existing transactions associated with this Item object. Value is compared using .toString(), so `true`/`false` must be used (vs other truthy/falsy values like 0 or 1).
 * `callback` - Callback function which is called with any error and the updated Item
 
 
