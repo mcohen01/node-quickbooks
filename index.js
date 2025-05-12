@@ -111,7 +111,7 @@ function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, us
   this.endpoint = this.useSandbox
     ? QuickBooks.V3_ENDPOINT_BASE_URL
     : QuickBooks.V3_ENDPOINT_BASE_URL.replace('sandbox-', '');
-  this.minorversion = eval(prefix + 'minorversion') || 65;
+  this.minorversion = eval(prefix + 'minorversion') || 75;
   this.oauthversion = eval(prefix + 'oauthversion') || '1.0a';
   this.refreshToken = eval(prefix + 'refreshToken') || null;
   if (!eval(prefix + 'tokenSecret') && this.oauthversion !== '2.0') {
