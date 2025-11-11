@@ -260,6 +260,7 @@ QuickBooks.prototype.upload = function(filename, contentType, stream, entityType
       that.updateAttachable({
         Id: id,
         SyncToken: '0',
+        FileName: filename,
         AttachableRef: [{
           EntityRef: {
             type: entityType,
