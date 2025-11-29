@@ -265,7 +265,9 @@ QuickBooks.prototype.upload = function(filename, contentType, stream, entityType
             type: entityType,
             value: entityId + ''
           }
-        }]
+        }],
+        FileName: filename,
+        ContentType: contentType
       }, function(err, data) {
         callback(err, data)
       })
