@@ -14,12 +14,13 @@
   "author": "Michael Cohen",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.13.2",
     "bluebird": "3.3.4",
     "date-fns": "^2.9.0",
     "fast-xml-parser": "^4.3.2",
+    "form-data": "^4.0.5",
+    "oauth-1.0a": "^2.2.6",
     "querystring": "0.2.0",
-    "request": "2.88.0",
-    "request-debug": "0.2.0",
     "underscore": "1.12.1",
     "util": "0.10.3",
     "uuid": "^8.3.2"

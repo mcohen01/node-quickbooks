@@ -6,15 +6,16 @@
  * @copyright 2014 Michael Cohen
  */
 
-var request   = require('request'),
-    uuid      = require('uuid'),
-    debug     = require('request-debug'),
-    util      = require('util'),
-    formatISO = require('date-fns/fp/formatISO'),
-    _         = require('underscore'),
-    Promise   = require('bluebird'),
-    version   = require('./package.json').version,
-    xmlParser = new (require('fast-xml-parser').XMLParser)();
+var axios = require('axios'),
+  OAuth = require('oauth-1.0a'),
+  FormData = require('form-data'),
+  uuid = require('uuid'),
+  util = require('util'),
+  formatISO = require('date-fns/fp/formatISO'),
+  _ = require('underscore'),
+  Promise = require('bluebird'),
+  version = require('./package.json').version,
+  xmlParser = new (require('fast-xml-parser').XMLParser)();
 
 module.exports = QuickBooks
 
@@ -37,29 +38,20 @@ var OAUTH_ENDPOINTS = {
 
   '2.0': function (callback, discoveryUrl) {
     var NEW_ENDPOINT_CONFIGURATION = {};
-    request({
-      url: discoveryUrl,
+    axios.get(discoveryUrl, {
       headers: {
         Accept: 'application/json'
       }
-    }, function (err, res) {
-      if (err) {
-        console.log(err);
-        return err;
-      }
-
-      var json;
-      try {
-          json = JSON.parse(res.body);
-      } catch (error) {
-          console.log(error);
-          return error;
-      }
-      NEW_ENDPOINT_CONFIGURATION.AUTHORIZATION_URL = json.authorization_endpoint;;
+    }).then(function (res) {
+      var json = res.data;
+      NEW_ENDPOINT_CONFIGURATION.AUTHORIZATION_URL = json.authorization_endpoint;
       NEW_ENDPOINT_CONFIGURATION.TOKEN_URL = json.token_endpoint;
       NEW_ENDPOINT_CONFIGURATION.USER_INFO_URL = json.userinfo_endpoint;
       NEW_ENDPOINT_CONFIGURATION.REVOKE_URL = json.revocation_endpoint;
       callback(NEW_ENDPOINT_CONFIGURATION);
+    }).catch(function (err) {
+      console.log(err);
+      return err;
     });
   }
 };
@@ -126,32 +118,28 @@ function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, us
  *
  */
 
-QuickBooks.prototype.refreshAccessToken = function(callback) {
-    var auth = (Buffer.from(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
+QuickBooks.prototype.refreshAccessToken = function (callback) {
+  var auth = (Buffer.from(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
 
-    var postBody = {
-        url: QuickBooks.TOKEN_URL,
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: 'Basic ' + auth,
-        },
-        form: {
-            grant_type: 'refresh_token',
-            refresh_token: this.refreshToken
-        }
-    };
+  var postBody = {
+    grant_type: 'refresh_token',
+    refresh_token: this.refreshToken
+  };
 
-    request.post(postBody, (function (e, r, data) {
-        if (r && r.body && r.error!=="invalid_grant") {
-            var refreshResponse = JSON.parse(r.body);
-            this.refreshToken = refreshResponse.refresh_token;
-            this.token = refreshResponse.access_token;
-            if (callback) callback(e, refreshResponse);
-        } else {
-            if (callback) callback(e, r, data);
-        }
-    }).bind(this));
+  axios.post(QuickBooks.TOKEN_URL, new URLSearchParams(postBody).toString(), {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Basic ' + auth,
+    }
+  }).then((function (res) {
+    var refreshResponse = res.data;
+    this.refreshToken = refreshResponse.refresh_token;
+    this.token = refreshResponse.access_token;
+    if (callback) callback(null, refreshResponse);
+  }).bind(this)).catch((function (err) {
+    if (callback) callback(err, err.response, err.response ? err.response.data : null);
+  }).bind(this));
 };
 
 /**
@@ -160,29 +148,29 @@ QuickBooks.prototype.refreshAccessToken = function(callback) {
  * @param useRefresh - boolean - Indicates which token to use: true to use the refresh token, false to use the access token.
  * @param {function} callback - Callback function to call with error/response/data results.
  */
-QuickBooks.prototype.revokeAccess = function(useRefresh, callback) {
-    var auth = (Buffer.from(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
-    var revokeToken = useRefresh ? this.refreshToken : this.token;
-    var postBody = {
-        url: QuickBooks.REVOKE_URL,
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: 'Basic ' + auth,
-        },
-        form: {
-            token: revokeToken
-        }
-    };
+QuickBooks.prototype.revokeAccess = function (useRefresh, callback) {
+  var auth = (Buffer.from(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
+  var revokeToken = useRefresh ? this.refreshToken : this.token;
+  var postBody = {
+    token: revokeToken
+  };
 
-    request.post(postBody, (function(e, r, data) {
-        if (r && r.statusCode === 200) {
-            this.refreshToken = null;
-            this.token = null;
-            this.realmId = null;
-        }
-        if (callback) callback(e, r, data);
-    }).bind(this));
+  axios.post(QuickBooks.REVOKE_URL, new URLSearchParams(postBody).toString(), {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Basic ' + auth,
+    }
+  }).then((function (res) {
+    if (res.status === 200) {
+      this.refreshToken = null;
+      this.token = null;
+      this.realmId = null;
+    }
+    if (callback) callback(null, res, res.data);
+  }).bind(this)).catch((function (err) {
+    if (callback) callback(err, err.response, err.response ? err.response.data : null);
+  }).bind(this));
 };
 
 /**
@@ -190,8 +178,8 @@ QuickBooks.prototype.revokeAccess = function(useRefresh, callback) {
  *
  * @param {function} callback - Callback function to call with error/response/data results.
  */
-QuickBooks.prototype.getUserInfo = function(callback) {
-  module.request(this, 'get', {url: QuickBooks.USER_INFO_URL}, null, callback);
+QuickBooks.prototype.getUserInfo = function (callback) {
+  module.request(this, 'get', { url: QuickBooks.USER_INFO_URL }, null, callback);
 };
 
 /**
@@ -206,8 +194,8 @@ QuickBooks.prototype.getUserInfo = function(callback) {
  * @param  {object} items - JavaScript array of batch items
  * @param  {function} callback - Callback function which is called with any error and list of BatchItemResponses
  */
-QuickBooks.prototype.batch = function(items, callback) {
-  module.request(this, 'post', {url: '/batch'}, {BatchItemRequest: items}, callback)
+QuickBooks.prototype.batch = function (items, callback) {
+  module.request(this, 'post', { url: '/batch' }, { BatchItemRequest: items }, callback)
 }
 
 /**
@@ -217,12 +205,12 @@ QuickBooks.prototype.batch = function(items, callback) {
  * @param  {object} since - JavaScript Date or string representation of the form '2012-07-20T22:25:51-07:00' to look back for changes until
  * @param  {function} callback - Callback function which is called with any error and list of changes
  */
-QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
+QuickBooks.prototype.changeDataCapture = function (entities, since, callback) {
   var url = '/cdc?entities='
   url += typeof entities === 'string' ? entities : entities.join(',')
   url += '&changedSince='
   url += typeof since === 'string' ? since : formatISO(since)
-  module.request(this, 'get', {url: url}, null, callback)
+  module.request(this, 'get', { url: url }, null, callback)
 }
 
 /**
@@ -236,7 +224,7 @@ QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
  * @param  {object} entityId - optional Id of the QBO entity the Attachable will be linked to
  * @param  {function} callback - callback which receives the newly created Attachable
  */
-QuickBooks.prototype.upload = function(filename, contentType, stream, entityType, entityId, callback) {
+QuickBooks.prototype.upload = function (filename, contentType, stream, entityType, entityId, callback) {
   var that = this
   var opts = {
     url: '/upload',
@@ -250,7 +238,7 @@ QuickBooks.prototype.upload = function(filename, contentType, stream, entityType
       }
     }
   }
-  module.request(this, 'post', opts, null, module.unwrap(function(err, data) {
+  module.request(this, 'post', opts, null, module.unwrap(function (err, data) {
     if (err || data[0].Fault) {
       (callback || entityType)(err || data[0], null)
     } else if (_.isFunction(entityType)) {
@@ -281,7 +269,7 @@ QuickBooks.prototype.upload = function(filename, contentType, stream, entityType
  * @param  {object} account - The unsaved account, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Account
  */
-QuickBooks.prototype.createAccount = function(account, callback) {
+QuickBooks.prototype.createAccount = function (account, callback) {
   module.create(this, 'account', account, callback)
 }
 
@@ -291,7 +279,7 @@ QuickBooks.prototype.createAccount = function(account, callback) {
  * @param  {object} attachable - The unsaved attachable, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Attachable
  */
-QuickBooks.prototype.createAttachable = function(attachable, callback) {
+QuickBooks.prototype.createAttachable = function (attachable, callback) {
   module.create(this, 'attachable', attachable, callback)
 }
 
@@ -301,7 +289,7 @@ QuickBooks.prototype.createAttachable = function(attachable, callback) {
  * @param  {object} bill - The unsaved bill, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Bill
  */
-QuickBooks.prototype.createBill = function(bill, callback) {
+QuickBooks.prototype.createBill = function (bill, callback) {
   module.create(this, 'bill', bill, callback)
 }
 
@@ -311,7 +299,7 @@ QuickBooks.prototype.createBill = function(bill, callback) {
  * @param  {object} billPayment - The unsaved billPayment, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent BillPayment
  */
-QuickBooks.prototype.createBillPayment = function(billPayment, callback) {
+QuickBooks.prototype.createBillPayment = function (billPayment, callback) {
   module.create(this, 'billPayment', billPayment, callback)
 }
 
@@ -321,7 +309,7 @@ QuickBooks.prototype.createBillPayment = function(billPayment, callback) {
  * @param  {object} class - The unsaved class, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Class
  */
-QuickBooks.prototype.createClass = function(klass, callback) {
+QuickBooks.prototype.createClass = function (klass, callback) {
   module.create(this, 'class', klass, callback)
 }
 
@@ -331,7 +319,7 @@ QuickBooks.prototype.createClass = function(klass, callback) {
  * @param  {object} creditMemo - The unsaved creditMemo, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent CreditMemo
  */
-QuickBooks.prototype.createCreditMemo = function(creditMemo, callback) {
+QuickBooks.prototype.createCreditMemo = function (creditMemo, callback) {
   module.create(this, 'creditMemo', creditMemo, callback)
 }
 
@@ -341,7 +329,7 @@ QuickBooks.prototype.createCreditMemo = function(creditMemo, callback) {
  * @param  {object} customer - The unsaved customer, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Customer
  */
-QuickBooks.prototype.createCustomer = function(customer, callback) {
+QuickBooks.prototype.createCustomer = function (customer, callback) {
   module.create(this, 'customer', customer, callback)
 }
 
@@ -351,7 +339,7 @@ QuickBooks.prototype.createCustomer = function(customer, callback) {
  * @param  {object} department - The unsaved department, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Department
  */
-QuickBooks.prototype.createDepartment = function(department, callback) {
+QuickBooks.prototype.createDepartment = function (department, callback) {
   module.create(this, 'department', department, callback)
 }
 
@@ -361,7 +349,7 @@ QuickBooks.prototype.createDepartment = function(department, callback) {
  * @param  {object} deposit - The unsaved Deposit, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Deposit
  */
-QuickBooks.prototype.createDeposit = function(deposit, callback) {
+QuickBooks.prototype.createDeposit = function (deposit, callback) {
   module.create(this, 'deposit', deposit, callback)
 }
 
@@ -371,7 +359,7 @@ QuickBooks.prototype.createDeposit = function(deposit, callback) {
  * @param  {object} employee - The unsaved employee, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Employee
  */
-QuickBooks.prototype.createEmployee = function(employee, callback) {
+QuickBooks.prototype.createEmployee = function (employee, callback) {
   module.create(this, 'employee', employee, callback)
 }
 
@@ -381,7 +369,7 @@ QuickBooks.prototype.createEmployee = function(employee, callback) {
  * @param  {object} estimate - The unsaved estimate, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Estimate
  */
-QuickBooks.prototype.createEstimate = function(estimate, callback) {
+QuickBooks.prototype.createEstimate = function (estimate, callback) {
   module.create(this, 'estimate', estimate, callback)
 }
 
@@ -391,7 +379,7 @@ QuickBooks.prototype.createEstimate = function(estimate, callback) {
  * @param  {object} invoice - The unsaved invoice, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Invoice
  */
-QuickBooks.prototype.createInvoice = function(invoice, callback) {
+QuickBooks.prototype.createInvoice = function (invoice, callback) {
   module.create(this, 'invoice', invoice, callback)
 }
 
@@ -401,7 +389,7 @@ QuickBooks.prototype.createInvoice = function(invoice, callback) {
  * @param  {object} item - The unsaved item, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Item
  */
-QuickBooks.prototype.createItem = function(item, callback) {
+QuickBooks.prototype.createItem = function (item, callback) {
   module.create(this, 'item', item, callback)
 }
 
@@ -411,7 +399,7 @@ QuickBooks.prototype.createItem = function(item, callback) {
  * @param  {object} journalCode - The unsaved journalCode, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent JournalCode
  */
-QuickBooks.prototype.createJournalCode = function(journalCode, callback) {
+QuickBooks.prototype.createJournalCode = function (journalCode, callback) {
   module.create(this, 'journalCode', journalCode, callback)
 }
 
@@ -421,7 +409,7 @@ QuickBooks.prototype.createJournalCode = function(journalCode, callback) {
  * @param  {object} journalEntry - The unsaved journalEntry, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent JournalEntry
  */
-QuickBooks.prototype.createJournalEntry = function(journalEntry, callback) {
+QuickBooks.prototype.createJournalEntry = function (journalEntry, callback) {
   module.create(this, 'journalEntry', journalEntry, callback)
 }
 
@@ -431,7 +419,7 @@ QuickBooks.prototype.createJournalEntry = function(journalEntry, callback) {
  * @param  {object} payment - The unsaved payment, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Payment
  */
-QuickBooks.prototype.createPayment = function(payment, callback) {
+QuickBooks.prototype.createPayment = function (payment, callback) {
   module.create(this, 'payment', payment, callback)
 }
 
@@ -441,7 +429,7 @@ QuickBooks.prototype.createPayment = function(payment, callback) {
  * @param  {object} paymentMethod - The unsaved paymentMethod, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent PaymentMethod
  */
-QuickBooks.prototype.createPaymentMethod = function(paymentMethod, callback) {
+QuickBooks.prototype.createPaymentMethod = function (paymentMethod, callback) {
   module.create(this, 'paymentMethod', paymentMethod, callback)
 }
 
@@ -451,7 +439,7 @@ QuickBooks.prototype.createPaymentMethod = function(paymentMethod, callback) {
  * @param  {object} purchase - The unsaved purchase, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Purchase
  */
-QuickBooks.prototype.createPurchase = function(purchase, callback) {
+QuickBooks.prototype.createPurchase = function (purchase, callback) {
   module.create(this, 'purchase', purchase, callback)
 }
 
@@ -461,7 +449,7 @@ QuickBooks.prototype.createPurchase = function(purchase, callback) {
  * @param  {object} purchaseOrder - The unsaved purchaseOrder, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent PurchaseOrder
  */
-QuickBooks.prototype.createPurchaseOrder = function(purchaseOrder, callback) {
+QuickBooks.prototype.createPurchaseOrder = function (purchaseOrder, callback) {
   module.create(this, 'purchaseOrder', purchaseOrder, callback)
 }
 
@@ -471,7 +459,7 @@ QuickBooks.prototype.createPurchaseOrder = function(purchaseOrder, callback) {
  * @param  {object} refundReceipt - The unsaved refundReceipt, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent RefundReceipt
  */
-QuickBooks.prototype.createRefundReceipt = function(refundReceipt, callback) {
+QuickBooks.prototype.createRefundReceipt = function (refundReceipt, callback) {
   module.create(this, 'refundReceipt', refundReceipt, callback)
 }
 
@@ -481,7 +469,7 @@ QuickBooks.prototype.createRefundReceipt = function(refundReceipt, callback) {
  * @param  {object} salesReceipt - The unsaved salesReceipt, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent SalesReceipt
  */
-QuickBooks.prototype.createSalesReceipt = function(salesReceipt, callback) {
+QuickBooks.prototype.createSalesReceipt = function (salesReceipt, callback) {
   module.create(this, 'salesReceipt', salesReceipt, callback)
 }
 
@@ -491,7 +479,7 @@ QuickBooks.prototype.createSalesReceipt = function(salesReceipt, callback) {
  * @param  {object} taxAgency - The unsaved taxAgency, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent TaxAgency
  */
-QuickBooks.prototype.createTaxAgency = function(taxAgency, callback) {
+QuickBooks.prototype.createTaxAgency = function (taxAgency, callback) {
   module.create(this, 'taxAgency', taxAgency, callback)
 }
 
@@ -501,7 +489,7 @@ QuickBooks.prototype.createTaxAgency = function(taxAgency, callback) {
  * @param  {object} taxService - The unsaved taxService, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent TaxService
  */
-QuickBooks.prototype.createTaxService = function(taxService, callback) {
+QuickBooks.prototype.createTaxService = function (taxService, callback) {
   module.create(this, 'taxService/taxcode', taxService, callback)
 }
 
@@ -511,7 +499,7 @@ QuickBooks.prototype.createTaxService = function(taxService, callback) {
  * @param  {object} term - The unsaved term, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Term
  */
-QuickBooks.prototype.createTerm = function(term, callback) {
+QuickBooks.prototype.createTerm = function (term, callback) {
   module.create(this, 'term', term, callback)
 }
 
@@ -521,7 +509,7 @@ QuickBooks.prototype.createTerm = function(term, callback) {
  * @param  {object} timeActivity - The unsaved timeActivity, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent TimeActivity
  */
-QuickBooks.prototype.createTimeActivity = function(timeActivity, callback) {
+QuickBooks.prototype.createTimeActivity = function (timeActivity, callback) {
   module.create(this, 'timeActivity', timeActivity, callback)
 }
 
@@ -531,7 +519,7 @@ QuickBooks.prototype.createTimeActivity = function(timeActivity, callback) {
  * @param  {object} transfer - The unsaved Transfer, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Transfer
  */
-QuickBooks.prototype.createTransfer = function(transfer, callback) {
+QuickBooks.prototype.createTransfer = function (transfer, callback) {
   module.create(this, 'transfer', transfer, callback)
 }
 
@@ -541,7 +529,7 @@ QuickBooks.prototype.createTransfer = function(transfer, callback) {
  * @param  {object} vendor - The unsaved vendor, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent Vendor
  */
-QuickBooks.prototype.createVendor = function(vendor, callback) {
+QuickBooks.prototype.createVendor = function (vendor, callback) {
   module.create(this, 'vendor', vendor, callback)
 }
 
@@ -551,7 +539,7 @@ QuickBooks.prototype.createVendor = function(vendor, callback) {
  * @param  {object} vendorCredit - The unsaved vendorCredit, to be persisted in QuickBooks
  * @param  {function} callback - Callback function which is called with any error and the persistent VendorCredit
  */
-QuickBooks.prototype.createVendorCredit = function(vendorCredit, callback) {
+QuickBooks.prototype.createVendorCredit = function (vendorCredit, callback) {
   module.create(this, 'vendorCredit', vendorCredit, callback)
 }
 
@@ -563,7 +551,7 @@ QuickBooks.prototype.createVendorCredit = function(vendorCredit, callback) {
  * @param  {string} Id - The Id of persistent Account
  * @param  {function} callback - Callback function which is called with any error and the persistent Account
  */
-QuickBooks.prototype.getAccount = function(id, callback) {
+QuickBooks.prototype.getAccount = function (id, callback) {
   module.read(this, 'account', id, callback)
 }
 
@@ -573,7 +561,7 @@ QuickBooks.prototype.getAccount = function(id, callback) {
  * @param  {string} Id - The Id of persistent Attachable
  * @param  {function} callback - Callback function which is called with any error and the persistent Attachable
  */
-QuickBooks.prototype.getAttachable = function(id, callback) {
+QuickBooks.prototype.getAttachable = function (id, callback) {
   module.read(this, 'attachable', id, callback)
 }
 
@@ -583,7 +571,7 @@ QuickBooks.prototype.getAttachable = function(id, callback) {
  * @param  {string} Id - The Id of persistent Bill
  * @param  {function} callback - Callback function which is called with any error and the persistent Bill
  */
-QuickBooks.prototype.getBill = function(id, callback) {
+QuickBooks.prototype.getBill = function (id, callback) {
   module.read(this, 'bill', id, callback)
 }
 
@@ -593,7 +581,7 @@ QuickBooks.prototype.getBill = function(id, callback) {
  * @param  {string} Id - The Id of persistent BillPayment
  * @param  {function} callback - Callback function which is called with any error and the persistent BillPayment
  */
-QuickBooks.prototype.getBillPayment = function(id, callback) {
+QuickBooks.prototype.getBillPayment = function (id, callback) {
   module.read(this, 'billPayment', id, callback)
 }
 
@@ -603,7 +591,7 @@ QuickBooks.prototype.getBillPayment = function(id, callback) {
  * @param  {string} Id - The Id of persistent Class
  * @param  {function} callback - Callback function which is called with any error and the persistent Class
  */
-QuickBooks.prototype.getClass = function(id, callback) {
+QuickBooks.prototype.getClass = function (id, callback) {
   module.read(this, 'class', id, callback)
 }
 
@@ -613,7 +601,7 @@ QuickBooks.prototype.getClass = function(id, callback) {
  * @param  {string} Id - The Id of persistent CompanyInfo
  * @param  {function} callback - Callback function which is called with any error and the persistent CompanyInfo
  */
-QuickBooks.prototype.getCompanyInfo = function(id, callback) {
+QuickBooks.prototype.getCompanyInfo = function (id, callback) {
   module.read(this, 'companyInfo', id, callback)
 }
 
@@ -623,7 +611,7 @@ QuickBooks.prototype.getCompanyInfo = function(id, callback) {
  * @param  {string} Id - The Id of persistent CompanyCurrency
  * @param  {function} callback - Callback function which is called with any error and the persistent CompanyCurrency
  */
- QuickBooks.prototype.getCompanyCurrency = function(id, callback) {
+QuickBooks.prototype.getCompanyCurrency = function (id, callback) {
   module.read(this, 'companyCurrency', id, callback)
 }
 
@@ -633,7 +621,7 @@ QuickBooks.prototype.getCompanyInfo = function(id, callback) {
  * @param  {string} Id - The Id of persistent CreditMemo
  * @param  {function} callback - Callback function which is called with any error and the persistent CreditMemo
  */
-QuickBooks.prototype.getCreditMemo = function(id, callback) {
+QuickBooks.prototype.getCreditMemo = function (id, callback) {
   module.read(this, 'creditMemo', id, callback)
 }
 
@@ -643,7 +631,7 @@ QuickBooks.prototype.getCreditMemo = function(id, callback) {
  * @param  {string} Id - The Id of persistent Customer
  * @param  {function} callback - Callback function which is called with any error and the persistent Customer
  */
-QuickBooks.prototype.getCustomer = function(id, callback) {
+QuickBooks.prototype.getCustomer = function (id, callback) {
   module.read(this, 'customer', id, callback)
 }
 
@@ -653,7 +641,7 @@ QuickBooks.prototype.getCustomer = function(id, callback) {
  * @param  {string} Id - The Id of persistent CustomerType
  * @param  {function} callback - Callback function which is called with any error and the persistent CustomerType
  */
-QuickBooks.prototype.getCustomerType = function(id, callback) {
+QuickBooks.prototype.getCustomerType = function (id, callback) {
   module.read(this, 'customerType', id, callback)
 }
 
@@ -663,7 +651,7 @@ QuickBooks.prototype.getCustomerType = function(id, callback) {
  * @param  {string} Id - The Id of persistent Department
  * @param  {function} callback - Callback function which is called with any error and the persistent Department
  */
-QuickBooks.prototype.getDepartment = function(id, callback) {
+QuickBooks.prototype.getDepartment = function (id, callback) {
   module.read(this, 'department', id, callback)
 }
 
@@ -673,7 +661,7 @@ QuickBooks.prototype.getDepartment = function(id, callback) {
  * @param  {string} Id - The Id of persistent Deposit
  * @param  {function} callback - Callback function which is called with any error and the persistent Deposit
  */
-QuickBooks.prototype.getDeposit = function(id, callback) {
+QuickBooks.prototype.getDeposit = function (id, callback) {
   module.read(this, 'deposit', id, callback)
 }
 
@@ -683,7 +671,7 @@ QuickBooks.prototype.getDeposit = function(id, callback) {
  * @param  {string} Id - The Id of persistent Employee
  * @param  {function} callback - Callback function which is called with any error and the persistent Employee
  */
-QuickBooks.prototype.getEmployee = function(id, callback) {
+QuickBooks.prototype.getEmployee = function (id, callback) {
   module.read(this, 'employee', id, callback)
 }
 
@@ -693,7 +681,7 @@ QuickBooks.prototype.getEmployee = function(id, callback) {
  * @param  {string} Id - The Id of persistent Estimate
  * @param  {function} callback - Callback function which is called with any error and the persistent Estimate
  */
-QuickBooks.prototype.getEstimate = function(id, callback) {
+QuickBooks.prototype.getEstimate = function (id, callback) {
   module.read(this, 'estimate', id, callback)
 }
 
@@ -703,9 +691,9 @@ QuickBooks.prototype.getEstimate = function(id, callback) {
  * @param  {object} options - An object with options including the required `sourcecurrencycode` parameter and optional `asofdate` parameter.
  * @param  {function} callback - Callback function which is called with any error and the ExchangeRate
  */
-QuickBooks.prototype.getExchangeRate = function(options, callback) {
+QuickBooks.prototype.getExchangeRate = function (options, callback) {
   var url = "/exchangerate";
-  module.request(this, 'get', {url: url, qs: options}, null, callback)
+  module.request(this, 'get', { url: url, qs: options }, null, callback)
 }
 
 
@@ -715,8 +703,8 @@ QuickBooks.prototype.getExchangeRate = function(options, callback) {
  * @param  {string} Id - The Id of persistent Estimate
  * @param  {function} callback - Callback function which is called with any error and the Estimate PDF
  */
-QuickBooks.prototype.getEstimatePdf = function(id, callback) {
-    module.read(this, 'Estimate', id + '/pdf', callback)
+QuickBooks.prototype.getEstimatePdf = function (id, callback) {
+  module.read(this, 'Estimate', id + '/pdf', callback)
 };
 
 /**
@@ -727,13 +715,13 @@ QuickBooks.prototype.getEstimatePdf = function(id, callback) {
  * @param  {string} sendTo - optional email address to send the PDF to. If not provided, address supplied in Estimate.BillEmail.EmailAddress will be used
  * @param  {function} callback - Callback function which is called with any error and the Estimate PDF
  */
-QuickBooks.prototype.sendEstimatePdf = function(id, sendTo, callback) {
+QuickBooks.prototype.sendEstimatePdf = function (id, sendTo, callback) {
   var path = '/estimate/' + id + '/send'
   callback = _.isFunction(sendTo) ? sendTo : callback
-  if (sendTo && ! _.isFunction(sendTo)) {
+  if (sendTo && !_.isFunction(sendTo)) {
     path += '?sendTo=' + sendTo
   }
-  module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'Estimate'))
+  module.request(this, 'post', { url: path }, null, module.unwrap(callback, 'Estimate'))
 }
 
 /**
@@ -742,7 +730,7 @@ QuickBooks.prototype.sendEstimatePdf = function(id, sendTo, callback) {
  * @param  {string} Id - The Id of persistent Invoice
  * @param  {function} callback - Callback function which is called with any error and the persistent Invoice
  */
-QuickBooks.prototype.getInvoice = function(id, callback) {
+QuickBooks.prototype.getInvoice = function (id, callback) {
   module.read(this, 'invoice', id, callback)
 }
 
@@ -752,7 +740,7 @@ QuickBooks.prototype.getInvoice = function(id, callback) {
  * @param  {string} Id - The Id of persistent Invoice
  * @param  {function} callback - Callback function which is called with any error and the Invoice PDF
  */
-QuickBooks.prototype.getInvoicePdf = function(id, callback) {
+QuickBooks.prototype.getInvoicePdf = function (id, callback) {
   module.read(this, 'Invoice', id + '/pdf', callback)
 }
 
@@ -764,13 +752,13 @@ QuickBooks.prototype.getInvoicePdf = function(id, callback) {
  * @param  {string} sendTo - optional email address to send the PDF to. If not provided, address supplied in Invoice.BillEmail.EmailAddress will be used
  * @param  {function} callback - Callback function which is called with any error and the Invoice PDF
  */
-QuickBooks.prototype.sendInvoicePdf = function(id, sendTo, callback) {
+QuickBooks.prototype.sendInvoicePdf = function (id, sendTo, callback) {
   var path = '/invoice/' + id + '/send'
   callback = _.isFunction(sendTo) ? sendTo : callback
-  if (sendTo && ! _.isFunction(sendTo)) {
+  if (sendTo && !_.isFunction(sendTo)) {
     path += '?sendTo=' + sendTo
   }
-  module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'Invoice'))
+  module.request(this, 'post', { url: path }, null, module.unwrap(callback, 'Invoice'))
 }
 
 /**
@@ -779,9 +767,9 @@ QuickBooks.prototype.sendInvoicePdf = function(id, sendTo, callback) {
  * @param  {string} Id - The Id of persistent Credit Memo
  * @param  {function} callback - Callback function which is called with any error and the Credit Memo PDF
  */
- QuickBooks.prototype.getCreditMemoPdf = function(id, callback) {
-    module.read(this, 'CreditMemo', id + '/pdf', callback)
-  }
+QuickBooks.prototype.getCreditMemoPdf = function (id, callback) {
+  module.read(this, 'CreditMemo', id + '/pdf', callback)
+}
 
 /**
  * Emails the Credit Memo PDF from QuickBooks to the address supplied in CreditMemo.BillEmail.EmailAddress
@@ -791,14 +779,14 @@ QuickBooks.prototype.sendInvoicePdf = function(id, sendTo, callback) {
  * @param  {string} sendTo - optional email address to send the PDF to. If not provided, address supplied in CreditMemo.BillEmail.EmailAddress will be used
  * @param  {function} callback - Callback function which is called with any error and the Credit Memo PDF
  */
- QuickBooks.prototype.sendCreditMemoPdf = function(id, sendTo, callback) {
-    var path = '/creditmemo/' + id + '/send'
-    callback = _.isFunction(sendTo) ? sendTo : callback
-    if (sendTo && ! _.isFunction(sendTo)) {
-      path += '?sendTo=' + sendTo
-    }
-    module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'CreditMemo'))
+QuickBooks.prototype.sendCreditMemoPdf = function (id, sendTo, callback) {
+  var path = '/creditmemo/' + id + '/send'
+  callback = _.isFunction(sendTo) ? sendTo : callback
+  if (sendTo && !_.isFunction(sendTo)) {
+    path += '?sendTo=' + sendTo
   }
+  module.request(this, 'post', { url: path }, null, module.unwrap(callback, 'CreditMemo'))
+}
 
 /**
  * Emails the Purchase Order from QuickBooks to the address supplied in PurchaseOrder.POEmail.Address
@@ -808,13 +796,13 @@ QuickBooks.prototype.sendInvoicePdf = function(id, sendTo, callback) {
  * @param  {string} sendTo - optional email address to send the PDF to. If not provided, address supplied in PurchaseOrder.POEmail.Address will be used
  * @param  {function} callback - Callback function which is called with any error and the Invoice PDF
  */
-QuickBooks.prototype.sendPurchaseOrder = function(id, sendTo, callback) {
+QuickBooks.prototype.sendPurchaseOrder = function (id, sendTo, callback) {
   var path = '/purchaseorder/' + id + '/send'
   callback = _.isFunction(sendTo) ? sendTo : callback
-  if (sendTo && ! _.isFunction(sendTo)) {
+  if (sendTo && !_.isFunction(sendTo)) {
     path += '?sendTo=' + sendTo
   }
-  module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'PurchaseOrder'))
+  module.request(this, 'post', { url: path }, null, module.unwrap(callback, 'PurchaseOrder'))
 }
 
 /**
@@ -823,7 +811,7 @@ QuickBooks.prototype.sendPurchaseOrder = function(id, sendTo, callback) {
  * @param  {string} Id - The Id of persistent Item
  * @param  {function} callback - Callback function which is called with any error and the persistent Item
  */
-QuickBooks.prototype.getItem = function(id, callback) {
+QuickBooks.prototype.getItem = function (id, callback) {
   module.read(this, 'item', id, callback)
 }
 
@@ -833,7 +821,7 @@ QuickBooks.prototype.getItem = function(id, callback) {
  * @param  {string} Id - The Id of persistent JournalCode
  * @param  {function} callback - Callback function which is called with any error and the persistent JournalCode
  */
-QuickBooks.prototype.getJournalCode = function(id, callback) {
+QuickBooks.prototype.getJournalCode = function (id, callback) {
   module.read(this, 'journalCode', id, callback)
 }
 
@@ -843,7 +831,7 @@ QuickBooks.prototype.getJournalCode = function(id, callback) {
  * @param  {string} Id - The Id of persistent JournalEntry
  * @param  {function} callback - Callback function which is called with any error and the persistent JournalEntry
  */
-QuickBooks.prototype.getJournalEntry = function(id, callback) {
+QuickBooks.prototype.getJournalEntry = function (id, callback) {
   module.read(this, 'journalEntry', id, callback)
 }
 
@@ -853,7 +841,7 @@ QuickBooks.prototype.getJournalEntry = function(id, callback) {
  * @param  {string} Id - The Id of persistent Payment
  * @param  {function} callback - Callback function which is called with any error and the persistent Payment
  */
-QuickBooks.prototype.getPayment = function(id, callback) {
+QuickBooks.prototype.getPayment = function (id, callback) {
   module.read(this, 'payment', id, callback)
 }
 
@@ -863,7 +851,7 @@ QuickBooks.prototype.getPayment = function(id, callback) {
  * @param  {string} Id - The Id of persistent PaymentMethod
  * @param  {function} callback - Callback function which is called with any error and the persistent PaymentMethod
  */
-QuickBooks.prototype.getPaymentMethod = function(id, callback) {
+QuickBooks.prototype.getPaymentMethod = function (id, callback) {
   module.read(this, 'paymentMethod', id, callback)
 }
 
@@ -872,7 +860,7 @@ QuickBooks.prototype.getPaymentMethod = function(id, callback) {
  *
  * @param  {function} callback - Callback function which is called with any error and the persistent Preferences
  */
-QuickBooks.prototype.getPreferences = function(callback) {
+QuickBooks.prototype.getPreferences = function (callback) {
   module.read(this, 'preferences', null, callback)
 }
 
@@ -882,7 +870,7 @@ QuickBooks.prototype.getPreferences = function(callback) {
  * @param  {string} Id - The Id of persistent Purchase
  * @param  {function} callback - Callback function which is called with any error and the persistent Purchase
  */
-QuickBooks.prototype.getPurchase = function(id, callback) {
+QuickBooks.prototype.getPurchase = function (id, callback) {
   module.read(this, 'purchase', id, callback)
 }
 
@@ -892,7 +880,7 @@ QuickBooks.prototype.getPurchase = function(id, callback) {
  * @param  {string} Id - The Id of persistent PurchaseOrder
  * @param  {function} callback - Callback function which is called with any error and the persistent PurchaseOrder
  */
-QuickBooks.prototype.getPurchaseOrder = function(id, callback) {
+QuickBooks.prototype.getPurchaseOrder = function (id, callback) {
   module.read(this, 'purchaseOrder', id, callback)
 }
 
@@ -902,7 +890,7 @@ QuickBooks.prototype.getPurchaseOrder = function(id, callback) {
  * @param  {string} Id - The Id of persistent RefundReceipt
  * @param  {function} callback - Callback function which is called with any error and the persistent RefundReceipt
  */
-QuickBooks.prototype.getRefundReceipt = function(id, callback) {
+QuickBooks.prototype.getRefundReceipt = function (id, callback) {
   module.read(this, 'refundReceipt', id, callback)
 }
 
@@ -912,7 +900,7 @@ QuickBooks.prototype.getRefundReceipt = function(id, callback) {
  * @param  {string} Id - The Id of persistent Reports
  * @param  {function} callback - Callback function which is called with any error and the persistent Reports
  */
-QuickBooks.prototype.getReports = function(id, callback) {
+QuickBooks.prototype.getReports = function (id, callback) {
   module.read(this, 'reports', id, callback)
 }
 
@@ -922,7 +910,7 @@ QuickBooks.prototype.getReports = function(id, callback) {
  * @param  {string} Id - The Id of persistent SalesReceipt
  * @param  {function} callback - Callback function which is called with any error and the persistent SalesReceipt
  */
-QuickBooks.prototype.getSalesReceipt = function(id, callback) {
+QuickBooks.prototype.getSalesReceipt = function (id, callback) {
   module.read(this, 'salesReceipt', id, callback)
 }
 
@@ -932,7 +920,7 @@ QuickBooks.prototype.getSalesReceipt = function(id, callback) {
  * @param  {string} Id - The Id of persistent SalesReceipt
  * @param  {function} callback - Callback function which is called with any error and the SalesReceipt PDF
  */
-QuickBooks.prototype.getSalesReceiptPdf = function(id, callback) {
+QuickBooks.prototype.getSalesReceiptPdf = function (id, callback) {
   module.read(this, 'salesReceipt', id + '/pdf', callback)
 }
 
@@ -944,13 +932,13 @@ QuickBooks.prototype.getSalesReceiptPdf = function(id, callback) {
  * @param  {string} sendTo - optional email address to send the PDF to. If not provided, address supplied in SalesReceipt.BillEmail.EmailAddress will be used
  * @param  {function} callback - Callback function which is called with any error and the SalesReceipt PDF
  */
-QuickBooks.prototype.sendSalesReceiptPdf = function(id, sendTo, callback) {
+QuickBooks.prototype.sendSalesReceiptPdf = function (id, sendTo, callback) {
   var path = '/salesreceipt/' + id + '/send'
   callback = _.isFunction(sendTo) ? sendTo : callback
-  if (sendTo && ! _.isFunction(sendTo)) {
+  if (sendTo && !_.isFunction(sendTo)) {
     path += '?sendTo=' + sendTo
   }
-  module.request(this, 'post', {url: path}, null, module.unwrap(callback, 'SalesReceipt'))
+  module.request(this, 'post', { url: path }, null, module.unwrap(callback, 'SalesReceipt'))
 }
 
 /**
@@ -959,7 +947,7 @@ QuickBooks.prototype.sendSalesReceiptPdf = function(id, sendTo, callback) {
  * @param  {string} Id - The Id of persistent TaxAgency
  * @param  {function} callback - Callback function which is called with any error and the persistent TaxAgency
  */
-QuickBooks.prototype.getTaxAgency = function(id, callback) {
+QuickBooks.prototype.getTaxAgency = function (id, callback) {
   module.read(this, 'taxAgency', id, callback)
 }
 
@@ -969,7 +957,7 @@ QuickBooks.prototype.getTaxAgency = function(id, callback) {
  * @param  {string} Id - The Id of persistent TaxCode
  * @param  {function} callback - Callback function which is called with any error and the persistent TaxCode
  */
-QuickBooks.prototype.getTaxCode = function(id, callback) {
+QuickBooks.prototype.getTaxCode = function (id, callback) {
   module.read(this, 'taxCode', id, callback)
 }
 
@@ -979,7 +967,7 @@ QuickBooks.prototype.getTaxCode = function(id, callback) {
  * @param  {string} Id - The Id of persistent TaxRate
  * @param  {function} callback - Callback function which is called with any error and the persistent TaxRate
  */
-QuickBooks.prototype.getTaxRate = function(id, callback) {
+QuickBooks.prototype.getTaxRate = function (id, callback) {
   module.read(this, 'taxRate', id, callback)
 }
 
@@ -989,7 +977,7 @@ QuickBooks.prototype.getTaxRate = function(id, callback) {
  * @param  {string} Id - The Id of persistent Term
  * @param  {function} callback - Callback function which is called with any error and the persistent Term
  */
-QuickBooks.prototype.getTerm = function(id, callback) {
+QuickBooks.prototype.getTerm = function (id, callback) {
   module.read(this, 'term', id, callback)
 }
 
@@ -999,7 +987,7 @@ QuickBooks.prototype.getTerm = function(id, callback) {
  * @param  {string} Id - The Id of persistent TimeActivity
  * @param  {function} callback - Callback function which is called with any error and the persistent TimeActivity
  */
-QuickBooks.prototype.getTimeActivity = function(id, callback) {
+QuickBooks.prototype.getTimeActivity = function (id, callback) {
   module.read(this, 'timeActivity', id, callback)
 }
 
@@ -1009,7 +997,7 @@ QuickBooks.prototype.getTimeActivity = function(id, callback) {
  * @param  {string} Id - The Id of persistent Term
  * @param  {function} callback - Callback function which is called with any error and the persistent Transfer
  */
-QuickBooks.prototype.getTransfer = function(id, callback) {
+QuickBooks.prototype.getTransfer = function (id, callback) {
   module.read(this, 'transfer', id, callback)
 }
 
@@ -1019,7 +1007,7 @@ QuickBooks.prototype.getTransfer = function(id, callback) {
  * @param  {string} Id - The Id of persistent Vendor
  * @param  {function} callback - Callback function which is called with any error and the persistent Vendor
  */
-QuickBooks.prototype.getVendor = function(id, callback) {
+QuickBooks.prototype.getVendor = function (id, callback) {
   module.read(this, 'vendor', id, callback)
 }
 
@@ -1029,7 +1017,7 @@ QuickBooks.prototype.getVendor = function(id, callback) {
  * @param  {string} Id - The Id of persistent VendorCredit
  * @param  {function} callback - Callback function which is called with any error and the persistent VendorCredit
  */
-QuickBooks.prototype.getVendorCredit = function(id, callback) {
+QuickBooks.prototype.getVendorCredit = function (id, callback) {
   module.read(this, 'vendorCredit', id, callback)
 }
 
@@ -1041,7 +1029,7 @@ QuickBooks.prototype.getVendorCredit = function(id, callback) {
  * @param  {object} account - The persistent Account, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Account
  */
-QuickBooks.prototype.updateAccount = function(account, callback) {
+QuickBooks.prototype.updateAccount = function (account, callback) {
   module.update(this, 'account', account, callback)
 }
 
@@ -1051,7 +1039,7 @@ QuickBooks.prototype.updateAccount = function(account, callback) {
  * @param  {object} attachable - The persistent Attachable, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Attachable
  */
-QuickBooks.prototype.updateAttachable = function(attachable, callback) {
+QuickBooks.prototype.updateAttachable = function (attachable, callback) {
   module.update(this, 'attachable', attachable, callback)
 }
 
@@ -1061,7 +1049,7 @@ QuickBooks.prototype.updateAttachable = function(attachable, callback) {
  * @param  {object} bill - The persistent Bill, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Bill
  */
-QuickBooks.prototype.updateBill = function(bill, callback) {
+QuickBooks.prototype.updateBill = function (bill, callback) {
   module.update(this, 'bill', bill, callback)
 }
 
@@ -1071,7 +1059,7 @@ QuickBooks.prototype.updateBill = function(bill, callback) {
  * @param  {object} billPayment - The persistent BillPayment, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent BillPayment
  */
-QuickBooks.prototype.updateBillPayment = function(billPayment, callback) {
+QuickBooks.prototype.updateBillPayment = function (billPayment, callback) {
   module.update(this, 'billPayment', billPayment, callback)
 }
 
@@ -1081,7 +1069,7 @@ QuickBooks.prototype.updateBillPayment = function(billPayment, callback) {
  * @param  {object} class - The persistent Class, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Class
  */
-QuickBooks.prototype.updateClass = function(klass, callback) {
+QuickBooks.prototype.updateClass = function (klass, callback) {
   module.update(this, 'class', klass, callback)
 }
 
@@ -1091,7 +1079,7 @@ QuickBooks.prototype.updateClass = function(klass, callback) {
  * @param  {object} companyInfo - The persistent CompanyInfo, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent CompanyInfo
  */
-QuickBooks.prototype.updateCompanyInfo = function(companyInfo, callback) {
+QuickBooks.prototype.updateCompanyInfo = function (companyInfo, callback) {
   module.update(this, 'companyInfo', companyInfo, callback)
 }
 
@@ -1101,7 +1089,7 @@ QuickBooks.prototype.updateCompanyInfo = function(companyInfo, callback) {
  * @param  {object} creditMemo - The persistent CreditMemo, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent CreditMemo
  */
-QuickBooks.prototype.updateCreditMemo = function(creditMemo, callback) {
+QuickBooks.prototype.updateCreditMemo = function (creditMemo, callback) {
   module.update(this, 'creditMemo', creditMemo, callback)
 }
 
@@ -1111,7 +1099,7 @@ QuickBooks.prototype.updateCreditMemo = function(creditMemo, callback) {
  * @param  {object} customer - The persistent Customer, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Customer
  */
-QuickBooks.prototype.updateCustomer = function(customer, callback) {
+QuickBooks.prototype.updateCustomer = function (customer, callback) {
   module.update(this, 'customer', customer, callback)
 }
 
@@ -1121,7 +1109,7 @@ QuickBooks.prototype.updateCustomer = function(customer, callback) {
  * @param  {object} department - The persistent Department, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Department
  */
-QuickBooks.prototype.updateDepartment = function(department, callback) {
+QuickBooks.prototype.updateDepartment = function (department, callback) {
   module.update(this, 'department', department, callback)
 }
 
@@ -1131,7 +1119,7 @@ QuickBooks.prototype.updateDepartment = function(department, callback) {
  * @param  {object} deposit - The persistent Deposit, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Deposit
  */
-QuickBooks.prototype.updateDeposit = function(deposit, callback) {
+QuickBooks.prototype.updateDeposit = function (deposit, callback) {
   module.update(this, 'deposit', deposit, callback)
 }
 
@@ -1141,7 +1129,7 @@ QuickBooks.prototype.updateDeposit = function(deposit, callback) {
  * @param  {object} employee - The persistent Employee, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Employee
  */
-QuickBooks.prototype.updateEmployee = function(employee, callback) {
+QuickBooks.prototype.updateEmployee = function (employee, callback) {
   module.update(this, 'employee', employee, callback)
 }
 
@@ -1151,7 +1139,7 @@ QuickBooks.prototype.updateEmployee = function(employee, callback) {
  * @param  {object} estimate - The persistent Estimate, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Estimate
  */
-QuickBooks.prototype.updateEstimate = function(estimate, callback) {
+QuickBooks.prototype.updateEstimate = function (estimate, callback) {
   module.update(this, 'estimate', estimate, callback)
 }
 
@@ -1161,7 +1149,7 @@ QuickBooks.prototype.updateEstimate = function(estimate, callback) {
  * @param  {object} invoice - The persistent Invoice, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Invoice
  */
-QuickBooks.prototype.updateInvoice = function(invoice, callback) {
+QuickBooks.prototype.updateInvoice = function (invoice, callback) {
   module.update(this, 'invoice', invoice, callback)
 }
 
@@ -1171,7 +1159,7 @@ QuickBooks.prototype.updateInvoice = function(invoice, callback) {
  * @param  {object} item - The persistent Item, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Item
  */
-QuickBooks.prototype.updateItem = function(item, callback) {
+QuickBooks.prototype.updateItem = function (item, callback) {
   var opts = {};
   if (item.doNotUpdateAccountOnTxns && item.doNotUpdateAccountOnTxns.toString() === 'true') {
     opts.qs = { include: 'donotupdateaccountontxns' }
@@ -1186,7 +1174,7 @@ QuickBooks.prototype.updateItem = function(item, callback) {
  * @param  {object} journalCode - The persistent JournalCode, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent JournalCode
  */
-QuickBooks.prototype.updateJournalCode = function(journalCode, callback) {
+QuickBooks.prototype.updateJournalCode = function (journalCode, callback) {
   module.update(this, 'journalCode', journalCode, callback)
 }
 
@@ -1196,7 +1184,7 @@ QuickBooks.prototype.updateJournalCode = function(journalCode, callback) {
  * @param  {object} journalEntry - The persistent JournalEntry, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent JournalEntry
  */
-QuickBooks.prototype.updateJournalEntry = function(journalEntry, callback) {
+QuickBooks.prototype.updateJournalEntry = function (journalEntry, callback) {
   module.update(this, 'journalEntry', journalEntry, callback)
 }
 
@@ -1206,7 +1194,7 @@ QuickBooks.prototype.updateJournalEntry = function(journalEntry, callback) {
  * @param  {object} payment - The persistent Payment, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Payment
  */
-QuickBooks.prototype.updatePayment = function(payment, callback) {
+QuickBooks.prototype.updatePayment = function (payment, callback) {
   module.update(this, 'payment', payment, callback)
 }
 
@@ -1216,7 +1204,7 @@ QuickBooks.prototype.updatePayment = function(payment, callback) {
  * @param  {object} paymentMethod - The persistent PaymentMethod, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent PaymentMethod
  */
-QuickBooks.prototype.updatePaymentMethod = function(paymentMethod, callback) {
+QuickBooks.prototype.updatePaymentMethod = function (paymentMethod, callback) {
   module.update(this, 'paymentMethod', paymentMethod, callback)
 }
 
@@ -1226,7 +1214,7 @@ QuickBooks.prototype.updatePaymentMethod = function(paymentMethod, callback) {
  * @param  {object} preferences - The persistent Preferences, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Preferences
  */
-QuickBooks.prototype.updatePreferences = function(preferences, callback) {
+QuickBooks.prototype.updatePreferences = function (preferences, callback) {
   module.update(this, 'preferences', preferences, callback)
 }
 
@@ -1236,7 +1224,7 @@ QuickBooks.prototype.updatePreferences = function(preferences, callback) {
  * @param  {object} purchase - The persistent Purchase, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Purchase
  */
-QuickBooks.prototype.updatePurchase = function(purchase, callback) {
+QuickBooks.prototype.updatePurchase = function (purchase, callback) {
   module.update(this, 'purchase', purchase, callback)
 }
 
@@ -1246,7 +1234,7 @@ QuickBooks.prototype.updatePurchase = function(purchase, callback) {
  * @param  {object} purchaseOrder - The persistent PurchaseOrder, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent PurchaseOrder
  */
-QuickBooks.prototype.updatePurchaseOrder = function(purchaseOrder, callback) {
+QuickBooks.prototype.updatePurchaseOrder = function (purchaseOrder, callback) {
   module.update(this, 'purchaseOrder', purchaseOrder, callback)
 }
 
@@ -1256,7 +1244,7 @@ QuickBooks.prototype.updatePurchaseOrder = function(purchaseOrder, callback) {
  * @param  {object} refundReceipt - The persistent RefundReceipt, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent RefundReceipt
  */
-QuickBooks.prototype.updateRefundReceipt = function(refundReceipt, callback) {
+QuickBooks.prototype.updateRefundReceipt = function (refundReceipt, callback) {
   module.update(this, 'refundReceipt', refundReceipt, callback)
 }
 
@@ -1266,7 +1254,7 @@ QuickBooks.prototype.updateRefundReceipt = function(refundReceipt, callback) {
  * @param  {object} salesReceipt - The persistent SalesReceipt, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent SalesReceipt
  */
-QuickBooks.prototype.updateSalesReceipt = function(salesReceipt, callback) {
+QuickBooks.prototype.updateSalesReceipt = function (salesReceipt, callback) {
   module.update(this, 'salesReceipt', salesReceipt, callback)
 }
 
@@ -1276,7 +1264,7 @@ QuickBooks.prototype.updateSalesReceipt = function(salesReceipt, callback) {
  * @param  {object} taxAgency - The persistent TaxAgency, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent TaxAgency
  */
-QuickBooks.prototype.updateTaxAgency = function(taxAgency, callback) {
+QuickBooks.prototype.updateTaxAgency = function (taxAgency, callback) {
   module.update(this, 'taxAgency', taxAgency, callback)
 }
 
@@ -1286,7 +1274,7 @@ QuickBooks.prototype.updateTaxAgency = function(taxAgency, callback) {
  * @param  {object} taxCode - The persistent TaxCode, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent TaxCode
  */
-QuickBooks.prototype.updateTaxCode = function(taxCode, callback) {
+QuickBooks.prototype.updateTaxCode = function (taxCode, callback) {
   module.update(this, 'taxCode', taxCode, callback)
 }
 
@@ -1296,7 +1284,7 @@ QuickBooks.prototype.updateTaxCode = function(taxCode, callback) {
  * @param  {object} taxRate - The persistent TaxRate, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent TaxRate
  */
-QuickBooks.prototype.updateTaxRate = function(taxRate, callback) {
+QuickBooks.prototype.updateTaxRate = function (taxRate, callback) {
   module.update(this, 'taxRate', taxRate, callback)
 }
 
@@ -1306,7 +1294,7 @@ QuickBooks.prototype.updateTaxRate = function(taxRate, callback) {
  * @param  {object} term - The persistent Term, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Term
  */
-QuickBooks.prototype.updateTerm = function(term, callback) {
+QuickBooks.prototype.updateTerm = function (term, callback) {
   module.update(this, 'term', term, callback)
 }
 
@@ -1316,7 +1304,7 @@ QuickBooks.prototype.updateTerm = function(term, callback) {
  * @param  {object} timeActivity - The persistent TimeActivity, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent TimeActivity
  */
-QuickBooks.prototype.updateTimeActivity = function(timeActivity, callback) {
+QuickBooks.prototype.updateTimeActivity = function (timeActivity, callback) {
   module.update(this, 'timeActivity', timeActivity, callback)
 }
 
@@ -1326,7 +1314,7 @@ QuickBooks.prototype.updateTimeActivity = function(timeActivity, callback) {
  * @param  {object} Transfer - The persistent Transfer, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Transfer
  */
-QuickBooks.prototype.updateTransfer = function(transfer, callback) {
+QuickBooks.prototype.updateTransfer = function (transfer, callback) {
   module.update(this, 'transfer', transfer, callback)
 }
 
@@ -1336,7 +1324,7 @@ QuickBooks.prototype.updateTransfer = function(transfer, callback) {
  * @param  {object} vendor - The persistent Vendor, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent Vendor
  */
-QuickBooks.prototype.updateVendor = function(vendor, callback) {
+QuickBooks.prototype.updateVendor = function (vendor, callback) {
   module.update(this, 'vendor', vendor, callback)
 }
 
@@ -1346,7 +1334,7 @@ QuickBooks.prototype.updateVendor = function(vendor, callback) {
  * @param  {object} vendorCredit - The persistent VendorCredit, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent VendorCredit
  */
-QuickBooks.prototype.updateVendorCredit = function(vendorCredit, callback) {
+QuickBooks.prototype.updateVendorCredit = function (vendorCredit, callback) {
   module.update(this, 'vendorCredit', vendorCredit, callback)
 }
 
@@ -1356,7 +1344,7 @@ QuickBooks.prototype.updateVendorCredit = function(vendorCredit, callback) {
  * @param  {object} exchangeRate - The persistent ExchangeRate, including Id and SyncToken fields
  * @param  {function} callback - Callback function which is called with any error and the persistent ExchangeRate
  */
-QuickBooks.prototype.updateExchangeRate = function(exchangeRate, callback) {
+QuickBooks.prototype.updateExchangeRate = function (exchangeRate, callback) {
   module.update(this, 'exchangerate', exchangeRate, callback)
 }
 
@@ -1367,7 +1355,7 @@ QuickBooks.prototype.updateExchangeRate = function(exchangeRate, callback) {
  * @param  {object} idOrEntity - The persistent Attachable to be deleted, or the Id of the Attachable, in which case an extra GET request will be issued to first retrieve the Attachable
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Attachable
  */
-QuickBooks.prototype.deleteAttachable = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteAttachable = function (idOrEntity, callback) {
   module.delete(this, 'attachable', idOrEntity, callback)
 }
 
@@ -1377,7 +1365,7 @@ QuickBooks.prototype.deleteAttachable = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent Bill to be deleted, or the Id of the Bill, in which case an extra GET request will be issued to first retrieve the Bill
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Bill
  */
-QuickBooks.prototype.deleteBill = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteBill = function (idOrEntity, callback) {
   module.delete(this, 'bill', idOrEntity, callback)
 }
 
@@ -1387,7 +1375,7 @@ QuickBooks.prototype.deleteBill = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent BillPayment to be deleted, or the Id of the BillPayment, in which case an extra GET request will be issued to first retrieve the BillPayment
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent BillPayment
  */
-QuickBooks.prototype.deleteBillPayment = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteBillPayment = function (idOrEntity, callback) {
   module.delete(this, 'billPayment', idOrEntity, callback)
 }
 
@@ -1397,7 +1385,7 @@ QuickBooks.prototype.deleteBillPayment = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent CreditMemo to be deleted, or the Id of the CreditMemo, in which case an extra GET request will be issued to first retrieve the CreditMemo
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent CreditMemo
  */
-QuickBooks.prototype.deleteCreditMemo = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteCreditMemo = function (idOrEntity, callback) {
   module.delete(this, 'creditMemo', idOrEntity, callback)
 }
 
@@ -1407,7 +1395,7 @@ QuickBooks.prototype.deleteCreditMemo = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent Deposit to be deleted, or the Id of the Deposit, in which case an extra GET request will be issued to first retrieve the Deposit
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Deposit
  */
-QuickBooks.prototype.deleteDeposit = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteDeposit = function (idOrEntity, callback) {
   module.delete(this, 'deposit', idOrEntity, callback)
 }
 
@@ -1417,7 +1405,7 @@ QuickBooks.prototype.deleteDeposit = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent Estimate to be deleted, or the Id of the Estimate, in which case an extra GET request will be issued to first retrieve the Estimate
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Estimate
  */
-QuickBooks.prototype.deleteEstimate = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteEstimate = function (idOrEntity, callback) {
   module.delete(this, 'estimate', idOrEntity, callback)
 }
 
@@ -1427,7 +1415,7 @@ QuickBooks.prototype.deleteEstimate = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent Invoice to be deleted, or the Id of the Invoice, in which case an extra GET request will be issued to first retrieve the Invoice
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Invoice
  */
-QuickBooks.prototype.deleteInvoice = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteInvoice = function (idOrEntity, callback) {
   module.delete(this, 'invoice', idOrEntity, callback)
 }
 
@@ -1437,7 +1425,7 @@ QuickBooks.prototype.deleteInvoice = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent JournalCode to be deleted, or the Id of the JournalCode, in which case an extra GET request will be issued to first retrieve the JournalCode
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent JournalCode
  */
-QuickBooks.prototype.deleteJournalCode = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteJournalCode = function (idOrEntity, callback) {
   module.delete(this, 'journalCode', idOrEntity, callback)
 }
 
@@ -1447,7 +1435,7 @@ QuickBooks.prototype.deleteJournalCode = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent JournalEntry to be deleted, or the Id of the JournalEntry, in which case an extra GET request will be issued to first retrieve the JournalEntry
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent JournalEntry
  */
-QuickBooks.prototype.deleteJournalEntry = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteJournalEntry = function (idOrEntity, callback) {
   module.delete(this, 'journalEntry', idOrEntity, callback)
 }
 
@@ -1457,7 +1445,7 @@ QuickBooks.prototype.deleteJournalEntry = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent Payment to be deleted, or the Id of the Payment, in which case an extra GET request will be issued to first retrieve the Payment
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Payment
  */
-QuickBooks.prototype.deletePayment = function(idOrEntity, callback) {
+QuickBooks.prototype.deletePayment = function (idOrEntity, callback) {
   module.delete(this, 'payment', idOrEntity, callback)
 }
 
@@ -1467,7 +1455,7 @@ QuickBooks.prototype.deletePayment = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent Purchase to be deleted, or the Id of the Purchase, in which case an extra GET request will be issued to first retrieve the Purchase
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Purchase
  */
-QuickBooks.prototype.deletePurchase = function(idOrEntity, callback) {
+QuickBooks.prototype.deletePurchase = function (idOrEntity, callback) {
   module.delete(this, 'purchase', idOrEntity, callback)
 }
 
@@ -1477,7 +1465,7 @@ QuickBooks.prototype.deletePurchase = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent PurchaseOrder to be deleted, or the Id of the PurchaseOrder, in which case an extra GET request will be issued to first retrieve the PurchaseOrder
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent PurchaseOrder
  */
-QuickBooks.prototype.deletePurchaseOrder = function(idOrEntity, callback) {
+QuickBooks.prototype.deletePurchaseOrder = function (idOrEntity, callback) {
   module.delete(this, 'purchaseOrder', idOrEntity, callback)
 }
 
@@ -1487,7 +1475,7 @@ QuickBooks.prototype.deletePurchaseOrder = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent RefundReceipt to be deleted, or the Id of the RefundReceipt, in which case an extra GET request will be issued to first retrieve the RefundReceipt
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent RefundReceipt
  */
-QuickBooks.prototype.deleteRefundReceipt = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteRefundReceipt = function (idOrEntity, callback) {
   module.delete(this, 'refundReceipt', idOrEntity, callback)
 }
 
@@ -1497,7 +1485,7 @@ QuickBooks.prototype.deleteRefundReceipt = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent SalesReceipt to be deleted, or the Id of the SalesReceipt, in which case an extra GET request will be issued to first retrieve the SalesReceipt
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent SalesReceipt
  */
-QuickBooks.prototype.deleteSalesReceipt = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteSalesReceipt = function (idOrEntity, callback) {
   module.delete(this, 'salesReceipt', idOrEntity, callback)
 }
 
@@ -1507,7 +1495,7 @@ QuickBooks.prototype.deleteSalesReceipt = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent TimeActivity to be deleted, or the Id of the TimeActivity, in which case an extra GET request will be issued to first retrieve the TimeActivity
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent TimeActivity
  */
-QuickBooks.prototype.deleteTimeActivity = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteTimeActivity = function (idOrEntity, callback) {
   module.delete(this, 'timeActivity', idOrEntity, callback)
 }
 
@@ -1517,7 +1505,7 @@ QuickBooks.prototype.deleteTimeActivity = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent Transfer to be deleted, or the Id of the Transfer, in which case an extra GET request will be issued to first retrieve the Transfer
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent Transfer
  */
-QuickBooks.prototype.deleteTransfer = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteTransfer = function (idOrEntity, callback) {
   module.delete(this, 'transfer', idOrEntity, callback)
 }
 
@@ -1527,7 +1515,7 @@ QuickBooks.prototype.deleteTransfer = function(idOrEntity, callback) {
  * @param  {object} idOrEntity - The persistent VendorCredit to be deleted, or the Id of the VendorCredit, in which case an extra GET request will be issued to first retrieve the VendorCredit
  * @param  {function} callback - Callback function which is called with any error and the status of the persistent VendorCredit
  */
-QuickBooks.prototype.deleteVendorCredit = function(idOrEntity, callback) {
+QuickBooks.prototype.deleteVendorCredit = function (idOrEntity, callback) {
   module.delete(this, 'vendorCredit', idOrEntity, callback)
 }
 
@@ -1540,7 +1528,7 @@ QuickBooks.prototype.deleteVendorCredit = function(idOrEntity, callback) {
  * @param  {function} callback - Callback function which is called with any error and the persistent Invoice
  */
 QuickBooks.prototype.voidInvoice = function (idOrEntity, callback) {
-    module.void(this, 'invoice', idOrEntity, callback)
+  module.void(this, 'invoice', idOrEntity, callback)
 }
 
 /**
@@ -1550,9 +1538,9 @@ QuickBooks.prototype.voidInvoice = function (idOrEntity, callback) {
  * @param  {function} callback - Callback function which is called with any error and the persistent Payment
  */
 QuickBooks.prototype.voidPayment = function (payment, callback) {
-    payment.void = true;
-    payment.sparse = true;
-    module.update(this, 'payment', payment, callback)
+  payment.void = true;
+  payment.sparse = true;
+  module.update(this, 'payment', payment, callback)
 }
 
 
@@ -1562,10 +1550,10 @@ QuickBooks.prototype.voidPayment = function (payment, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Account
  */
-QuickBooks.prototype.findAccounts = function(criteria, callback) {
-  module.query(this, 'account', criteria).then(function(data) {
+QuickBooks.prototype.findAccounts = function (criteria, callback) {
+  module.query(this, 'account', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1576,10 +1564,10 @@ QuickBooks.prototype.findAccounts = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Attachable
  */
-QuickBooks.prototype.findAttachables = function(criteria, callback) {
-  module.query(this, 'attachable', criteria).then(function(data) {
+QuickBooks.prototype.findAttachables = function (criteria, callback) {
+  module.query(this, 'attachable', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1590,10 +1578,10 @@ QuickBooks.prototype.findAttachables = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Bill
  */
-QuickBooks.prototype.findBills = function(criteria, callback) {
-  module.query(this, 'bill', criteria).then(function(data) {
+QuickBooks.prototype.findBills = function (criteria, callback) {
+  module.query(this, 'bill', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1604,10 +1592,10 @@ QuickBooks.prototype.findBills = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of BillPayment
  */
-QuickBooks.prototype.findBillPayments = function(criteria, callback) {
-  module.query(this, 'billPayment', criteria).then(function(data) {
+QuickBooks.prototype.findBillPayments = function (criteria, callback) {
+  module.query(this, 'billPayment', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1618,10 +1606,10 @@ QuickBooks.prototype.findBillPayments = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Budget
  */
-QuickBooks.prototype.findBudgets = function(criteria, callback) {
-  module.query(this, 'budget', criteria).then(function(data) {
+QuickBooks.prototype.findBudgets = function (criteria, callback) {
+  module.query(this, 'budget', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1632,10 +1620,10 @@ QuickBooks.prototype.findBudgets = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Class
  */
-QuickBooks.prototype.findClasses = function(criteria, callback) {
-  module.query(this, 'class', criteria).then(function(data) {
+QuickBooks.prototype.findClasses = function (criteria, callback) {
+  module.query(this, 'class', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1646,10 +1634,10 @@ QuickBooks.prototype.findClasses = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of CompanyInfo
  */
-QuickBooks.prototype.findCompanyInfos = function(criteria, callback) {
-  module.query(this, 'companyInfo', criteria).then(function(data) {
+QuickBooks.prototype.findCompanyInfos = function (criteria, callback) {
+  module.query(this, 'companyInfo', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1660,10 +1648,10 @@ QuickBooks.prototype.findCompanyInfos = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of CompanyCurrencies
  */
- QuickBooks.prototype.findCompanyCurrencies = function(criteria, callback) {
-  module.query(this, 'companyCurrency', criteria).then(function(data) {
+QuickBooks.prototype.findCompanyCurrencies = function (criteria, callback) {
+  module.query(this, 'companyCurrency', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1674,10 +1662,10 @@ QuickBooks.prototype.findCompanyInfos = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of CreditMemo
  */
-QuickBooks.prototype.findCreditMemos = function(criteria, callback) {
-  module.query(this, 'creditMemo', criteria).then(function(data) {
+QuickBooks.prototype.findCreditMemos = function (criteria, callback) {
+  module.query(this, 'creditMemo', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1688,10 +1676,10 @@ QuickBooks.prototype.findCreditMemos = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Customer
  */
-QuickBooks.prototype.findCustomers = function(criteria, callback) {
-  module.query(this, 'customer', criteria).then(function(data) {
+QuickBooks.prototype.findCustomers = function (criteria, callback) {
+  module.query(this, 'customer', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1702,10 +1690,10 @@ QuickBooks.prototype.findCustomers = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of CustomerType
  */
-QuickBooks.prototype.findCustomerTypes = function(criteria, callback) {
-  module.query(this, 'customerType', criteria).then(function(data) {
+QuickBooks.prototype.findCustomerTypes = function (criteria, callback) {
+  module.query(this, 'customerType', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1716,10 +1704,10 @@ QuickBooks.prototype.findCustomerTypes = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Department
  */
-QuickBooks.prototype.findDepartments = function(criteria, callback) {
-  module.query(this, 'department', criteria).then(function(data) {
+QuickBooks.prototype.findDepartments = function (criteria, callback) {
+  module.query(this, 'department', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1730,10 +1718,10 @@ QuickBooks.prototype.findDepartments = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Deposit
  */
-QuickBooks.prototype.findDeposits = function(criteria, callback) {
-  module.query(this, 'deposit', criteria).then(function(data) {
+QuickBooks.prototype.findDeposits = function (criteria, callback) {
+  module.query(this, 'deposit', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1744,10 +1732,10 @@ QuickBooks.prototype.findDeposits = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Employee
  */
-QuickBooks.prototype.findEmployees = function(criteria, callback) {
-  module.query(this, 'employee', criteria).then(function(data) {
+QuickBooks.prototype.findEmployees = function (criteria, callback) {
+  module.query(this, 'employee', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1758,10 +1746,10 @@ QuickBooks.prototype.findEmployees = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Estimate
  */
-QuickBooks.prototype.findEstimates = function(criteria, callback) {
-  module.query(this, 'estimate', criteria).then(function(data) {
+QuickBooks.prototype.findEstimates = function (criteria, callback) {
+  module.query(this, 'estimate', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1772,10 +1760,10 @@ QuickBooks.prototype.findEstimates = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Invoice
  */
-QuickBooks.prototype.findInvoices = function(criteria, callback) {
-  module.query(this, 'invoice', criteria).then(function(data) {
+QuickBooks.prototype.findInvoices = function (criteria, callback) {
+  module.query(this, 'invoice', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1786,10 +1774,10 @@ QuickBooks.prototype.findInvoices = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Item
  */
-QuickBooks.prototype.findItems = function(criteria, callback) {
-  module.query(this, 'item', criteria).then(function(data) {
+QuickBooks.prototype.findItems = function (criteria, callback) {
+  module.query(this, 'item', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1800,10 +1788,10 @@ QuickBooks.prototype.findItems = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of JournalCode
  */
-QuickBooks.prototype.findJournalCodes = function(criteria, callback) {
-  module.query(this, 'journalCode', criteria).then(function(data) {
+QuickBooks.prototype.findJournalCodes = function (criteria, callback) {
+  module.query(this, 'journalCode', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1814,10 +1802,10 @@ QuickBooks.prototype.findJournalCodes = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of JournalEntry
  */
-QuickBooks.prototype.findJournalEntries = function(criteria, callback) {
-  module.query(this, 'journalEntry', criteria).then(function(data) {
+QuickBooks.prototype.findJournalEntries = function (criteria, callback) {
+  module.query(this, 'journalEntry', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1828,10 +1816,10 @@ QuickBooks.prototype.findJournalEntries = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Payment
  */
-QuickBooks.prototype.findPayments = function(criteria, callback) {
-  module.query(this, 'payment', criteria).then(function(data) {
+QuickBooks.prototype.findPayments = function (criteria, callback) {
+  module.query(this, 'payment', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1842,10 +1830,10 @@ QuickBooks.prototype.findPayments = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of PaymentMethod
  */
-QuickBooks.prototype.findPaymentMethods = function(criteria, callback) {
-  module.query(this, 'paymentMethod', criteria).then(function(data) {
+QuickBooks.prototype.findPaymentMethods = function (criteria, callback) {
+  module.query(this, 'paymentMethod', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1856,10 +1844,10 @@ QuickBooks.prototype.findPaymentMethods = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Preferences
  */
-QuickBooks.prototype.findPreferenceses = function(criteria, callback) {
-  module.query(this, 'preferences', criteria).then(function(data) {
+QuickBooks.prototype.findPreferenceses = function (criteria, callback) {
+  module.query(this, 'preferences', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1870,10 +1858,10 @@ QuickBooks.prototype.findPreferenceses = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Purchase
  */
-QuickBooks.prototype.findPurchases = function(criteria, callback) {
-  module.query(this, 'purchase', criteria).then(function(data) {
+QuickBooks.prototype.findPurchases = function (criteria, callback) {
+  module.query(this, 'purchase', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1884,10 +1872,10 @@ QuickBooks.prototype.findPurchases = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of PurchaseOrder
  */
-QuickBooks.prototype.findPurchaseOrders = function(criteria, callback) {
-  module.query(this, 'purchaseOrder', criteria).then(function(data) {
+QuickBooks.prototype.findPurchaseOrders = function (criteria, callback) {
+  module.query(this, 'purchaseOrder', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1898,10 +1886,10 @@ QuickBooks.prototype.findPurchaseOrders = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of RefundReceipt
  */
-QuickBooks.prototype.findRefundReceipts = function(criteria, callback) {
-  module.query(this, 'refundReceipt', criteria).then(function(data) {
+QuickBooks.prototype.findRefundReceipts = function (criteria, callback) {
+  module.query(this, 'refundReceipt', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1912,10 +1900,10 @@ QuickBooks.prototype.findRefundReceipts = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of SalesReceipt
  */
-QuickBooks.prototype.findSalesReceipts = function(criteria, callback) {
-  module.query(this, 'salesReceipt', criteria).then(function(data) {
+QuickBooks.prototype.findSalesReceipts = function (criteria, callback) {
+  module.query(this, 'salesReceipt', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1926,10 +1914,10 @@ QuickBooks.prototype.findSalesReceipts = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of TaxAgency
  */
-QuickBooks.prototype.findTaxAgencies = function(criteria, callback) {
-  module.query(this, 'taxAgency', criteria).then(function(data) {
+QuickBooks.prototype.findTaxAgencies = function (criteria, callback) {
+  module.query(this, 'taxAgency', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1940,10 +1928,10 @@ QuickBooks.prototype.findTaxAgencies = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of TaxCode
  */
-QuickBooks.prototype.findTaxCodes = function(criteria, callback) {
-  module.query(this, 'taxCode', criteria).then(function(data) {
+QuickBooks.prototype.findTaxCodes = function (criteria, callback) {
+  module.query(this, 'taxCode', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1954,10 +1942,10 @@ QuickBooks.prototype.findTaxCodes = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of TaxRate
  */
-QuickBooks.prototype.findTaxRates = function(criteria, callback) {
-  module.query(this, 'taxRate', criteria).then(function(data) {
+QuickBooks.prototype.findTaxRates = function (criteria, callback) {
+  module.query(this, 'taxRate', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1968,10 +1956,10 @@ QuickBooks.prototype.findTaxRates = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Term
  */
-QuickBooks.prototype.findTerms = function(criteria, callback) {
-  module.query(this, 'term', criteria).then(function(data) {
+QuickBooks.prototype.findTerms = function (criteria, callback) {
+  module.query(this, 'term', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1982,10 +1970,10 @@ QuickBooks.prototype.findTerms = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of TimeActivity
  */
-QuickBooks.prototype.findTimeActivities = function(criteria, callback) {
-  module.query(this, 'timeActivity', criteria).then(function(data) {
+QuickBooks.prototype.findTimeActivities = function (criteria, callback) {
+  module.query(this, 'timeActivity', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -1996,10 +1984,10 @@ QuickBooks.prototype.findTimeActivities = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Transfer
  */
-QuickBooks.prototype.findTransfers = function(criteria, callback) {
-  module.query(this, 'transfer', criteria).then(function(data) {
+QuickBooks.prototype.findTransfers = function (criteria, callback) {
+  module.query(this, 'transfer', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -2010,10 +1998,10 @@ QuickBooks.prototype.findTransfers = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of Vendor
  */
-QuickBooks.prototype.findVendors = function(criteria, callback) {
-  module.query(this, 'vendor', criteria).then(function(data) {
+QuickBooks.prototype.findVendors = function (criteria, callback) {
+  module.query(this, 'vendor', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -2024,10 +2012,10 @@ QuickBooks.prototype.findVendors = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of VendorCredit
  */
-QuickBooks.prototype.findVendorCredits = function(criteria, callback) {
-  module.query(this, 'vendorCredit', criteria).then(function(data) {
+QuickBooks.prototype.findVendorCredits = function (criteria, callback) {
+  module.query(this, 'vendorCredit', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -2038,10 +2026,10 @@ QuickBooks.prototype.findVendorCredits = function(criteria, callback) {
  * @param  {object} criteria - (Optional) String or single-valued map converted to a where clause of the form "where key = 'value'"
  * @param  {function} callback - Callback function which is called with any error and the list of ExchangeRates
  */
-QuickBooks.prototype.findExchangeRates = function(criteria, callback) {
-  module.query(this, 'exchangerate', criteria).then(function(data) {
+QuickBooks.prototype.findExchangeRates = function (criteria, callback) {
+  module.query(this, 'exchangerate', criteria).then(function (data) {
     (callback || criteria)(null, data)
-  }).catch(function(err) {
+  }).catch(function (err) {
     (callback || criteria)(err, err)
   })
 }
@@ -2053,7 +2041,7 @@ QuickBooks.prototype.findExchangeRates = function(criteria, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the BalanceSheet Report
  */
-QuickBooks.prototype.reportBalanceSheet = function(options, callback) {
+QuickBooks.prototype.reportBalanceSheet = function (options, callback) {
   module.report(this, 'BalanceSheet', options, callback)
 }
 
@@ -2063,7 +2051,7 @@ QuickBooks.prototype.reportBalanceSheet = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the ProfitAndLoss Report
  */
-QuickBooks.prototype.reportProfitAndLoss = function(options, callback) {
+QuickBooks.prototype.reportProfitAndLoss = function (options, callback) {
   module.report(this, 'ProfitAndLoss', options, callback)
 }
 
@@ -2073,7 +2061,7 @@ QuickBooks.prototype.reportProfitAndLoss = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the ProfitAndLossDetail Report
  */
-QuickBooks.prototype.reportProfitAndLossDetail = function(options, callback) {
+QuickBooks.prototype.reportProfitAndLossDetail = function (options, callback) {
   module.report(this, 'ProfitAndLossDetail', options, callback)
 }
 
@@ -2083,7 +2071,7 @@ QuickBooks.prototype.reportProfitAndLossDetail = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the TrialBalance Report
  */
-QuickBooks.prototype.reportTrialBalance = function(options, callback) {
+QuickBooks.prototype.reportTrialBalance = function (options, callback) {
   module.report(this, 'TrialBalance', options, callback)
 }
 
@@ -2093,7 +2081,7 @@ QuickBooks.prototype.reportTrialBalance = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the TrialBalance Report
  */
-QuickBooks.prototype.reportTrialBalanceFR = function(options, callback) {
+QuickBooks.prototype.reportTrialBalanceFR = function (options, callback) {
   module.report(this, 'TrialBalanceFR', options, callback)
 }
 
@@ -2103,7 +2091,7 @@ QuickBooks.prototype.reportTrialBalanceFR = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the CashFlow Report
  */
-QuickBooks.prototype.reportCashFlow = function(options, callback) {
+QuickBooks.prototype.reportCashFlow = function (options, callback) {
   module.report(this, 'CashFlow', options, callback)
 }
 
@@ -2113,7 +2101,7 @@ QuickBooks.prototype.reportCashFlow = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the InventoryValuationSummary Report
  */
-QuickBooks.prototype.reportInventoryValuationSummary = function(options, callback) {
+QuickBooks.prototype.reportInventoryValuationSummary = function (options, callback) {
   module.report(this, 'InventoryValuationSummary', options, callback)
 }
 
@@ -2123,7 +2111,7 @@ QuickBooks.prototype.reportInventoryValuationSummary = function(options, callbac
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the CustomerSales Report
  */
-QuickBooks.prototype.reportCustomerSales = function(options, callback) {
+QuickBooks.prototype.reportCustomerSales = function (options, callback) {
   module.report(this, 'CustomerSales', options, callback)
 }
 
@@ -2133,7 +2121,7 @@ QuickBooks.prototype.reportCustomerSales = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the ItemSales Report
  */
-QuickBooks.prototype.reportItemSales = function(options, callback) {
+QuickBooks.prototype.reportItemSales = function (options, callback) {
   module.report(this, 'ItemSales', options, callback)
 }
 
@@ -2143,7 +2131,7 @@ QuickBooks.prototype.reportItemSales = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the CustomerIncome Report
  */
-QuickBooks.prototype.reportCustomerIncome = function(options, callback) {
+QuickBooks.prototype.reportCustomerIncome = function (options, callback) {
   module.report(this, 'CustomerIncome', options, callback)
 }
 
@@ -2153,7 +2141,7 @@ QuickBooks.prototype.reportCustomerIncome = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the CustomerBalance Report
  */
-QuickBooks.prototype.reportCustomerBalance = function(options, callback) {
+QuickBooks.prototype.reportCustomerBalance = function (options, callback) {
   module.report(this, 'CustomerBalance', options, callback)
 }
 
@@ -2163,7 +2151,7 @@ QuickBooks.prototype.reportCustomerBalance = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the CustomerBalanceDetail Report
  */
-QuickBooks.prototype.reportCustomerBalanceDetail = function(options, callback) {
+QuickBooks.prototype.reportCustomerBalanceDetail = function (options, callback) {
   module.report(this, 'CustomerBalanceDetail', options, callback)
 }
 
@@ -2173,7 +2161,7 @@ QuickBooks.prototype.reportCustomerBalanceDetail = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the AgedReceivables Report
  */
-QuickBooks.prototype.reportAgedReceivables = function(options, callback) {
+QuickBooks.prototype.reportAgedReceivables = function (options, callback) {
   module.report(this, 'AgedReceivables', options, callback)
 }
 
@@ -2183,7 +2171,7 @@ QuickBooks.prototype.reportAgedReceivables = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the AgedReceivableDetail Report
  */
-QuickBooks.prototype.reportAgedReceivableDetail = function(options, callback) {
+QuickBooks.prototype.reportAgedReceivableDetail = function (options, callback) {
   module.report(this, 'AgedReceivableDetail', options, callback)
 }
 
@@ -2193,7 +2181,7 @@ QuickBooks.prototype.reportAgedReceivableDetail = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the VendorBalance Report
  */
-QuickBooks.prototype.reportVendorBalance = function(options, callback) {
+QuickBooks.prototype.reportVendorBalance = function (options, callback) {
   module.report(this, 'VendorBalance', options, callback)
 }
 
@@ -2203,7 +2191,7 @@ QuickBooks.prototype.reportVendorBalance = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the VendorBalanceDetail Report
  */
-QuickBooks.prototype.reportVendorBalanceDetail = function(options, callback) {
+QuickBooks.prototype.reportVendorBalanceDetail = function (options, callback) {
   module.report(this, 'VendorBalanceDetail', options, callback)
 }
 
@@ -2213,7 +2201,7 @@ QuickBooks.prototype.reportVendorBalanceDetail = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the AgedPayables Report
  */
-QuickBooks.prototype.reportAgedPayables = function(options, callback) {
+QuickBooks.prototype.reportAgedPayables = function (options, callback) {
   module.report(this, 'AgedPayables', options, callback)
 }
 
@@ -2223,7 +2211,7 @@ QuickBooks.prototype.reportAgedPayables = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the AgedPayableDetail Report
  */
-QuickBooks.prototype.reportAgedPayableDetail = function(options, callback) {
+QuickBooks.prototype.reportAgedPayableDetail = function (options, callback) {
   module.report(this, 'AgedPayableDetail', options, callback)
 }
 
@@ -2233,7 +2221,7 @@ QuickBooks.prototype.reportAgedPayableDetail = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the VendorExpenses Report
  */
-QuickBooks.prototype.reportVendorExpenses = function(options, callback) {
+QuickBooks.prototype.reportVendorExpenses = function (options, callback) {
   module.report(this, 'VendorExpenses', options, callback)
 }
 
@@ -2243,7 +2231,7 @@ QuickBooks.prototype.reportVendorExpenses = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the TransactionList Report
  */
-QuickBooks.prototype.reportTransactionList = function(options, callback) {
+QuickBooks.prototype.reportTransactionList = function (options, callback) {
   module.report(this, 'TransactionList', options, callback)
 }
 
@@ -2253,7 +2241,7 @@ QuickBooks.prototype.reportTransactionList = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the TransactionListWithSplits Report
  */
-QuickBooks.prototype.reportTransactionListWithSplits = function(options, callback) {
+QuickBooks.prototype.reportTransactionListWithSplits = function (options, callback) {
   module.report(this, 'TransactionListWithSplits', options, callback)
 }
 
@@ -2263,7 +2251,7 @@ QuickBooks.prototype.reportTransactionListWithSplits = function(options, callbac
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the TransactionListByCustomer Report
  */
-QuickBooks.prototype.reportTransactionListByCustomer = function(options, callback) {
+QuickBooks.prototype.reportTransactionListByCustomer = function (options, callback) {
   module.report(this, 'TransactionListByCustomer', options, callback)
 }
 
@@ -2273,7 +2261,7 @@ QuickBooks.prototype.reportTransactionListByCustomer = function(options, callbac
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the TransactionListByVendor Report
  */
-QuickBooks.prototype.reportTransactionListByVendor = function(options, callback) {
+QuickBooks.prototype.reportTransactionListByVendor = function (options, callback) {
   module.report(this, 'TransactionListByVendor', options, callback)
 }
 
@@ -2283,7 +2271,7 @@ QuickBooks.prototype.reportTransactionListByVendor = function(options, callback)
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the GeneralLedgerDetail Report
  */
-QuickBooks.prototype.reportGeneralLedgerDetail = function(options, callback) {
+QuickBooks.prototype.reportGeneralLedgerDetail = function (options, callback) {
   module.report(this, 'GeneralLedger', options, callback)
 }
 
@@ -2293,7 +2281,7 @@ QuickBooks.prototype.reportGeneralLedgerDetail = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the TaxSummary Report
  */
-QuickBooks.prototype.reportTaxSummary = function(options, callback) {
+QuickBooks.prototype.reportTaxSummary = function (options, callback) {
   module.report(this, 'TaxSummary', options, callback)
 }
 
@@ -2303,7 +2291,7 @@ QuickBooks.prototype.reportTaxSummary = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the DepartmentSales Report
  */
-QuickBooks.prototype.reportDepartmentSales = function(options, callback) {
+QuickBooks.prototype.reportDepartmentSales = function (options, callback) {
   module.report(this, 'DepartmentSales', options, callback)
 }
 
@@ -2313,7 +2301,7 @@ QuickBooks.prototype.reportDepartmentSales = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the ClassSales Report
  */
-QuickBooks.prototype.reportClassSales = function(options, callback) {
+QuickBooks.prototype.reportClassSales = function (options, callback) {
   module.report(this, 'ClassSales', options, callback)
 }
 
@@ -2323,7 +2311,7 @@ QuickBooks.prototype.reportClassSales = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the AccountListDetail Report
  */
-QuickBooks.prototype.reportAccountListDetail = function(options, callback) {
+QuickBooks.prototype.reportAccountListDetail = function (options, callback) {
   module.report(this, 'AccountList', options, callback)
 }
 
@@ -2333,116 +2321,154 @@ QuickBooks.prototype.reportAccountListDetail = function(options, callback) {
  * @param  {object} options - (Optional) Map of key-value pairs passed as options to the Report
  * @param  {function} callback - Callback function which is called with any error and the JournalReport Report
  */
-QuickBooks.prototype.reportJournalReport = function(options, callback) {
+QuickBooks.prototype.reportJournalReport = function (options, callback) {
   module.report(this, 'JournalReport', options, callback)
 }
 
-module.request = function(context, verb, options, entity, callback) {
+module.request = function (context, verb, options, entity, callback) {
   var url = context.endpoint + context.realmId + options.url
   if (options.url === QuickBooks.RECONNECT_URL || options.url == QuickBooks.DISCONNECT_URL || options.url === QuickBooks.REVOKE_URL || options.url === QuickBooks.USER_INFO_URL) {
     url = options.url
   }
   var opts = {
-    url:     url,
-    qs:      options.qs || {},
+    url: url,
+    method: verb,
+    params: options.qs || {},
     headers: options.headers || {},
-    json:    true
   }
 
   if (entity && entity.allowDuplicateDocNum) {
     delete entity.allowDuplicateDocNum;
-    opts.qs.include = 'allowduplicatedocnum';
+    opts.params.include = 'allowduplicatedocnum';
   }
 
   if (entity && entity.requestId) {
-    opts.qs.requestid = entity.requestId;
+    opts.params.requestid = entity.requestId;
     delete entity.requestId;
   }
 
-  opts.qs.minorversion = opts.qs.minorversion || context.minorversion;
+  opts.params.minorversion = opts.params.minorversion || context.minorversion;
   opts.headers['User-Agent'] = 'node-quickbooks: version ' + version
   opts.headers['Request-Id'] = uuid.v1()
-  opts.qs.format = 'json';
-  if (context.oauthversion == '2.0'){
-      opts.headers['Authorization'] =  'Bearer ' + context.token
+  opts.params.format = 'json';
+
+  if (context.oauthversion == '2.0') {
+    opts.headers['Authorization'] = 'Bearer ' + context.token
   } else {
-        opts.oauth = module.oauth(context);
+    var oauth = OAuth({
+      consumer: { key: context.consumerKey, secret: context.consumerSecret },
+      signature_method: 'HMAC-SHA1',
+      hash_function: function (base_string, key) {
+        return require('crypto').createHmac('sha1', key).update(base_string).digest('base64');
+      }
+    });
+    var request_data = {
+      url: url,
+      method: verb.toUpperCase(),
+      data: opts.params
+    };
+    var token = {
+      key: context.token,
+      secret: context.tokenSecret
+    };
+    var authHeader = oauth.toHeader(oauth.authorize(request_data, token));
+    opts.headers = _.extend(opts.headers, authHeader);
   };
+
   if (options.url.match(/pdf$/)) {
     opts.headers['accept'] = 'application/pdf'
-    opts.encoding = null
+    opts.responseType = 'arraybuffer'
   }
+
   if (entity !== null) {
-    opts.body = entity
+    opts.data = entity
   }
+
   if (options.formData) {
-    opts.formData = options.formData
+    var form = new FormData();
+    for (var key in options.formData) {
+      var item = options.formData[key];
+      if (item.hasOwnProperty('value') && item.hasOwnProperty('options')) {
+        form.append(key, item.value, item.options);
+      } else {
+        form.append(key, item);
+      }
+    }
+    opts.data = form;
+    opts.headers = _.extend(opts.headers, form.getHeaders());
   }
-  if ('production' !== process.env.NODE_ENV && context.debug) {
-    debug(request)
-  }
-  request[verb].call(context, opts, function (err, res, body) {
+
+  axios(opts).then(function (res) {
+    var body = res.data;
     if ('production' !== process.env.NODE_ENV && context.debug) {
       console.log('invoking endpoint: ' + url)
       console.log(entity || '')
       console.log(JSON.stringify(body, null, 2));
     }
     if (callback) {
-      if (err ||
-          res.statusCode >= 300 ||
-          (_.isObject(body) && body.Fault && body.Fault.Error && body.Fault.Error.length) ||
-          (_.isString(body) && !_.isEmpty(body) && body.indexOf('<') === 0)) {
-        callback(err || body, body, res)
+      if (_.isObject(body) && body.Fault && body.Fault.Error && body.Fault.Error.length) {
+        callback(body, body, res)
       } else {
         callback(null, body, res)
       }
     }
+  }).catch(function (err) {
+    var res = err.response;
+    var body = res ? res.data : null;
+    if ('production' !== process.env.NODE_ENV && context.debug) {
+      console.log('invoking endpoint: ' + url)
+      console.log(entity || '')
+      console.log(JSON.stringify(body, null, 2));
+    }
+    if (callback) {
+      callback(err || body, body, res)
+    }
   })
 }
 
-module.xmlRequest = function(context, url, rootTag, callback) {
-  module.request(context, 'get', {url:url}, null, (err, body) => {
+module.xmlRequest = function (context, url, rootTag, callback) {
+  module.request(context, 'get', { url: url }, null, (err, body) => {
     var json =
-        body.constructor === {}.constructor ? body :
-            (body.constructor === "".constructor ?
-                (body.indexOf('<') === 0 ? xmlParser.parse(body)[rootTag] : body) : body);
+      body.constructor === {}.constructor ? body :
+        (body.constructor === "".constructor ?
+          (body.indexOf('<') === 0 ? xmlParser.parse(body)[rootTag] : body) : body);
     callback(json.ErrorCode === 0 ? null : json, json);
   })
 }
 
 
 
-QuickBooks.prototype.reconnect = function(callback) {
+QuickBooks.prototype.reconnect = function (callback) {
   module.xmlRequest(this, QuickBooks.RECONNECT_URL, 'ReconnectResponse', callback);
 }
 
-QuickBooks.prototype.disconnect = function(callback) {
+QuickBooks.prototype.disconnect = function (callback) {
   module.xmlRequest(this, QuickBooks.DISCONNECT_URL, 'PlatformResponse', callback);
 }
 
 // **********************  CRUD Api **********************
-module.create = function(context, entityName, entity, callback) {
+module.create = function (context, entityName, entity, callback) {
   var url = '/' + entityName.toLowerCase()
-  module.request(context, 'post', {url: url}, entity, module.unwrap(callback, entityName))
+  module.request(context, 'post', { url: url }, entity, module.unwrap(callback, entityName))
 }
 
-module.read = function(context, entityName, id, callback) {
+module.read = function (context, entityName, id, callback) {
   var url = '/' + entityName.toLowerCase()
   if (id) url = url + '/' + id
-  module.request(context, 'get', {url: url}, null, module.unwrap(callback, entityName))
+  module.request(context, 'get', { url: url }, null, module.unwrap(callback, entityName))
 }
 
-module.update = function(context, entityName, entity, callback, opts = {}) {
+module.update = function (context, entityName, entity, callback, opts = {}) {
   if (_.isUndefined(entity.Id) ||
-      _.isEmpty(entity.Id + '') ||
-      _.isUndefined(entity.SyncToken) ||
-      _.isEmpty(entity.SyncToken + '')) {
+    _.isEmpty(entity.Id + '') ||
+    _.isUndefined(entity.SyncToken) ||
+    _.isEmpty(entity.SyncToken + '')) {
     if (entityName !== 'exchangerate') {
       throw new Error(entityName + ' must contain Id and SyncToken fields: ' +
-          util.inspect(entity, {showHidden: false, depth: null}))
+        util.inspect(entity, { showHidden: false, depth: null }))
     }
   }
-  if (! entity.hasOwnProperty('sparse')) {
+  if (!entity.hasOwnProperty('sparse')) {
     entity.sparse = true
   }
 
@@ -2455,17 +2481,17 @@ module.update = function(context, entityName, entity, callback, opts = {}) {
   module.request(context, 'post', opts, entity, module.unwrap(callback, entityName))
 }
 
-module.delete = function(context, entityName, idOrEntity, callback) {
+module.delete = function (context, entityName, idOrEntity, callback) {
   var url = '/' + entityName.toLowerCase() + '?operation=delete'
-  callback = callback || function() {}
+  callback = callback || function () { }
   if (_.isObject(idOrEntity)) {
-    module.request(context, 'post', {url: url}, idOrEntity, callback)
+    module.request(context, 'post', { url: url }, idOrEntity, callback)
   } else {
-    module.read(context, entityName, idOrEntity, function(err, entity) {
+    module.read(context, entityName, idOrEntity, function (err, entity) {
       if (err) {
         callback(err)
       } else {
-        module.request(context, 'post', {url: url}, entity, callback)
+        module.request(context, 'post', { url: url }, entity, callback)
       }
     })
   }
@@ -2490,16 +2516,16 @@ module.void = function (context, entityName, idOrEntity, callback) {
 // **********************  Query Api **********************
 module.requestPromise = Promise.promisify(module.request)
 
-module.query = function(context, entity, criteria) {
+module.query = function (context, entity, criteria) {
 
   // criteria is potentially mutated within this function -
   // so make a copy of it first
-  if (! _.isFunction(criteria) && (_.isObject(criteria) || _.isArray(criteria))) {
+  if (!_.isFunction(criteria) && (_.isObject(criteria) || _.isArray(criteria))) {
     criteria = JSON.parse(JSON.stringify(criteria));
   }
 
   var url = '/query?query@@select * from ' + entity
-  var count = function(obj) {
+  var count = function (obj) {
     for (var p in obj) {
       if (obj[p] && p.toLowerCase() === 'count') {
         url = url.replace('select \* from', 'select count(*) from')
@@ -2522,19 +2548,19 @@ module.query = function(context, entity, criteria) {
 
   var fetchAll = false, limit = 1000, offset = 1
   if (_.isArray(criteria)) {
-    var lmt = _.find(criteria, function(obj) {
+    var lmt = _.find(criteria, function (obj) {
       return obj.field && obj.field === 'limit'
     })
     if (lmt) limit = lmt.value
-    var ofs = _.find(criteria, function(obj) {
+    var ofs = _.find(criteria, function (obj) {
       return obj.field && obj.field === 'offset'
     })
-    if (! ofs) {
-      criteria.push({field: 'offset', value: 1})
+    if (!ofs) {
+      criteria.push({ field: 'offset', value: 1 })
     } else {
       offset = ofs.value
     }
-    var fa = _.find(criteria, function(obj) {
+    var fa = _.find(criteria, function (obj) {
       return obj.field && obj.field === 'fetchAll'
     })
     if (fa && fa.value) fetchAll = true
@@ -2547,31 +2573,31 @@ module.query = function(context, entity, criteria) {
   if (criteria && !_.isFunction(criteria)) {
     url += module.criteriaToString(criteria) || ''
     url = url.replace(/%/g, '%25')
-             .replace(/'/g, '%27')
-             .replace(/=/g, '%3D')
-             .replace(/</g, '%3C')
-             .replace(/>/g, '%3E')
-             .replace(/&/g, '%26')
-             .replace(/#/g, '%23')
-             .replace(/\\/g, '%5C')
-             .replace(/\+/g, '%2B')
+      .replace(/'/g, '%27')
+      .replace(/=/g, '%3D')
+      .replace(/</g, '%3C')
+      .replace(/>/g, '%3E')
+      .replace(/&/g, '%26')
+      .replace(/#/g, '%23')
+      .replace(/\\/g, '%5C')
+      .replace(/\+/g, '%2B')
   }
   url = url.replace('@@', '=')
 
-  return new Promise(function(resolve, reject) {
-    module.requestPromise(context, 'get', {url: url}, null).then(function(data) {
+  return new Promise(function (resolve, reject) {
+    module.requestPromise(context, 'get', { url: url }, null).then(function (data) {
       var fields = Object.keys(data.QueryResponse)
-      var key = _.find(fields, function(k) { return k.toLowerCase() === entity.toLowerCase()})
+      var key = _.find(fields, function (k) { return k.toLowerCase() === entity.toLowerCase() })
       if (fetchAll) {
         if (data && data.QueryResponse && data.QueryResponse.maxResults === limit) {
           if (_.isArray(criteria)) {
-            _.each(criteria, function(e) {
+            _.each(criteria, function (e) {
               if (e.field === 'offset') e.value = e.value + limit
             })
           } else if (_.isObject(criteria)) {
             criteria.offset = criteria.offset + limit
           }
-          return module.query(context, entity, criteria).then(function(more) {
+          return module.query(context, entity, criteria).then(function (more) {
             data.QueryResponse[key] = data.QueryResponse[key].concat(more.QueryResponse[key] || [])
             data.QueryResponse.maxResults = data.QueryResponse.maxResults + (more.QueryResponse.maxResults || 0)
             data.time = more.time || data.time
@@ -2583,7 +2609,7 @@ module.query = function(context, entity, criteria) {
       } else {
         resolve(data)
       }
-    }).catch(function(err) {
+    }).catch(function (err) {
       reject(err)
     })
   })
@@ -2591,33 +2617,33 @@ module.query = function(context, entity, criteria) {
 
 
 // **********************  Report Api **********************
-module.report = function(context, reportType, criteria, callback) {
+module.report = function (context, reportType, criteria, callback) {
   var url = '/reports/' + reportType
   if (criteria && typeof criteria !== 'function') {
     url += module.reportCriteria(criteria) || ''
   }
-  module.request(context, 'get', {url: url}, null, typeof criteria === 'function' ? criteria : callback)
+  module.request(context, 'get', { url: url }, null, typeof criteria === 'function' ? criteria : callback)
 }
 
 
-module.oauth = function(context) {
+module.oauth = function (context) {
   return {
-    consumer_key:    context.consumerKey,
+    consumer_key: context.consumerKey,
     consumer_secret: context.consumerSecret,
-    token:           context.token,
-    token_secret:    context.tokenSecret
+    token: context.token,
+    token_secret: context.tokenSecret
   }
 }
 
-module.isNumeric = function(n) {
-  return ! isNaN(parseFloat(n)) && isFinite(n);
+module.isNumeric = function (n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-module.checkProperty = function(field, name) {
+module.checkProperty = function (field, name) {
   return (field && field.toLowerCase() === name)
 }
 
-module.toCriterion = function(c) {
+module.toCriterion = function (c) {
   var fields = _.keys(c)
   if (_.intersection(fields, ['field', 'value']).length === 2) {
     return {
@@ -2626,7 +2652,7 @@ module.toCriterion = function(c) {
       operator: c.operator || '='
     }
   } else {
-    return fields.map(function(k) {
+    return fields.map(function (k) {
       return {
         field: k,
         value: c[k],
@@ -2636,12 +2662,12 @@ module.toCriterion = function(c) {
   }
 }
 
-module.criteriaToString = function(criteria) {
+module.criteriaToString = function (criteria) {
   if (_.isString(criteria)) return criteria.indexOf(' ') === 0 ? criteria : " " + criteria
   var cs = _.isArray(criteria) ? criteria.map(module.toCriterion) : module.toCriterion(criteria)
   var flattened = _.flatten(cs)
   var sql = '', limit, offset, desc, asc
-  for (var i=0, l=flattened.length; i<l; i++) {
+  for (var i = 0, l = flattened.length; i < l; i++) {
     var criterion = flattened[i];
     if (module.checkProperty(criterion.field, 'fetchall')) {
       continue
@@ -2666,7 +2692,7 @@ module.criteriaToString = function(criteria) {
       sql += ' and '
     }
     sql += criterion.field + ' ' + criterion.operator + ' '
-    var quote = function(x) {
+    var quote = function (x) {
       return _.isString(x) ? "'" + x.replace(/'/g, "\\'") + "'" : x
     }
     if (_.isArray(criterion.value)) {
@@ -2678,14 +2704,14 @@ module.criteriaToString = function(criteria) {
   if (sql != '') {
     sql = ' where ' + sql
   }
-  if (asc)  sql += ' orderby ' + asc + ' asc'
+  if (asc) sql += ' orderby ' + asc + ' asc'
   if (desc) sql += ' orderby ' + desc + ' desc'
   sql += ' startposition ' + (offset || 1)
   sql += ' maxresults ' + (limit || 1000)
   return sql
 }
 
-module.reportCriteria = function(criteria) {
+module.reportCriteria = function (criteria) {
   var s = '?'
   for (var p in criteria) {
     s += p + '=' + criteria[p] + '&'
@@ -2693,13 +2719,13 @@ module.reportCriteria = function(criteria) {
   return s
 }
 
-module.capitalize = function(s) {
+module.capitalize = function (s) {
   return s.substring(0, 1).toUpperCase() + s.substring(1)
 }
 
 QuickBooks.prototype.capitalize = module.capitalize
 
-module.pluralize = function(s) {
+module.pluralize = function (s) {
   var last = s.substring(s.length - 1)
   if (last === 's') {
     return s + "es"
@@ -2712,9 +2738,9 @@ module.pluralize = function(s) {
 
 QuickBooks.prototype.pluralize = module.pluralize
 
-module.unwrap = function(callback, entityName) {
-  if (! callback) return function(err, data, res) {}
-  return function(err, data, res) {
+module.unwrap = function (callback, entityName) {
+  if (!callback) return function (err, data, res) { }
+  return function (err, data, res) {
     if (err) {
       if (callback) callback(err, null, res)
     } else {
