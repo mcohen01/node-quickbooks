@@ -33,10 +33,10 @@ var OAUTH_ENDPOINTS = {
     });
   },
 
-  '2.0': function (callback) {
+  '2.0': function (callback, discoveryUrl) {
     var NEW_ENDPOINT_CONFIGURATION = {};
     request({
-      url: 'https://developer.api.intuit.com/.well-known/openid_configuration/',
+      url: discoveryUrl,
       headers: {
         Accept: 'application/json'
       }
@@ -46,9 +46,17 @@ var OAUTH_ENDPOINTS = {
         return err;
       }
 
-      var json = JSON.parse(res.body);
+      var json;
+      try {
+          json = JSON.parse(res.body);
+      } catch (error) {
+          console.log(error);
+          return error;
+      }
       NEW_ENDPOINT_CONFIGURATION.AUTHORIZATION_URL = json.authorization_endpoint;;
       NEW_ENDPOINT_CONFIGURATION.TOKEN_URL = json.token_endpoint;
+      NEW_ENDPOINT_CONFIGURATION.USER_INFO_URL = json.userinfo_endpoint;
+      NEW_ENDPOINT_CONFIGURATION.REVOKE_URL = json.revocation_endpoint;
       callback(NEW_ENDPOINT_CONFIGURATION);
     });
   }
@@ -56,14 +64,21 @@ var OAUTH_ENDPOINTS = {
 
 OAUTH_ENDPOINTS['1.0'] = OAUTH_ENDPOINTS['1.0a'];
 
-QuickBooks.setOauthVersion = function (version) {
+/**
+ * Sets endpoints per OAuth version
+ *
+ * @param version - 1.0 for OAuth 1.0a, 2.0 for OAuth 2.0
+ * @param useSandbox - true to use the OAuth 2.0 sandbox discovery document, false (or unspecified, for backward compatibility) to use the prod discovery document.
+ */
+QuickBooks.setOauthVersion = function (version, useSandbox) {
   version = (typeof version === 'number') ? version.toFixed(1) : version;
   QuickBooks.version = version;
+  var discoveryUrl = useSandbox ? 'https://developer.intuit.com/.well-known/openid_sandbox_configuration/' : 'https://developer.api.intuit.com/.well-known/openid_configuration/';
   OAUTH_ENDPOINTS[version](function (endpoints) {
     for (var k in endpoints) {
       QuickBooks[k] = endpoints[k];
-    };
-  });
+    }
+  }, discoveryUrl);
 };
 
 QuickBooks.setOauthVersion('1.0');
@@ -97,6 +112,81 @@ function QuickBooks(consumerKey, consumerSecret, token, tokenSecret, realmId, us
   this.refreshToken = refreshToken || null;
   if (!tokenSecret && this.oauthversion !== '2.0') throw new Error('tokenSecret not defined');
 }
+
+/**
+ *
+ * Use the refresh token to obtain a new access token.
+ *
+ *
+ */
+
+QuickBooks.prototype.refreshAccessToken = function(callback) {
+    var auth = (new Buffer(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
+
+    var postBody = {
+        url: QuickBooks.TOKEN_URL,
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: 'Basic ' + auth,
+        },
+        form: {
+            grant_type: 'refresh_token',
+            refresh_token: this.refreshToken
+        }
+    };
+
+    request.post(postBody, (function (e, r, data) {
+        if (r && r.body) {
+            var refreshResponse = JSON.parse(r.body);
+            this.refreshToken = refreshResponse.refresh_token;
+            this.token = refreshResponse.access_token;
+            if (callback) callback(e, refreshResponse);
+        } else {
+            if (callback) callback(e, r, data);
+        }
+    }).bind(this));
+};
+
+/**
+ * Use either refresh token or access token to revoke access (OAuth2).
+ *
+ * @param useRefresh - boolean - Indicates which token to use: true to use the refresh token, false to use the access token.
+ * @param {function} callback - Callback function to call with error/response/data results.
+ */
+QuickBooks.prototype.revokeAccess = function(useRefresh, callback) {
+    var auth = (new Buffer(this.consumerKey + ':' + this.consumerSecret).toString('base64'));
+    var revokeToken = useRefresh ? this.refreshToken : this.token;
+    var postBody = {
+        url: QuickBooks.REVOKE_URL,
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: 'Basic ' + auth,
+        },
+        form: {
+            token: revokeToken
+        }
+    };
+
+    request.post(postBody, (function(e, r, data) {
+        if (r && r.statusCode === 200) {
+            this.refreshToken = null;
+            this.token = null;
+            this.realmId = null;
+        }
+        if (callback) callback(e, r, data);
+    }).bind(this));
+};
+
+/**
+ * Get user info (OAuth2).
+ *
+ * @param {function} callback - Callback function to call with error/response/data results.
+ */
+QuickBooks.prototype.getUserInfo = function(callback) {
+  module.request(this, 'get', {url: QuickBooks.USER_INFO_URL}, null, callback);
+};
 
 /**
  * Batch operation to enable an application to perform multiple operations in a single request.
@@ -133,22 +223,30 @@ QuickBooks.prototype.changeDataCapture = function(entities, since, callback) {
  * Uploads a file as an Attachable in QBO, optionally linking it to the specified
  * QBO Entity.
  *
+ * @param  {string} filename - the name of the file
+ * @param  {string} contentType - the mime type of the file
  * @param  {object} stream - ReadableStream of file contents
  * @param  {object} entityType - optional string name of the QBO entity the Attachable will be linked to (e.g. Invoice)
  * @param  {object} entityId - optional Id of the QBO entity the Attachable will be linked to
  * @param  {function} callback - callback which receives the newly created Attachable
  */
-QuickBooks.prototype.upload = function(stream, entityType, entityId, callback) {
+QuickBooks.prototype.upload = function(filename, contentType, stream, entityType, entityId, callback) {
   var that = this
   var opts = {
     url: '/upload',
     formData: {
-      file_content_01: stream
+      file_content_01: {
+        value: stream,
+        options: {
+          filename: filename,
+          contentType: contentType
+        }
+      }
     }
   }
   module.request(this, 'post', opts, null, module.unwrap(function(err, data) {
-    if (err) {
-      (callback || entityType)(err, null)
+    if (err || data[0].Fault) {
+      (callback || entityType)(err || data[0], null)
     } else if (_.isFunction(entityType)) {
       entityType(null, data[0].Attachable)
     } else {
@@ -581,6 +679,17 @@ QuickBooks.prototype.getExchangeRate = function(options, callback) {
   var url = "/exchangerate";
   module.request(this, 'get', {url: url, qs: options}, null, callback)
 }
+
+
+/**
+ * Retrieves the Estimate PDF from QuickBooks
+ *
+ * @param  {string} Id - The Id of persistent Estimate
+ * @param  {function} callback - Callback function which is called with any error and the Estimate PDF
+ */
+QuickBooks.prototype.getEstimatePdf = function(id, callback) {
+    module.read(this, 'Estimate', id + '/pdf', callback)
+};
 
 /**
  * Emails the Estimate PDF from QuickBooks to the address supplied in Estimate.BillEmail.EmailAddress
@@ -2052,7 +2161,7 @@ QuickBooks.prototype.reportAccountListDetail = function(options, callback) {
 
 module.request = function(context, verb, options, entity, callback) {
   var url = context.endpoint + context.realmId + options.url
-  if (options.url === QuickBooks.RECONNECT_URL || options.url == QuickBooks.DISCONNECT_URL) {
+  if (options.url === QuickBooks.RECONNECT_URL || options.url == QuickBooks.DISCONNECT_URL || options.url === QuickBooks.REVOKE_URL || options.url === QuickBooks.USER_INFO_URL) {
     url = options.url
   }
   var opts = {
