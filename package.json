@@ -3,6 +3,7 @@
   "version": "2.0.48",
   "description": "node.js client for Intuit's IPP QuickBooks V3 API.",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "mocha"
   },
